@@ -4,6 +4,8 @@ const express = require('express');
 const database = require('./database.js');
 const app=express();
 
+console.log('test');
+
 database.connectToDatabase()
   .then((res)=>{
     console.log(res);
