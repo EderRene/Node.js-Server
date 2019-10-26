@@ -8,6 +8,7 @@ const queryStringInsertUserRights = 'INSERT INTO userRights VALUES($1, $2)';
 const queryStringInsertWorksIn = 'INSERT INTO worksIn VALUES($1, $2)';
 const queryStringInsertOwnsRight = 'INSERT INTO ownsRight VALUES($1, $2)';
 const queryStringSelectUserCampAll = 'SELECT * FROM userCamp';
+const queryStringSelectUserWIthId = 'SELECT * FROM userCamp WHERE id_User=$1';
 
 const client=new Client({
     user: 'plonig',
@@ -18,24 +19,56 @@ const client=new Client({
 });
 
 function _connectToDatabase(){
-    client.connect()
-    .then(()=>{
-        return ('Connected successfully');
-    })
-    .catch((err)=>{
-        return ('Something unexpexted happened: ' + err);
+    return new Promise((resolve, reject)=>{
+        client.connect()
+            .then(()=>{
+                return resolve('Connected successfully');
+            })
+            .catch((err)=>{
+                return reject('Something unexpexted happened: ' + err);
+            });
     });
 }
 
 function _getAllUsers(){
-    client.query(queryStringSelectUserCampAll)
-        .then((res)=>{
-            return res;
-        })
-        .catch((err)=>{
-            return ('Something unexpected happened: ' + err);
-        });
+    return new Promise((resolve, reject)=>{
+        client.query(queryStringSelectUserCampAll)
+            .then((res)=>{
+                return resolve(res);
+            })
+            .catch((err)=>{
+                return reject('Something unexpected happened: ' + err);
+            });
+    });
 }
 
-module.exports.getAllUsers = _getAllUsers;
+function _getUserWithId(idUser){
+    return new Promise((resolve, reject)=>{
+        client.query(queryStringSelectUserWIthId, [idUser])
+            .then((res)=>{
+                return resolve(res);
+            })
+            .catch((err)=>{
+                return reject('Something unexpected happened: ' + err);
+            });
+    });
+}
+
+function _insertUser(){
+
+}
+
+function _deleteUser(){
+
+}
+
+function _updateUser(){
+
+}
+
 module.exports.connectToDatabase = _connectToDatabase;
+module.exports.getAllUsers = _getAllUsers;
+module.exports.getUserWithId = _getUserWithId;
+module.exports.insertUser = _insertUser;
+module.exports.deleteUser = _deleteUser;
+module.exports.updateUser = _updateUser;
