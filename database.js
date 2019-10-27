@@ -18,40 +18,31 @@ const client=new Client({
     database: 'zeitverwaltung'
 });
 
-function _connectToDatabase(){
-    return new Promise((resolve, reject)=>{
-        client.connect()
-            .then(()=>{
-                return resolve('Connected successfully');
-            })
-            .catch((err)=>{
-                return reject('Something unexpexted happened: ' + err);
-            });
-    });
+async function _connectToDatabase(){
+    try{
+        await client.connect();
+        return 'Connected successfully';
+    } catch(err){
+        throw new Error('Something unexpected happened: ' + err);
+    }
 }
 
-function _getAllUsers(){
-    return new Promise((resolve, reject)=>{
-        client.query(queryStringSelectUserCampAll)
-            .then((res)=>{
-                return resolve(res);
-            })
-            .catch((err)=>{
-                return reject('Something unexpected happened: ' + err);
-            });
-    });
+async function _getAllUsers(){
+    try{
+        let res=await client.query(queryStringSelectUserCampAll);
+        return res;
+    } catch(err){
+        throw new Error('Something unexpected happened: ' + err);
+    }
 }
 
-function _getUserWithId(idUser){
-    return new Promise((resolve, reject)=>{
-        client.query(queryStringSelectUserWIthId, [idUser])
-            .then((res)=>{
-                return resolve(res);
-            })
-            .catch((err)=>{
-                return reject('Something unexpected happened: ' + err);
-            });
-    });
+async function _getUserWithId(idUser){
+    try{
+        let res=await client.query(queryStringSelectUserWIthId, [idUser]);
+        return res;
+    } catch(err){
+        throw new Error('Something unexpected happened: ' + err);
+    }
 }
 
 function _insertUser(){
