@@ -9,8 +9,7 @@ function renderButton() {
         'height': 50,
         'longtitle': true,
         'theme': 'dark',
-        'onsuccess': onSuccess,
-        'onfailure': onFailure
+        'onsuccess': onSignUpSuccess,
     });
 }
 function init(){
@@ -28,7 +27,7 @@ function init(){
 
 
 // Sign-in success callback
-function onSuccess(googleUser) {
+function onSignUpSuccess(googleUser) {
 
     var profile = googleUser.getBasicProfile();
     console.log(profile);
@@ -60,9 +59,6 @@ function onSuccess(googleUser) {
 }
 
 // Sign-in failure callback
-function onFailure(error) {
-    alert(error);
-}
 
 // Sign out the user
 function signOut() {
