@@ -3,8 +3,8 @@ const port = 8888;
 const express = require('express');
 const database = require('./database.js');
 const app=express();
-
-console.log('test');
+const webContentDirectory = ("./webContent");
+console.log('test');  
 
 app.use(express.static(webContentDirectory));
 
