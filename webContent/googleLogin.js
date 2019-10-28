@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+    init();
+  });
+
 function renderButton() {
     gapi.signin2.render('gSignIn', {
         'scope': 'profile email',
@@ -9,6 +13,19 @@ function renderButton() {
         'onfailure': onFailure
     });
 }
+function init(){
+    gapi.load('auth2', () => { 
+        googleAuth = gapi.auth2.init({ 
+            client_id:'271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com' , 
+            fetch_basic_profile: false, 
+            scope: 'profile email' 
+        }); 
+        googleAuth.currentUser.listen(onSignUpSuccess); 
+    }); 
+    renderButton();
+}
+
+
 
 // Sign-in success callback
 function onSuccess(googleUser) {
