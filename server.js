@@ -1,18 +1,8 @@
-const port = 8888;
+const port = 3000;
 
 const express = require('express');
-const database = require('./database.js');
 const app=express();
-const webContentDirectory = ("./webContent");
-console.log('test');  
-
-app.use(express.static(webContentDirectory));
-
-database.connectToDatabase()
-  .then((res)=>{
-    console.log(res);
-  });
 
 app.listen(port, function () {
-    console.log('API is up and running on port ' + port + '.');
-});
+    console.log('Chat API is up and running on port ' + port + '.');
+  });
