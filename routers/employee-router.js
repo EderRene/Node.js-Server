@@ -22,34 +22,31 @@ router.get('/:id', async(req, res) => {
     }
 })
 
-router.post('/', (req, res) => {    
-    database.insertEmployee()
-        .then((res)=>{
-            res.status(200).send(res);
-        })
-        .catch((err)=>{
-            res.status(400);
-        });
+router.post('/', (req, res) => {
+    try{
+        let result=await database.insertEmployee(req.body);
+        res.status(200).send(result);
+    } catch(err){
+        res.status(400).send(err);
+    }
 });
 
 router.delete('/:id', (req, res) => {
-    database.deleteEmployee(req.params['id'])
-        .then((res)=>{
-            res.status(200).send(res);
-        })   
-        .catch((err)=>{
-            res.status(400).send(err);
-        });
+    try{
+        let result=await database.deleteEmployee(req.params['id']);
+        res.status(200).send(result);
+    } catch(err){
+        res.status(400).send(err);
+    }
 });
 
 router.put('/:id', (req, res)=>{
-    database.updateEmployee(req.params['id'])
-        .then((res)=>{
-            res.status(200).send(res);
-        })
-        .catch((err)=>{
-            res.status(400).send(err);
-        });
+    try{
+        let result=await database.updateEmployee(req.params['id'], req.body);
+        res.status(200).send(result);
+    } catch(err){
+        res.status(400).send(err);
+    }
 });
 
 module.exports = router;

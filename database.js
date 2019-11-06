@@ -2,7 +2,7 @@ const {Client} = require('pg');
 const queryStringSelectAllEmployees = 'SELECT * FROM employee';
 const queryStringSelectEmployeeWIthId = 'SELECT * FROM employee WHERE id_Employee=$1';
 const queryStringInsertAddress = 'INSERT INTO address VALUES($1, $2, $3, $4, $5, $6) RETURNING id_Address';
-const queryStringInsertEmployee = 'INSERT INTO employee VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
+const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, &9)";
 const queryStringInsertCamp = 'INSERT INTO camp VALUES($1, $2, $3, $4)';
 const queryStringInsertDocumentType = 'INSERT INTO documentType VALUES($1, $2)';
 const queryStringInsertDocument = 'INSERT INTO document VALUES($1, $2, $3, $4)';
@@ -56,10 +56,10 @@ async function _getEmployeeWithId(idUser){
     }
 }
 
-async function _insertEmployee(address, employee){
+async function _insertEmployee(employee){
     try{
-        let res=await client.query(queryStringInsertAddress, ["NEXTVAL('seqAddress')", address.addressLine1, address.addressLine2, address.postCode, address.city, address.country]);
-        await client.query(queryStringInsertEmployee, ["NEXTVAL('seqEmployee')", employee.forname, employee.surname, employee.dateOfBirth, res.rows, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber]);
+        //let res=await client.query(queryStringInsertAddress, ["NEXTVAL('seqAddress')", address.addressLine1, address.addressLine2, address.postCode, address.city, address.country]);
+        await client.query(queryStringInsertEmployee, [employee.forname, employee.surname, employee.dateOfBirth, employee.id_Address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber]);
         return 'Insert of employee was successful';
     } catch(err){
         throw new Error('Something unexpected happened: ' + err);
@@ -75,7 +75,7 @@ async function _deleteEmployee(){
     }
 }
 
-async function _updateEmployee(){
+async function _updateEmployee(id_Employee, employee){
     try{
 
     } catch(err){
