@@ -1,6 +1,6 @@
 const {Client} = require('pg');
 const queryStringSelectAllEmployees = 'SELECT * FROM employee';
-const queryStringSelectEmployeeWIthId = 'SELECT * FROM employee WHERE id_User=$1';
+const queryStringSelectEmployeeWIthId = 'SELECT * FROM employee WHERE id_Employee=$1';
 const queryStringInsertAddress = 'INSERT INTO address VALUES($1, $2, $3, $4, $5, $6) RETURNING id_Address';
 const queryStringInsertEmployee = 'INSERT INTO employee VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)';
 const queryStringInsertCamp = 'INSERT INTO camp VALUES($1, $2, $3, $4)';

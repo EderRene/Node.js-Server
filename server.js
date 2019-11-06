@@ -6,8 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const connectionsStringMongo = 'nothing_yet';
-
-//connectMongo();
+const database = require('./database.js');
 
 var utils = require('./global-functions');
 var employeeRouter=require("./routers/employee-router");
@@ -17,6 +16,15 @@ app.use(utils.centralErrorHandler);
 app.use(bodyParser.json());
 app.use(express.static(webContentDirectory));
 app.use('/api/employees', employeeRouter);
+
+database.connectToDatabase()
+  .then((res)=>{
+    console.log('Connected to database');
+  })
+  .catch((err)=>{
+    console.log('Something unexpected happened: ' + err);
+  });
+//connectMongo();
 
 app.listen(port, function () {
     console.log('Time management API is up and running on port ' + port + '.');
