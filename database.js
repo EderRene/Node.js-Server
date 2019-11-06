@@ -96,6 +96,7 @@ async function insertCamp(camp){
         
     }
 }
+
 /* #endregion */
 
 module.exports.connectToDatabase = _connectToDatabase;
