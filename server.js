@@ -19,7 +19,7 @@ app.use(express.static(webContentDirectory));
 app.use('/api/employees', employeeRouter);
 
 app.listen(port, function () {
-    console.log('Chat API is up and running on port ' + port + '.');
+    console.log('Time management API is up and running on port ' + port + '.');
 });
 
 function connectMongo() {
