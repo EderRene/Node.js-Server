@@ -156,6 +156,7 @@ async function _insertDocumentType(documentType){
         throw new Error('Something unexpected happened: ' + err);
     }
 }
+
 /* #endregion */
 
 module.exports.connectToDatabase = _connectToDatabase;
