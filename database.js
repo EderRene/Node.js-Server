@@ -8,6 +8,8 @@ const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_Employee";
 const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3)';
 const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1)";
+const queryStringUpdateEmployee = "UPDATE employee SET forname=$1, surname=$2, dateOfBirth=$3, svn=$4, uid=$5, bankAccountNumber=$6, email=$7, phoneNumber=$8 WHERE id_Employee=$9";
+const queryStringUpdateAddress = "UPDATE address SET addressLine1=$1, addressLine2=$2, postCode=$3, city=$4, country=$5 WHERE id_Address=$6";
 const queryStringUpdateCampLeader = "UPDATE camp id_Leader=$1 WHERE id_Camp=$2";
 const queryStringDeleteEmployeeWithId = "DELETE FROM employee WHERE id_Employee=$1";
 const queryStringDeleteCampWithId = "DELETE FROM camp WHERE id_Camp=$1";
@@ -88,7 +90,8 @@ async function _deleteEmployee(id_Employee){
 
 async function _updateEmployee(id_Employee, employee){
     try{
-
+        await client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address]);
+        await client.query(queryStringUpdateEmployee, [employee.forname, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee]);
     } catch(err){
         throw new Error('Something unexpected happened: ' +err);
     }
