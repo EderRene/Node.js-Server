@@ -1,5 +1,5 @@
 const axios = require('axios');
-const database=require('./database');
+const database = require('./database');
 
 module.exports.login = login;
 module.exports.authenticate = authenticate;
@@ -7,7 +7,7 @@ module.exports.logOut = logOut;
 
 var userTokenTable = {};
 
-function login(req, res,googleToken) {
+function login(req, res, googleToken) {
     checkGoogleToken(req, res, googleToken);
 }
 
@@ -31,11 +31,10 @@ function checkGoogleToken(req, res, token) {
             if (response.status !== 200 || response.data.aud !== '271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com') {
 
                 var email = response.data.email;
-                var user;
 
-                var employee=database.getEmployeeWithEmail(email);
+                var employee = await database.getEmployeeWithEmail(email);
 
-                if (checkEmail(email)) {         //schauen ob ein user diese email hat, wenn nicht weg wenn ja dann in tokentable 
+                if (employee != undefined) {         //schauen ob ein user diese email hat, wenn nicht weg wenn ja dann in tokentable 
                     userTokenTable[token] = user;
                     res.status(200).send(token);
                 } else {

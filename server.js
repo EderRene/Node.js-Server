@@ -11,7 +11,7 @@ const database = require('./database.js');
 var utils = require('./global-functions');
 var employeeRouter=require("./routers/employee-router");
 var campRouter=require('./routers/camp-router')
-const security = require('./my_modules/security');
+const security = require('./security');
 
 const app=express();
 

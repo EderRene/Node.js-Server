@@ -21,7 +21,7 @@ function init() {
             scope: 'profile email'
         });
         googleAuth.currentUser.listen(onSignUpSuccess);
-    });
+    }); 
     renderButton();
 }
 
@@ -32,16 +32,11 @@ function onSignUpSuccess(googleUser) {
 
     var profile = googleUser.getBasicProfile();
     console.log(profile);
-    console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-    console.log('Full Name: ' + profile.getName());
-    console.log('Given Name: ' + profile.getGivenName());
-    console.log('Family Name: ' + profile.getFamilyName());
-    console.log("Image URL: " + profile.getImageUrl());
-    console.log("Email: " + profile.getEmail());
-
+    
     // The ID token you need to pass to your backend:
     var id_token = googleUser.getAuthResponse().id_token;
     console.log("ID Token: " + id_token);
+    alert("ID Token: " + id_token);
     // Retrieve the Google account data
     gapi.client.load('oauth2', 'v2', function () {
         var request = gapi.client.oauth2.userinfo.get({
