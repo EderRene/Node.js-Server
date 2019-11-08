@@ -1,6 +1,7 @@
 'use strict'
 
-function _Employee(forname, surname, dateOfBirth, id_Adress, svn, uid, bankAccountNumber, email, phoneNumber){
+function Employee(id_Employee, forname, surname, dateOfBirth, id_Adress, svn, uid, bankAccountNumber, email, phoneNumber){
+    this.id_Employee=id_Employee;
     this.forname=forname;
     this.surname=surname;
     this.dateOfBirth=dateOfBirth;
@@ -10,10 +11,6 @@ function _Employee(forname, surname, dateOfBirth, id_Adress, svn, uid, bankAccou
     this.bankAccountNumber=bankAccountNumber;
     this.email=email;
     this.phoneNumber=phoneNumber;
-
-    var setIdEmployee=function(idEmployee){
-        this.idEmployee=idEmployee;
-    }
 }
 
-module.exports.Employee=_Employee;
+module.exports=Employee;

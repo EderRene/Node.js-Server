@@ -74,12 +74,16 @@ async function _getEmployeeWithId(id_Employee){
 }
 
 async function _getEmployeeWithEmail(email){
-    try{
-        let result=await client.query(queryStringSelectEmployeeWithEmail, email);
-        return result.rows;
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+    return new Promise((resolve, reject)=>{
+        client.query(queryStringSelectEmployeeWithEmail, [email])
+            .then((result)=>{
+                employee=new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateOfBirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankAccountNumber, result.rows[0].email, result.rows[0].phoneNumber);
+                resolve(employee);
+            })
+            .catch((error)=>{
+                reject(error);
+            })
+    });
 }
 
 async function _insertEmployee(employee){

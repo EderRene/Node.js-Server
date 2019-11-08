@@ -16,7 +16,7 @@ var successMessages={
 }
 
 var errorMessages={
-    ERROR_DATABASE_CONNECTION_FAILURE: 'Database connection could not have been established'
+    ERROR_DATABASE_CONNECTION_FAILURE: 'ERROR: Database connection could not have been established'
 }
 
 global.successMessages=successMessages;
