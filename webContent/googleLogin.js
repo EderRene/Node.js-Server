@@ -1,6 +1,6 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
     init();
-  });
+});
 
 function renderButton() {
     gapi.signin2.render('gSignIn', {
@@ -10,16 +10,17 @@ function renderButton() {
         'longtitle': true,
         'theme': 'dark',
         'onsuccess': onSignUpSuccess,
+        'onfailure': onSignUpFailure
     });
 }
-function init(){
-    gapi.load('auth2', () => { 
-        googleAuth = gapi.auth2.init({ 
-            client_id:'271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com' , 
-            fetch_basic_profile: false, 
-            scope: 'profile email' 
-        }); 
-        googleAuth.currentUser.listen(onSignUpSuccess); 
+function init() {
+    gapi.load('auth2', () => {
+        googleAuth = gapi.auth2.init({
+            client_id: '271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com',
+            fetch_basic_profile: false,
+            scope: 'profile email'
+        });
+        googleAuth.currentUser.listen(onSignUpSuccess);
     }); 
     renderButton();
 }
@@ -31,16 +32,11 @@ function onSignUpSuccess(googleUser) {
 
     var profile = googleUser.getBasicProfile();
     console.log(profile);
-    console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-    console.log('Full Name: ' + profile.getName());
-    console.log('Given Name: ' + profile.getGivenName());
-    console.log('Family Name: ' + profile.getFamilyName());
-    console.log("Image URL: " + profile.getImageUrl());
-    console.log("Email: " + profile.getEmail());
-
+    
     // The ID token you need to pass to your backend:
     var id_token = googleUser.getAuthResponse().id_token;
     console.log("ID Token: " + id_token);
+    alert("ID Token: " + id_token);
     // Retrieve the Google account data
     gapi.client.load('oauth2', 'v2', function () {
         var request = gapi.client.oauth2.userinfo.get({
@@ -59,7 +55,9 @@ function onSignUpSuccess(googleUser) {
 }
 
 // Sign-in failure callback
-
+function onSignUpFailure(error){
+    alert(error);
+}
 // Sign out the user
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();

@@ -11,6 +11,8 @@ const database = require('./database.js');
 var utils = require('./global-functions');
 var employeeRouter=require("./routers/employee-router");
 var campRouter=require('./routers/camp-router')
+const security = require('./security');
+
 const app=express();
 
 app.use(utils.centralErrorHandler);
@@ -18,6 +20,8 @@ app.use(bodyParser.json());
 app.use(express.static(webContentDirectory));
 app.use('/api/employees', employeeRouter);
 app.use('/api/camps', campRouter);
+
+app.post('/api/login', security.login);
 
 database.connectToDatabase()
   .then((res)=>{
