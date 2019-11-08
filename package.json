@@ -19,6 +19,7 @@
   "homepage": "https://github.com/EderRene/Node.js-Server#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "mongoose": "^5.7.8",
     "pg": "^7.12.1"
   }
 }
