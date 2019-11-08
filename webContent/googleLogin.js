@@ -1,6 +1,6 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
     init();
-  });
+});
 
 function renderButton() {
     gapi.signin2.render('gSignIn', {
@@ -10,17 +10,18 @@ function renderButton() {
         'longtitle': true,
         'theme': 'dark',
         'onsuccess': onSignUpSuccess,
+        'onfailure': onSignUpFailure
     });
 }
-function init(){
-    gapi.load('auth2', () => { 
-        googleAuth = gapi.auth2.init({ 
-            client_id:'271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com' , 
-            fetch_basic_profile: false, 
-            scope: 'profile email' 
-        }); 
-        googleAuth.currentUser.listen(onSignUpSuccess); 
-    }); 
+function init() {
+    gapi.load('auth2', () => {
+        googleAuth = gapi.auth2.init({
+            client_id: '271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com',
+            fetch_basic_profile: false,
+            scope: 'profile email'
+        });
+        googleAuth.currentUser.listen(onSignUpSuccess);
+    });
     renderButton();
 }
 
@@ -59,7 +60,9 @@ function onSignUpSuccess(googleUser) {
 }
 
 // Sign-in failure callback
-
+function onSignUpFailure(error){
+    alert(error);
+}
 // Sign out the user
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const database=require('./database');
 
 module.exports.login = login;
 module.exports.authenticate = authenticate;
@@ -6,8 +7,8 @@ module.exports.logOut = logOut;
 
 var userTokenTable = {};
 
-function login(req, res) {
-    checkGoogleToken(req, res, token);
+function login(req, res,googleToken) {
+    checkGoogleToken(req, res, googleToken);
 }
 
 function authenticate(req, res, next) {
@@ -32,6 +33,8 @@ function checkGoogleToken(req, res, token) {
                 var email = response.data.email;
                 var user;
 
+                var employee=database.getEmployeeWithEmail(email);
+
                 if (checkEmail(email)) {         //schauen ob ein user diese email hat, wenn nicht weg wenn ja dann in tokentable 
                     userTokenTable[token] = user;
                     res.status(200).send(token);
@@ -47,7 +50,6 @@ function checkGoogleToken(req, res, token) {
             //console.log(error);
             res.status(401).send('Unauthorized');
             return;
-
         });
 
 }
