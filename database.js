@@ -2,15 +2,16 @@ const {Client} = require('pg');
 const queryStringSelectAllEmployees = "SELECT * FROM employee INNER JOIN address ON employee.id_Address=address.id_Address";
 const queryStringSelectAllCamps = "SELECT * FROM camp INNER JOIN address ON camp.id_Address=address.id_Address";
 const queryStringSelectAllDocumentTypes = "SELECT * FROM documentType";
-const queryStringSelectEmployeeWIthId = "SELECT * FROM employee INNER JOIN address ON employee.id_Address=address.id_Address WHERE id_Employee=$1";
+const queryStringSelectEmployeeWithId = "SELECT * FROM employee INNER JOIN address ON employee.id_Address=address.id_Address WHERE id_Employee=$1";
 const queryStringSelectCampWithId = "SELECT * FROM camp INNER JOIN address ON camp.id_Address=address.id_Address WHERE id_Camp=$1";
+const queryStringSelectEmployeeWithEmail = "SELECT * FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_Address";
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_Employee";
 const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3)';
 const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1)";
-const queryStringUpdateEmployee = "UPDATE employee SET forname=$1, surname=$2, dateOfBirth=$3, svn=$4, uid=$5, bankAccountNumber=$6, email=$7, phoneNumber=$8 WHERE id_Employee=$9";
+const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateOfBirth=$3, svn=$4, uid=$5, bankAccountNumber=$6, email=$7, phoneNumber=$8 WHERE id_Employee=$9";
 const queryStringUpdateAddress = "UPDATE address SET addressLine1=$1, addressLine2=$2, postCode=$3, city=$4, country=$5 WHERE id_Address=$6";
-const queryStringUpdateCampLeader = "UPDATE camp id_Leader=$1 WHERE id_Camp=$2";
+const queryStringUpdateCampLeader = "UPDATE camp SET id_Leader=$1 WHERE id_Camp=$2 AND id_Leader=$3";
 const queryStringDeleteEmployeeWithId = "DELETE FROM employee WHERE id_Employee=$1";
 const queryStringDeleteCampWithId = "DELETE FROM camp WHERE id_Camp=$1";
 const queryStringDeleteWorksInWithIdEmployee = "DELETE FROM worksIn WHERE id_Employee=$1";
@@ -61,7 +62,16 @@ async function _getAllEmployees(){
 
 async function _getEmployeeWithId(id_Employee){
     try{
-        let result=await client.query(queryStringSelectEmployeeWIthId, [id_Employee]);
+        let result=await client.query(queryStringSelectEmployeeWithId, [id_Employee]);
+        return result.rows;
+    } catch(err){
+        throw new Error('Something unexpected happened: ' + err);
+    }
+}
+
+async function _getEmployeeWithEmail(email){
+    try{
+        let result=await client.query(queryStringSelectEmployeeWithEmail, email);
         return result.rows;
     } catch(err){
         throw new Error('Something unexpected happened: ' + err);
@@ -71,15 +81,16 @@ async function _getEmployeeWithId(id_Employee){
 async function _insertEmployee(employee){
     try{
         let result=await client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country]);
-        await client.query(queryStringInsertEmployee, [employee.forname, employee.surname, employee.dateOfBirth, result.rows[0].id_Address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber]);
+        await client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_Address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber]);
         return 'Insert of employee was successful';
     } catch(err){
         throw new Error('Something unexpected happened: ' + err);
     }
 }
 
-async function _deleteEmployee(id_Employee){
+async function _deleteEmployee(id_Employee, id_Camp){
     try{
+        await client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee]);
         await client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee]);
         await client.query(queryStringDeleteEmployeeWithId, [id_Employee]);
         return 'Delete of employee was successful';
@@ -92,6 +103,7 @@ async function _updateEmployee(id_Employee, employee){
     try{
         await client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address]);
         await client.query(queryStringUpdateEmployee, [employee.forname, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee]);
+        return 'Update of employee was successful';
     } catch(err){
         throw new Error('Something unexpected happened: ' +err);
     }
@@ -165,6 +177,7 @@ module.exports.getAllCamps = _getAllCamps;
 module.exports.getAllDocumentTypes = _getAllDocumentTypes;
 module.exports.getEmployeeWithId = _getEmployeeWithId;
 module.exports.getCampWithId = _getCampWithId;
+module.exports.getEmployeeWithEmail = _getEmployeeWithEmail;
 module.exports.insertEmployee = _insertEmployee;
 module.exports.deleteEmployee = _deleteEmployee;
 module.exports.deleteCamp = _deleteCamp;
