@@ -30,12 +30,16 @@ const client=new Client({
 
 /* #region connection functions */
 async function _connectToDatabase(){
-    try{
-        await client.connect();
-        return 'Connected successfully established';
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+    return new Promise((resolve, reject)=>{
+        client.connect()
+            .then(()=>{
+                resolve(global.successMessages.SUCCESS_DATABASE_CONNECTION_CREATED);
+            })
+            .catch(()=>{
+                reject(global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE);
+            });
+    });
+
 }
 /* #endregion */
 
