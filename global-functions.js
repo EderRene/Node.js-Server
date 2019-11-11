@@ -16,7 +16,11 @@ var successMessages={
 }
 
 var errorMessages={
-    ERROR_DATABASE_CONNECTION_FAILURE: 'ERROR: Database connection could not have been established'
+    ERROR_DATABASE_CONNECTION_FAILURE: 'ERROR: Database connection could not have been established',
+    ERROR_DATABASE_CONNECTION_LOST: 'ERROR: Database connection lost',
+    
+    ERROR_EMPTY_STRING_OF_EMAIL: 'ERROR: String of email was empty',
+    ERROR_NO_DATA_FOUND: 'ERROR: No data could be found in database'
 }
 
 global.successMessages=successMessages;

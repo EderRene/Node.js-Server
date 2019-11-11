@@ -27,7 +27,7 @@ database.connectToDatabase()
     console.log(err);
   });
 
-database.getEmployeeWithEmail('philipp.hohenwarter@gmail.com')
+database.getEmployeeWithEmail('phohen')
   .then((res)=>{
     console.log(res);
   })

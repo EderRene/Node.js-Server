@@ -4,7 +4,7 @@ const queryStringSelectAllCamps = "SELECT * FROM camp INNER JOIN address ON camp
 const queryStringSelectAllDocumentTypes = "SELECT * FROM documentType";
 const queryStringSelectEmployeeWithId = "SELECT * FROM employee INNER JOIN address ON employee.id_Address=address.id_Address WHERE id_Employee=$1";
 const queryStringSelectCampWithId = "SELECT * FROM camp INNER JOIN address ON camp.id_Address=address.id_Address WHERE id_Camp=$1";
-const queryStringSelectEmployeeWithEmail = "SELECT * FROM employee WHERE email=$1";
+const queryStringSelectEmployeeWithEmail = "SELECT id_Employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_Address, svn, uid, bankAccountNumber, email, phoneNumber FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_Address";
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_Employee";
 const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3)';
@@ -75,10 +75,17 @@ async function _getEmployeeWithId(id_Employee){
 
 async function _getEmployeeWithEmail(email){
     return new Promise((resolve, reject)=>{
+        if(email=='' || email==undefined){
+            reject(global.errorMessages.ERROR_EMPTY_STRING_OF_EMAIL);
+        }
+
         client.query(queryStringSelectEmployeeWithEmail, [email])
             .then((result)=>{
-                employee=new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateOfBirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankAccountNumber, result.rows[0].email, result.rows[0].phoneNumber);
-                resolve(employee);
+                if(result.rows.length==0){
+                    reject(global.errorMessages.ERROR_NO_DATA_FOUND);
+                }
+
+                resolve(new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateofbirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankaccountnumber, result.rows[0].email, result.rows[0].phonenumber));
             })
             .catch((error)=>{
                 reject(error);
