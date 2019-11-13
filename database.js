@@ -20,7 +20,7 @@ var Employee = require('./dataModels/employee.js');
 var Address = require('./dataModels/address.js');
 var Camp = require('./dataModels/camp.js');
 
-const client=new Client({
+const client2=new Client({
     user: 'plonig',
     password: 'plonig',
     host: 'salcher.synology.me',
@@ -28,8 +28,16 @@ const client=new Client({
     database: 'zeitverwaltung'
 });
 
+const client=new Client({
+    user: 'postgres',
+    password: 'plonig',
+    host: 'localhost',
+    port: 5432,
+    database: 'postgres'
+})
+
 /* #region connection functions */
-async function _connectToDatabase(){
+function _connectToDatabase(){
     return new Promise((resolve, reject)=>{
         client.connect()
             .then(()=>{
@@ -39,41 +47,65 @@ async function _connectToDatabase(){
                 reject(global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE);
             });
     });
-
 }
 /* #endregion */
 
 /* #region address functions */
-async function _insertAddress(address){
-    try{
-        await client.query(queryStringInsertAddress, [address.addressLine1, address.addressLine2, address.postCode, address.city, address.country]);
-        return 'Insert of address was successful';
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _insertAddress(address){
+    return new Promise((resolve, reject)=>{
+        if(isEmptyObject(address)){
+            reject(global.errorMessages.ERROR_INSERT_ADDRESS_MISSING_DATA);
+        }
+
+        client.query(queryStringInsertAddress, [address.addressLine1, address.addressLine2, address.postCode, address.city, address.country])
+            .then(()=>{
+                resolve(global.successMessages.SUCCESS_INSERT_ADDRESS);
+            })
+            .catch((error)=>{
+                reject(error);
+            });
+    });
 }
 /* #endregion */
 
 /* #region employee functions */
-async function _getAllEmployees(){
-    try{
-        let result=await client.query(queryStringSelectAllEmployees);
-        return result.rows;
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _getAllEmployees(){
+    return new Promise((resolve, reject)=>{
+        client.query(queryStringSelectAllEmployees)
+            .then((result)=>{
+                if(result.rows.length==0){
+                    reject(global.errorMessages.ERROR_NO_DATA_FOUND);
+                }
+
+                resolve(result.rows);
+            })
+            .catch((error)=>{
+                reject(error);
+            });
+    });
 }
 
-async function _getEmployeeWithId(id_Employee){
-    try{
-        let result=await client.query(queryStringSelectEmployeeWithId, [id_Employee]);
-        return result.rows;
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _getEmployeeWithId(id_Employee){
+    return new Promise((resolve, reject)=>{
+        if(id_Employee==undefined){
+            reject('empty');
+        }
+
+        client.query(queryStringSelectEmployeeWithId, [id_Employee])
+            .then((result)=>{
+                if(result.rows.length==0){
+                    reject(global.errorMessages.ERROR_NO_DATA_FOUND);
+                }
+
+                resolve(result.rows);
+            })
+            .catch((error)=>{
+                reject(error);
+            })
+    });
 }
 
-async function _getEmployeeWithEmail(email){
+function _getEmployeeWithEmail(email){
     return new Promise((resolve, reject)=>{
         if(email=='' || email==undefined){
             reject(global.errorMessages.ERROR_EMPTY_STRING_OF_EMAIL);
@@ -93,35 +125,77 @@ async function _getEmployeeWithEmail(email){
     });
 }
 
-async function _insertEmployee(employee){
-    try{
-        let result=await client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country]);
-        await client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_Address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber]);
-        return 'Insert of employee was successful';
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _insertEmployee(employee){
+    return new Promise((resolve, reject)=>{
+        if(isEmptyObject(employee)){
+            reject(global.errorMessages.ERROR_INSERT_EMPLOYEE_MISSING_DATA);
+        }
+
+        client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country])
+            .then((result)=> {
+                client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_Address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber])
+                    .then(()=>{
+                        resolve(global.successMessages.SUCCESS_INSERT_EMPLOYEE);
+                    })
+                    .catch((error)=>{
+                        reject(error);
+                    })
+            })
+            .catch((error)=>{
+                reject(error);
+            })
+    });
+
 }
 
-async function _deleteEmployee(id_Employee, id_Camp){
-    try{
-        await client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee]);
-        await client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee]);
-        await client.query(queryStringDeleteEmployeeWithId, [id_Employee]);
-        return 'Delete of employee was successful';
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _deleteEmployee(id_Employee, id_Camp){
+    return new Promise((resolve, reject)=>{
+        if(id_Employee==undefined || id_Camp==undefined){
+            reject(global.errorMessages.ERROR_DELETE_EMPLOYEE_MISSING_DATA);
+        }
+
+        client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee])
+            .then(()=>{
+                client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee])
+                    .then(()=>{
+                        client.query(queryStringDeleteEmployeeWithId, [id_Employee])
+                            .then(()=>{
+                                resolve(global.successMessages.SUCCESS_DELETE_EMPLOYEE);
+                            })
+                            .catch((error)=>{
+                                reject(error);
+                            });
+                    })
+                    .catch((error)=>{
+                        reject(error);
+                    });
+            })
+            .catch((error)=>{
+                reject(error);
+            });
+    });
 }
 
-async function _updateEmployee(id_Employee, employee){
-    try{
-        await client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address]);
-        await client.query(queryStringUpdateEmployee, [employee.forname, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee]);
-        return 'Update of employee was successful';
-    } catch(err){
-        throw new Error('Something unexpected happened: ' +err);
-    }
+function _updateEmployee(id_Employee, employee){
+    return new Promise((resolve, reject)=>{
+        if(id_Employee==undefined, isEmptyObject(employee)){
+            reject(global.errorMessages.ERROR_UPDATE_EMPLOYEE_MISSING_DATA);
+        }
+
+        client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address])
+            .then(()=>{
+                client.query(queryStringUpdateEmployee, [employee.forname, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee])
+                    .then(()=>{
+                        resolve(global.successMessages.SUCCESS_UPDATE_EMPLOYEE);
+                    })
+                    .catch((error)=>{
+                        reject(error);
+                    });
+            })
+            .catch((error)=>{
+                reject(error);
+            });
+    });
 }
 /* #endregion */
 
@@ -185,6 +259,16 @@ async function _insertDocumentType(documentType){
 }
 
 /* #endregion */
+  
+function isEmptyObject(obj) {
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        return false;
+      }
+    }
+
+    return true;
+}
 
 module.exports.connectToDatabase = _connectToDatabase;
 module.exports.getAllEmployees = _getAllEmployees;
