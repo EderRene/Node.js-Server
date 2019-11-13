@@ -21,10 +21,18 @@ app.use('/api/camps', campRouter);
 
 database.connectToDatabase()
   .then((res)=>{
-    console.log('Connected to database');
+    console.log(res);
   })
   .catch((err)=>{
-    console.log('Something unexpected happened: ' + err);
+    console.log(err);
+  });
+
+database.getEmployeeWithEmail('phohen')
+  .then((res)=>{
+    console.log(res);
+  })
+  .catch((err)=>{
+    console.log(err);
   });
 //connectMongo();
 

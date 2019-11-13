@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async(req, res) => {
     try{
-        let result=await database.deleteEmployee(req.params['id']);
+        let result=await database.deleteEmployee(req.params['id'], req.body.id_Camp);
         res.status(200).send(result);
     } catch(err){
         res.status(400).send(err);
