@@ -1,0 +1,31 @@
+#allEmployees {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  #employeetable {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#employeetable td, #employeetable th{
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#employeetable tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#employeetable tr:hover{
+    background-color: #ddd;
+}
+
+#employeetable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}  

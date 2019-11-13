@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="scripts/angular/angular.js"></script>
+    <script src="./ClientLogic.js"></script>
+    <link rel="stylesheet" type="text/css" href="main.css" /> 
+    <title>Sportcamp Salcher - Mitarbeiterverwaltung</title>
+</head>
+
+<body>
+  <div ng-app="myApp" ng-controller="myCtrl">
+    <p>Name: <input type="text" name="name" ng-model="newUser.username" required /></p>
+    <p>Password: <input type="text" name="password" ng-model="newUser.password" required /></p>
+    <button ng-click="createUser()">Register User</button>
+    <button ng-click="loginUser()">Login</button><br>
+    <button ng-click="logoutUser()">Logout</button><br>
+    <p>Currently logged in User: <span ng-bind="displayloggedinUsername">not logged in...</span></p><br>
+
+    <p>Label: <input type="text" name="label" ng-model="newInstrument.label" required /></p>
+    <p>Description: <input type="text" name="status" ng-model="newInstrument.description" required /></p>
+    <p>Price: <input type="number" name="name" ng-model="newInstrument.price" required /></p>
+    <p>numbersOnStock: <input type="number" name="status" ng-model="newInstrument.numbersOnStock" required /></p>
+    <button ng-click="createInstrument()">Add new Instrument</button>
+    <button ng-click="getInstruments()">GetInstruments</button>
+    <button ng-click="getUsers()">GetUsers</button>
+    <table id="instruments">
+        <thead>
+            <th>Label</th>
+            <th>Description</th>
+            <th>price</th>
+            <th>numbersOnStock</th>
+        </thead>
+        <tr ng-repeat="myInstrument in allInstruments">
+            <td>{{myInstrument.label}}</td>
+            <td>{{myInstrument.description}}</td>
+            <td>{{myInstrument.price}}</td>
+            <td>{{myInstrument.numbersOnStock}}</td>
+            <td><button ng-click="deleteInstrument(myInstrument)">Delete</button></td>
+            <td><button ng-click="updateInstrument(myInstrument)">Update</button></td>
+        </tr>
+    </table>
+
+    <table id="users">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Password</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="myuser in allUsers">
+                <td>{{myuser._id}}</td>
+                <td>{{myuser.username}}</td>
+                <td>{{myuser.password}}</td>
+                <td>{{myuser.status}}</td>
+                <td><button ng-click="deleteUser(myuser)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="scripts/angular/angular.js"></script>
+    <script src="./ClientLogic.js"></script>
+    <link rel="stylesheet" type="text/css" href="myStyles.css" /> 
+    <title>Sportcamp Salcher - Mitarbeiterverwaltung</title>
+</head>
+
+<body>
+  <div ng-app="myApp" ng-controller="myCtrl" ng-init="getEmployees()">
+
+
+    <table id="employeetable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Anstellung</th>
+                <th>Telefonnummer</th>
+                <th>Arbeitsort</th>
+                <th>Mitarbeiter bearbeiten</th>
+                <th>Mitarbeiter Infos anzeigen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="myEmployee in allEmployees">
+                <td>{{myEmployee.id_employee}}</td>
+                <td>{{myEmployee.forename}}</td>
+                <td>{{myEmployee.surname}}</td>
+                <td>Mitarbeiter</td>    
+                <td>{{myEmployee.phonenumber}}</td>
+                <td>{{myEmployee.city}}</td>
+                <td><button ng-click="deleteEmployee(myEmployee)">delete</button></td>
+                <td><button ng-click="infoEmployee(myEmployee)">Infos</button></td>
+
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Forename: <input type="text" name="forname" ng-model="newEmployee.forname" required /></p>
+    <p>Surname: <input type="text" name="surname" ng-model="newEmployee.surname" required /></p>
+    <p>DateOfBirth: <input type="text" name="dateOfBirth" ng-model="newEmployee.dateOfBirth" required /></p>
+    <p>Svn: <input type="text" name="svn" ng-model="newEmployee.svn" required /></p>
+    <p>bankAccountNumber: <input type="bankAccountNumber" name="password" ng-model="newEmployee.bankAccountNumber" required /></p>
+    <p>E-Mail: <input type="text" name="email" ng-model="newEmployee.email" required /></p>
+    <p>Phonenumber: <input type="text" name="phonenumber" ng-model="newEmployee.phonenumber" required /></p>
+    
+    <button ng-click="createEmployee()">Register Employee</button>
+    
+</div>
+</body>
+
+</html>
