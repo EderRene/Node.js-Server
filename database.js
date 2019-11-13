@@ -1,9 +1,9 @@
 const {Client} = require('pg');
-const queryStringSelectAllEmployees = "SELECT * FROM employee INNER JOIN address ON employee.id_Address=address.id_Address";
-const queryStringSelectAllCamps = "SELECT * FROM camp INNER JOIN address ON camp.id_Address=address.id_Address";
-const queryStringSelectAllDocumentTypes = "SELECT * FROM documentType";
-const queryStringSelectEmployeeWithId = "SELECT * FROM employee INNER JOIN address ON employee.id_Address=address.id_Address WHERE id_Employee=$1";
-const queryStringSelectCampWithId = "SELECT * FROM camp INNER JOIN address ON camp.id_Address=address.id_Address WHERE id_Camp=$1";
+const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY'), e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
+const queryStringSelectAllCamps = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
+const queryStringSelectAllDocumentTypes = "SELECT id_DocumentType, type FROM documentType";
+const queryStringSelectEmployeeWithId = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY'), e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_Employee=$1";
+const queryStringSelectCampWithId = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address WHERE c.id_Camp=$1";
 const queryStringSelectEmployeeWithEmail = "SELECT id_Employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_Address, svn, uid, bankAccountNumber, email, phoneNumber FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_Address";
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_Employee";
@@ -20,7 +20,7 @@ var Employee = require('./dataModels/employee.js');
 var Address = require('./dataModels/address.js');
 var Camp = require('./dataModels/camp.js');
 
-const client2=new Client({
+const client=new Client({
     user: 'plonig',
     password: 'plonig',
     host: 'salcher.synology.me',
@@ -28,7 +28,7 @@ const client2=new Client({
     database: 'zeitverwaltung'
 });
 
-const client=new Client({
+const client2=new Client({
     user: 'postgres',
     password: 'plonig',
     host: 'localhost',
