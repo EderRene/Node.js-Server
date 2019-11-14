@@ -133,7 +133,7 @@ function _insertEmployee(employee){
 
         client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country])
             .then((result)=> {
-                client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_Address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber])
+                client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber])
                     .then(()=>{
                         resolve(global.successMessages.SUCCESS_INSERT_EMPLOYEE);
                     })
