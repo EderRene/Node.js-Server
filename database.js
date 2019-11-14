@@ -125,7 +125,7 @@ function _getEmployeeWithEmail(email){
     });
 }
 
-function _insertEmployee(employee){
+function _insertEmployee(employee){ 
     return new Promise((resolve, reject)=>{
         if(isEmptyObject(employee)){
             reject(global.errorMessages.ERROR_INSERT_EMPLOYEE_MISSING_DATA);

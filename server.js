@@ -27,13 +27,6 @@ database.connectToDatabase()
     console.log(err);
   });
 
-database.getEmployeeWithEmail('phohen')
-  .then((res)=>{
-    console.log(res);
-  })
-  .catch((err)=>{
-    console.log(err);
-  });
 //connectMongo();
 
 app.listen(port, function () {

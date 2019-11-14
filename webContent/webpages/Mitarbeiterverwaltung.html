@@ -1,0 +1,30 @@
+<div>
+    <h1>Mitarbeiterverwaltung</h1>
+    <table id="employeetable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th>Anstellung</th>
+                <th>Telefonnummer</th>
+                <th>Arbeitsort</th>
+                <th>Mitarbeiter bearbeiten</th>
+                <th>Mitarbeiter Infos anzeigen</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="myEmployee in allEmployees">
+                <td>{{myEmployee.id_employee}}</td>
+                <td>{{myEmployee.forename}}</td>
+                <td>{{myEmployee.surname}}</td>
+                <td>Mitarbeiter</td>
+                <td>{{myEmployee.phonenumber}}</td>
+                <td>{{myEmployee.city}}</td>
+                <td><button ng-click="deleteEmployee(myEmployee)">delete</button></td>
+                <td><button ng-click="infoEmployee(myEmployee)">Infos</button></td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
