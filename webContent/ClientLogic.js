@@ -5,15 +5,17 @@ app.config(function($routeProvider) {
 
       // route for the Userverwaltung page
       .when('/', {
-          templateUrl : 'pages/Mitarbeiterverwaltung.html',
-          controller  : 'mainController'
+          templateUrl : 'webpages/Mitarbeiterverwaltung.html',
+          controller  : 'myCtrl'
       })
 
       // route for the employeeregistration page
-      .when('/about', {
-          templateUrl : 'pages/EmployeeRegistrationPage.html',
-          controller  : 'aboutController'
+      .when('/registerEmployee', {
+          templateUrl : 'webpages/EmployeeRegistrationPage.html',
+          controller  : 'registrationController'
       });
+
+      
 });
 
 app.controller('myCtrl', function ($scope, $http) {
