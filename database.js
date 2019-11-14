@@ -1,3 +1,5 @@
+'use strict';
+
 const {Pool, Client} = require('pg');
 const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY'), e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
 const queryStringSelectAllCamps = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
@@ -36,7 +38,14 @@ const client2=new Client({
     database: 'postgres'
 })
 
-const pool=new Pool();
+var pool=new Pool({
+    database: 'zeitverwaltung',
+    user: 'plonig',
+    password: 'plonig',
+    host: 'salcher.synology.me',
+    port: 5432,
+    ssl: false,
+});
 
 /* #region connection functions */
 function _connectToDatabase(){
@@ -96,13 +105,6 @@ function _insertAddress2(address){
 /* #region employee functions */
 function _getAllEmployees(){
     return new Promise((resolve, reject)=>{
-        pool.connect()
-            .then((client, done)=>{
-
-            })
-            .catch()
-
-
         client.query(queryStringSelectAllEmployees)
             .then((result)=>{
                 if(result.rows.length==0){
@@ -157,27 +159,68 @@ function _getEmployeeWithEmail(email){
     });
 }
 
-function _insertEmployee(employee){ 
+function _insertEmployee(employee){
     return new Promise((resolve, reject)=>{
         if(isEmptyObject(employee)){
             reject(global.errorMessages.ERROR_INSERT_EMPLOYEE_MISSING_DATA);
         }
 
-        client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country])
-            .then((result)=> {
-                client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber])
-                    .then(()=>{
-                        resolve(global.successMessages.SUCCESS_INSERT_EMPLOYEE);
+        pool.connect()
+            .then((client, done)=>{
+                client.query('BEGIN')
+                    .then(()=>{    
+                        client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country])
+                            .then((result)=> {
+                                client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber])
+                                    .then(()=>{
+                                        client.query('COMMIT')
+                                            .then(()=>{
+                                                done();
+                                                resolve(global.successMessages.SUCCESS_INSERT_EMPLOYEE);
+                                            })
+                                            .catch((error)=>{
+                                                client.query('ROLLBACK')
+                                                .then(()=>{
+                                                    done();
+                                                })
+                                                .catch((err)=>{
+                                                    console.error('Error rolling back client', err.stack);
+                                                });
+                                            })
+                                    })
+                                    .catch((error)=>{
+                                        client.query('ROLLBACK')
+                                        .then(()=>{
+                                            done();
+                                        })
+                                        .catch((err)=>{
+                                            console.error('Error rolling back client', err.stack);
+                                        });                                    })
+                            })
+                            .catch((error)=>{
+                                client.query('ROLLBACK')
+                                .then(()=>{
+                                    done();
+                                })
+                                .catch((err)=>{
+                                    console.error('Error rolling back client', err.stack);
+                                });
+                            })
                     })
                     .catch((error)=>{
-                        reject(error);
-                    })
+                        client.query('ROLLBACK')
+                        .then(()=>{
+                            done();
+                        })
+                        .catch((err)=>{
+                            console.error('Error rolling back client', err.stack);
+                        });
+                    });
             })
             .catch((error)=>{
                 reject(error);
-            })
+            });
     });
-
 }
 
 function _deleteEmployee(id_Employee, id_Camp){
@@ -306,21 +349,6 @@ function isEmptyObject(obj) {
     }
 
     return true;
-}
-
-function shouldAbort(err){
-    if(err){
-        console.error('Error in transaction', err.stack);
-        client.query('ROLLBACK')
-            .then(()=>{
-                done();
-            })
-            .catch((err)=>{
-                console.error('Error rolling back client', err.stack);
-            });
-    }
-
-    return !!err;
 }
 
 module.exports.connectToDatabase = _connectToDatabase;
