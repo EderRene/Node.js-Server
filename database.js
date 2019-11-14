@@ -184,7 +184,7 @@ function _updateEmployee(id_Employee, employee){
 
         client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address])
             .then(()=>{
-                client.query(queryStringUpdateEmployee, [employee.forname, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee])
+                client.query(queryStringUpdateEmployee, [employee.forename, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee])
                     .then(()=>{
                         resolve(global.successMessages.SUCCESS_UPDATE_EMPLOYEE);
                     })
