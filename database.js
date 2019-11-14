@@ -1,4 +1,4 @@
-const {Client} = require('pg');
+const {Pool, Client} = require('pg');
 const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY'), e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
 const queryStringSelectAllCamps = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
 const queryStringSelectAllDocumentTypes = "SELECT id_DocumentType, type FROM documentType";
@@ -36,6 +36,8 @@ const client2=new Client({
     database: 'postgres'
 })
 
+const pool=new Pool();
+
 /* #region connection functions */
 function _connectToDatabase(){
     return new Promise((resolve, reject)=>{
@@ -52,6 +54,29 @@ function _connectToDatabase(){
 
 /* #region address functions */
 function _insertAddress(address){
+    pool.connect((err, client, done) => {
+        const shouldAbort = err => {
+          if (err) {
+            console.error('Error in transaction', err.stack)
+            client.query('ROLLBACK', err => {
+              if (err) {
+                console.error('Error rolling back client', err.stack)
+              }
+              done()
+            })
+          }
+          return !!err
+        }
+
+        client.query('BEGIN', err => {
+          if (shouldAbort(err)) return
+            client.query(queryStringInsertAddress, [address.addressLine1, address.addressLine2, address.postCode, address.city, address.country], (err, res) => {
+          })
+        })
+      });
+}
+
+function _insertAddress2(address){
     return new Promise((resolve, reject)=>{
         if(isEmptyObject(address)){
             reject(global.errorMessages.ERROR_INSERT_ADDRESS_MISSING_DATA);
@@ -71,6 +96,13 @@ function _insertAddress(address){
 /* #region employee functions */
 function _getAllEmployees(){
     return new Promise((resolve, reject)=>{
+        pool.connect()
+            .then((client, done)=>{
+
+            })
+            .catch()
+
+
         client.query(queryStringSelectAllEmployees)
             .then((result)=>{
                 if(result.rows.length==0){
@@ -200,22 +232,28 @@ function _updateEmployee(id_Employee, employee){
 /* #endregion */
 
 /* #region camp functions */
-async function _getAllCamps(){
-    try{
-        let res=await client.query(queryStringSelectAllCamps);
-        return res.rows;
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _getAllCamps(){
+    return new Promise((resolve, reject)=>{
+        client.query(queryStringSelectAllCamps)
+            .then((result)=>{
+                resolve(result.rows);
+            })
+            .catch((error)=>{
+                reject(error);
+            });
+    });
 }
 
 async function _getCampWithId(id_Camp){
-    try{
-        let res=await client.query(queryStringSelectCampWithId, [id_Camp]);
-        return res.rows;
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
-    }
+    return new Promise((resolve, reject)=>{
+        client.query(queryStringSelectCampWithId, [id_Camp])
+            .then((result)=>{
+                resolve(result.rows);
+            })
+            .catch((error)=>{
+                reject(error);
+            });
+    });
 }
 
 async function _insertCamp(camp){
@@ -268,6 +306,21 @@ function isEmptyObject(obj) {
     }
 
     return true;
+}
+
+function shouldAbort(err){
+    if(err){
+        console.error('Error in transaction', err.stack);
+        client.query('ROLLBACK')
+            .then(()=>{
+                done();
+            })
+            .catch((err)=>{
+                console.error('Error rolling back client', err.stack);
+            });
+    }
+
+    return !!err;
 }
 
 module.exports.connectToDatabase = _connectToDatabase;
