@@ -24,12 +24,16 @@ var errorMessages={
     ERROR_DATABASE_CONNECTION_LOST: 'ERROR: Database connection lost',
     
     ERROR_EMPTY_STRING_OF_EMAIL: 'ERROR: email was empty',
-    ERROR_NO_DATA_FOUND: 'ERROR: No data could be found in database',
 
-    ERROR_INSERT_ADDRESS_MISSING_DATA: 'ERROR: Insert of address failed, data is missing',
-    ERROR_INSERT_EMPLOYEE_MISSING_DATA: 'ERROR: Insert of employee failed, data is missing',
-    ERROR_DELETE_EMPLOYEE_MISSING_DATA: 'ERROR: Delete of employee failed, data is missing',
-    ERROR_UPDATE_EMPLOYEE_MISSING_DATA: 'ERROR: Update of employee failed, data is missing'
+
+    ERROR_EMPLOYEE_MISSING_DATA: 'ERROR: Employee data is missing',
+    ERROR_EMPLOYEE_NO_DATA_FOUND: 'ERROR: No employee data could be found in database',
+    ERROR_EMPLOYEE_SELECT_ALL_FAILED: 'ERROR: Select of employees failed',
+    ERROR_EMPLOYEE_SELECT_ID_FAILED: 'ERROR: Select of employee with specific id failed',
+    ERROR_EMPLOYEE_SELECT_EMAIL_FAILED: 'ERROR: Select of employee with specifi email failed',
+    ERROR_EMPLOYEE_INSERT_FAILED: 'ERROR: Insert of employee failed',
+    ERROR_EMPLOYEE_DELETE_FAILED: 'ERROR: Delete of employee failed',
+    ERROR_EMPLOYEE_UPDATE_FAILED: 'ERROR: Update of employee failed'
 }
 
 global.successMessages=successMessages;

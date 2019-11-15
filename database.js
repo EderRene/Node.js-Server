@@ -1,6 +1,6 @@
 'use strict';
 
-const {Pool, Client} = require('pg');
+const {Pool} = require('pg');
 const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY'), e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
 const queryStringSelectAllCamps = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
 const queryStringSelectAllDocumentTypes = "SELECT id_DocumentType, type FROM documentType";
@@ -21,24 +21,10 @@ const queryStringDeleteWorksInWithIdCamp = "DELETE FROM worksIn WHERE id_Camp=$1
 var Employee = require('./dataModels/employee.js');
 var Address = require('./dataModels/address.js');
 var Camp = require('./dataModels/camp.js');
+var SuccessMessage = require('./dataModels/successMessage.js');
+var ErrorMessage = require('./dataModels/errorMessage.js');
 
-const client=new Client({
-    user: 'plonig',
-    password: 'plonig',
-    host: 'salcher.synology.me',
-    port: 5432,
-    database: 'zeitverwaltung'
-});
-
-const client2=new Client({
-    user: 'postgres',
-    password: 'plonig',
-    host: 'localhost',
-    port: 5432,
-    database: 'postgres'
-})
-
-var pool=new Pool({
+var pool2=new Pool({
     database: 'zeitverwaltung',
     user: 'plonig',
     password: 'plonig',
@@ -47,230 +33,151 @@ var pool=new Pool({
     ssl: false,
 });
 
-/* #region connection functions */
-function _connectToDatabase(){
-    return new Promise((resolve, reject)=>{
-        client.connect()
-            .then(()=>{
-                resolve(global.successMessages.SUCCESS_DATABASE_CONNECTION_CREATED);
-            })
-            .catch(()=>{
-                reject(global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE);
-            });
-    });
-}
-/* #endregion */
-
-/* #region address functions */
-function _insertAddress(address){
-    pool.connect((err, client, done) => {
-        const shouldAbort = err => {
-          if (err) {
-            console.error('Error in transaction', err.stack)
-            client.query('ROLLBACK', err => {
-              if (err) {
-                console.error('Error rolling back client', err.stack)
-              }
-              done()
-            })
-          }
-          return !!err
-        }
-
-        client.query('BEGIN', err => {
-          if (shouldAbort(err)) return
-            client.query(queryStringInsertAddress, [address.addressLine1, address.addressLine2, address.postCode, address.city, address.country], (err, res) => {
-          })
-        })
-      });
-}
-
-function _insertAddress2(address){
-    return new Promise((resolve, reject)=>{
-        if(isEmptyObject(address)){
-            reject(global.errorMessages.ERROR_INSERT_ADDRESS_MISSING_DATA);
-        }
-
-        client.query(queryStringInsertAddress, [address.addressLine1, address.addressLine2, address.postCode, address.city, address.country])
-            .then(()=>{
-                resolve(global.successMessages.SUCCESS_INSERT_ADDRESS);
-            })
-            .catch((error)=>{
-                reject(error);
-            });
-    });
-}
-/* #endregion */
+const pool=new Pool({
+    database: 'postgres',
+    host: 'localhost',
+    user: 'postgres',
+    password: 'plonig',
+    port: 5432,
+});
 
 /* #region employee functions */
-function _getAllEmployees(){
-    return new Promise((resolve, reject)=>{
-        client.query(queryStringSelectAllEmployees)
-            .then((result)=>{
-                if(result.rows.length==0){
-                    reject(global.errorMessages.ERROR_NO_DATA_FOUND);
-                }
+async function _getAllEmployees(){
+    try{
+        const client = await pool.connect();
 
-                resolve(result.rows);
-            })
-            .catch((error)=>{
-                reject(error);
-            });
-    });
+        try{
+            let result=await client.query(queryStringSelectAllEmployees)
+
+            if(result.rows.length==0){
+                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
+            }
+
+            return result.rows;
+        } catch(error){
+            throw new ErrorMessage(global.errorMessages.ERROR_SELECT_EMPLOYEE_ALL_FAILED);
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
+    }
 }
 
-function _getEmployeeWithId(id_Employee){
-    return new Promise((resolve, reject)=>{
-        if(id_Employee==undefined){
-            reject('empty');
+async function _getEmployeeWithId(id_Employee){
+    try{
+        const client = await pool.connect();
+
+        try{
+            let result=await client.query(queryStringSelectEmployeeWithId, [id_Employee]);
+
+            if(result.rows.length==0){
+                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
+            }
+
+            return result.rows;
+        } catch(error){
+            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_SELECT_ID_FAILED);
+        } finally {
+            client.release();
         }
-
-        client.query(queryStringSelectEmployeeWithId, [id_Employee])
-            .then((result)=>{
-                if(result.rows.length==0){
-                    reject(global.errorMessages.ERROR_NO_DATA_FOUND);
-                }
-
-                resolve(result.rows);
-            })
-            .catch((error)=>{
-                reject(error);
-            })
-    });
+    } catch(error){
+        throw error;
+    }
 }
 
-function _getEmployeeWithEmail(email){
-    return new Promise((resolve, reject)=>{
-        if(email=='' || email==undefined){
-            reject(global.errorMessages.ERROR_EMPTY_STRING_OF_EMAIL);
+async function _getEmployeeWithEmail(email){
+    try{
+        const client = await pool.connect();
+
+        try{
+            let result=await client.query(queryStringSelectEmployeeWithEmail, [email]);
+
+            if(result.rows.length==0){
+                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
+            }
+
+            return new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateofbirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankaccountnumber, result.rows[0].email, result.rows[0].phonenumber);
+        } catch(error){
+            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_SELECT_EMAIL_FAILED);
+        } finally {
+            client.release();
         }
-
-        client.query(queryStringSelectEmployeeWithEmail, [email])
-            .then((result)=>{
-                if(result.rows.length==0){
-                    reject(global.errorMessages.ERROR_NO_DATA_FOUND);
-                }
-
-                resolve(new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateofbirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankaccountnumber, result.rows[0].email, result.rows[0].phonenumber));
-            })
-            .catch((error)=>{
-                reject(error);
-            })
-    });
+    } catch(error){
+        throw error;
+    }
 }
 
-function _insertEmployee(employee){
-    return new Promise((resolve, reject)=>{
-        if(isEmptyObject(employee)){
-            reject(global.errorMessages.ERROR_INSERT_EMPLOYEE_MISSING_DATA);
-        }
+async function _insertEmployee(employee){
+    try{
+        const client = await pool.connect();
 
-        pool.connect()
-            .then((client, done)=>{
-                client.query('BEGIN')
-                    .then(()=>{    
-                        client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country])
-                            .then((result)=> {
-                                client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, result.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber])
-                                    .then(()=>{
-                                        client.query('COMMIT')
-                                            .then(()=>{
-                                                done();
-                                                resolve(global.successMessages.SUCCESS_INSERT_EMPLOYEE);
-                                            })
-                                            .catch((error)=>{
-                                                client.query('ROLLBACK')
-                                                .then(()=>{
-                                                    done();
-                                                })
-                                                .catch((err)=>{
-                                                    console.error('Error rolling back client', err.stack);
-                                                });
-                                            })
-                                    })
-                                    .catch((error)=>{
-                                        client.query('ROLLBACK')
-                                        .then(()=>{
-                                            done();
-                                        })
-                                        .catch((err)=>{
-                                            console.error('Error rolling back client', err.stack);
-                                        });                                    })
-                            })
-                            .catch((error)=>{
-                                client.query('ROLLBACK')
-                                .then(()=>{
-                                    done();
-                                })
-                                .catch((err)=>{
-                                    console.error('Error rolling back client', err.stack);
-                                });
-                            })
-                    })
-                    .catch((error)=>{
-                        client.query('ROLLBACK')
-                        .then(()=>{
-                            done();
-                        })
-                        .catch((err)=>{
-                            console.error('Error rolling back client', err.stack);
-                        });
-                    });
-            })
-            .catch((error)=>{
-                reject(error);
-            });
-    });
+        try{
+            if(isEmptyObject(employee)){
+                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
+            }
+            
+            await client.query('BEGIN');
+            let resultAddress=await client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country]);
+            let resultEmployee=await client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, resultAddress.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber]);
+            await client.query('COMMIT');
+            return new SuccessMessage(global.successMessages.SUCCESS_INSERT_EMPLOYEE, {'id_Address': resultAddress.rows[0].id_address, 'id_Employee':resultEmployee.rows[0].id_employee});
+        } catch(error){
+            await client.query('ROLLBACK');
+            throw new ErrorMesssage(global.errorMessages.ERROR_EMPLOYEE_INSERT_FAILED);
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
+    }
 }
 
-function _deleteEmployee(id_Employee, id_Camp){
-    return new Promise((resolve, reject)=>{
-        if(id_Employee==undefined || id_Camp==undefined){
-            reject(global.errorMessages.ERROR_DELETE_EMPLOYEE_MISSING_DATA);
-        }
+async function _deleteEmployee(id_Employee, id_Camp){
+    try{
+        const client = await pool.connect();
 
-        client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee])
-            .then(()=>{
-                client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee])
-                    .then(()=>{
-                        client.query(queryStringDeleteEmployeeWithId, [id_Employee])
-                            .then(()=>{
-                                resolve(global.successMessages.SUCCESS_DELETE_EMPLOYEE);
-                            })
-                            .catch((error)=>{
-                                reject(error);
-                            });
-                    })
-                    .catch((error)=>{
-                        reject(error);
-                    });
-            })
-            .catch((error)=>{
-                reject(error);
-            });
-    });
+        try{
+            await client.query('BEGIN');
+            await client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee]);
+            await client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee]);
+            await client.query(queryStringDeleteEmployeeWithId, [id_Employee]);
+            await client.query('COMMIT');
+            return new SuccessMessage(global.successMessages.SUCCESS_DELETE_EMPLOYEE);
+        } catch(error){
+            await client.query('ROLLBACK');
+            throw new ErrorMessage(global.errorMessages.ERORR_EMPLOYEE_DELETE_FAILED);
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
+    }
 }
 
-function _updateEmployee(id_Employee, employee){
-    return new Promise((resolve, reject)=>{
-        if(id_Employee==undefined, isEmptyObject(employee)){
-            reject(global.errorMessages.ERROR_UPDATE_EMPLOYEE_MISSING_DATA);
-        }
+async function _updateEmployee(id_Employee, employee){
+    try{
+        const client = await pool.connect();
 
-        client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address])
-            .then(()=>{
-                client.query(queryStringUpdateEmployee, [employee.forename, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee])
-                    .then(()=>{
-                        resolve(global.successMessages.SUCCESS_UPDATE_EMPLOYEE);
-                    })
-                    .catch((error)=>{
-                        reject(error);
-                    });
-            })
-            .catch((error)=>{
-                reject(error);
-            });
-    });
+        try{
+            if(isEmptyObject(employee)){
+                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
+            }
+            
+            await client.query('BEGIN');
+            await client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address])
+            await client.query(queryStringUpdateEmployee, [employee.forename, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee])
+            await client.query('COMMIT');
+            return new SuccessMessage(global.successMessages.SUCCESS_UPDATE_EMPLOYEE);
+        } catch(error){
+            await client.query('ROLLBACK');
+            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_UPDATE_FAILED);
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
+    }
 }
 /* #endregion */
 
@@ -351,7 +258,15 @@ function isEmptyObject(obj) {
     return true;
 }
 
-module.exports.connectToDatabase = _connectToDatabase;
+function rollback(client){
+    client.query('ROLLBACK')
+    .then(()=>{
+        client.release();
+    })
+    .catch(()=>{
+    });
+}
+
 module.exports.getAllEmployees = _getAllEmployees;
 module.exports.getAllCamps = _getAllCamps;
 module.exports.getAllDocumentTypes = _getAllDocumentTypes;
@@ -362,6 +277,5 @@ module.exports.insertEmployee = _insertEmployee;
 module.exports.deleteEmployee = _deleteEmployee;
 module.exports.deleteCamp = _deleteCamp;
 module.exports.updateEmployee = _updateEmployee;
-module.exports.insertAddress = _insertAddress;
 module.exports.insertCamp = _insertCamp;
 module.exports.insertDocumentType = _insertDocumentType;

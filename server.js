@@ -19,14 +19,6 @@ app.use(express.static(webContentDirectory));
 app.use('/api/employees', employeeRouter);
 app.use('/api/camps', campRouter);
 
-database.connectToDatabase()
-  .then((res)=>{
-    console.log(res);
-  })
-  .catch((err)=>{
-    console.log(err);
-  });
-
 //connectMongo();
 
 app.listen(port, function () {
