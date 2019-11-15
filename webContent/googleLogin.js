@@ -21,7 +21,7 @@ function init() {
             scope: 'profile email'
         });
         googleAuth.currentUser.listen(onSignUpSuccess);
-    }); 
+    });
     renderButton();
 }
 
@@ -32,11 +32,12 @@ function onSignUpSuccess(googleUser) {
 
     var profile = googleUser.getBasicProfile();
     console.log(profile);
-    
+
     // The ID token you need to pass to your backend:
     var id_token = googleUser.getAuthResponse().id_token;
-    console.log("ID Token: " + id_token);
-    alert("ID Token: " + id_token);
+
+    alert("ID Token: " + id_token); 
+
     // Retrieve the Google account data
     gapi.client.load('oauth2', 'v2', function () {
         var request = gapi.client.oauth2.userinfo.get({
@@ -47,7 +48,7 @@ function onSignUpSuccess(googleUser) {
             var profileHTML = '<h3>Welcome ' + resp.given_name + '! <a href="javascript:void(0);" onclick="signOut();">Sign out</a></h3>';
             profileHTML += '<img src="' + resp.picture + '"/><p><b>Google ID: </b>' + resp.id + '</p><p><b>Name: </b>' + resp.name + '</p><p><b>Email: </b>' + resp.email + '</p><p><b>Gender: </b>' + resp.gender + '</p><p><b>Locale: </b>' + resp.locale + '</p><p><b>Google Profile:</b> <a target="_blank" href="' + resp.link + '">click to view profile</a></p>';
             document.getElementsByClassName("userContent")[0].innerHTML = profileHTML;
-
+          
             document.getElementById("gSignIn").style.display = "none";
             document.getElementsByClassName("userContent")[0].style.display = "block";
         });
@@ -55,7 +56,7 @@ function onSignUpSuccess(googleUser) {
 }
 
 // Sign-in failure callback
-function onSignUpFailure(error){
+function onSignUpFailure(error) {
     alert(error);
 }
 // Sign out the user
