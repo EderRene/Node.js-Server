@@ -1,20 +1,20 @@
-<div>
-    <h1>Mitarbeiterverwaltung</h1>
-    <table id="employeetable">
-        <thead>
+<div class="table-responsive-md " id="employeetablediv">
+    <h2>Mitarbeiterverwaltung</h2>
+    <table class="table table-hover table-bordered table-striped" id="employeetable">
+        <thead class="thead-dark">
             <tr>
-                <th>ID</th>
-                <th>Vorname</th>
-                <th>Nachname</th>
-                <th>Anstellung</th>
-                <th>Telefonnummer</th>
-                <th>Arbeitsort</th>
-                <th>Mitarbeiter bearbeiten</th>
-                <th>Mitarbeiter Infos anzeigen</th>
+                <th scope="col">ID</th>
+                <th scope="col">Vorname</th>
+                <th scope="col">Nachname</th>
+                <th scope="col">Anstellung</th>
+                <th scope="col">Telefonnummer</th>
+                <th scope="col">Arbeitsort</th>
+                <th scope="col">Mitarbeiter bearbeiten</th>
+                <th scope="col">Mitarbeiter Infos anzeigen</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="myEmployee in allEmployees">
+            <tr scope="row" ng-repeat="myEmployee in allEmployees">
                 <td>{{myEmployee.id_employee}}</td>
                 <td>{{myEmployee.forename}}</td>
                 <td>{{myEmployee.surname}}</td>
@@ -23,7 +23,6 @@
                 <td>{{myEmployee.city}}</td>
                 <td><button ng-click="deleteEmployee(myEmployee)">delete</button></td>
                 <td><button ng-click="infoEmployee(myEmployee)">Infos</button></td>
-
             </tr>
         </tbody>
     </table>
