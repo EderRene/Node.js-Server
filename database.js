@@ -258,15 +258,6 @@ function isEmptyObject(obj) {
     return true;
 }
 
-function rollback(client){
-    client.query('ROLLBACK')
-    .then(()=>{
-        client.release();
-    })
-    .catch(()=>{
-    });
-}
-
 module.exports.getAllEmployees = _getAllEmployees;
 module.exports.getAllCamps = _getAllCamps;
 module.exports.getAllDocumentTypes = _getAllDocumentTypes;
