@@ -21,21 +21,20 @@ app.config(function($routeProvider) {
 app.controller('myCtrl', function ($scope, $http) {
 
   $scope.newEmployee = {
-    'id_employee': 4,
-    'forename': 'Max',
-    'surname': 'Mustermann',
+    'id_employee': null,
+    'forename': null,
+    'surname': null,
     'dateOfBirth': null,
-    'id_Address': 1,
-    'svn': "0123945",
+    'svn': null,
     'uid': null,
-    'bankAccountNumber': '1234455',
-    'email': '@gmail',
-    'phonenumber': '2030404',
-    'addressLine1': "Fuernitz",
+    'bankAccountNumber': null,
+    'email': null,
+    'phonenumber': null,
+    'addressLine1': null,
     'addressLine2': null,
-    'postCode': 9034,
-    'city': 'fritz',
-    'country': 'Austria'
+    'postCode': null,
+    'city': '',
+    'country': ''
   };
 
   $scope.getEmployees = function () {
@@ -50,6 +49,7 @@ app.controller('myCtrl', function ($scope, $http) {
   $scope.createEmployee = function () {
     $http.post('/api/employees', $scope.newEmployee)
       .then(function (response) {
+      //  $scope.newEmployee.id_employee=1;        
         $scope.allEmployees.push($scope.newEmployee);
       }, function (response) {
         console.error(response);

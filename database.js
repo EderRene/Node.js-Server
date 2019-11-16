@@ -44,7 +44,7 @@ const pool=new Pool({
 /* #region employee functions */
 async function _getAllEmployees(){
     try{
-        const client = await pool.connect();
+        const client = await pool2.connect();
 
         try{
             let result=await client.query(queryStringSelectAllEmployees)
@@ -66,7 +66,7 @@ async function _getAllEmployees(){
 
 async function _getEmployeeWithId(id_Employee){
     try{
-        const client = await pool.connect();
+        const client = await pool2.connect();
 
         try{
             let result=await client.query(queryStringSelectEmployeeWithId, [id_Employee]);
@@ -88,7 +88,7 @@ async function _getEmployeeWithId(id_Employee){
 
 async function _getEmployeeWithEmail(email){
     try{
-        const client = await pool.connect();
+        const client = await pool2.connect();
 
         try{
             let result=await client.query(queryStringSelectEmployeeWithEmail, [email]);
@@ -110,7 +110,7 @@ async function _getEmployeeWithEmail(email){
 
 async function _insertEmployee(employee){
     try{
-        const client = await pool.connect();
+        const client = await pool2.connect();
 
         try{
             if(isEmptyObject(employee)){
@@ -135,7 +135,7 @@ async function _insertEmployee(employee){
 
 async function _deleteEmployee(id_Employee, id_Camp){
     try{
-        const client = await pool.connect();
+        const client = await pool2.connect();
 
         try{
             await client.query('BEGIN');
@@ -157,7 +157,7 @@ async function _deleteEmployee(id_Employee, id_Camp){
 
 async function _updateEmployee(id_Employee, employee){
     try{
-        const client = await pool.connect();
+        const client = await pool2.connect();
 
         try{
             if(isEmptyObject(employee)){
