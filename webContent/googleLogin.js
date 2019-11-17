@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 
 function renderButton() {
-    gapi.signin2.render('gSignIn', {
+    gapi.signin2.render('my-signin2', {
         'scope': 'profile email',
         'width': 240,
         'height': 50,
@@ -18,7 +18,7 @@ function init() {
         googleAuth = gapi.auth2.init({
             client_id: '271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com',
             fetch_basic_profile: false,
-            scope: 'profile email'
+            scope: 'profile email'  
         });
         googleAuth.currentUser.listen(onSignUpSuccess);
     });

@@ -1,4 +1,4 @@
-<form id="registerPageForm" class="needs-validation">
+<form ng-submit="createEmployee()" id="registerPageForm" class="needs-validation">
     <h2>Mitarbeiter anlegen</h2>
     <div class="form-row">
         <div class="form-group col">
@@ -16,7 +16,6 @@
             <label for="dateOfBirth">Geburtsdatum</label>
             <input type="date" class="form-control" id="dateOfBirth" placeholder="19.09.1999"
                 ng-model="newEmployee.dateOfBirth" required>
-
         </div>
     </div>
 
@@ -46,8 +45,8 @@
 
     <div class="form-row">
         <div class="form-group col">
-            <label for="zipcode">Postleitzahl</label>
-            <input type="text" class="form-control" id="zipcode" placeholder="9632" ng-model="newEmployee.zipcode"
+            <label for="postCode">Postleitzahl</label>
+            <input type="text" class="form-control" id="postCode" placeholder="9632" ng-model="newEmployee.postCode"
                 required>
         </div>
 
@@ -91,6 +90,28 @@
         <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
         <label class="form-check-label" for="exampleCheck1">Alles Korrekt?</label>
     </div>
-    <button ng-click="createEmployee()" type="submit" class="btn btn-primary">Mitarbeiter anlegen</button>
+
+    <button type="submit" class="btn btn-primary">Mitarbeiter anlegen</button>
 
 </form>
+
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>

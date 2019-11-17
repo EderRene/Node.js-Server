@@ -1,25 +1,25 @@
 var app = angular.module('myApp', ['ngRoute']);
 
-app.config(function($routeProvider) {
+
+app.config(function ($routeProvider) {
   $routeProvider
 
-      // route for the Userverwaltung page
-      .when('/', {
-          templateUrl : 'webpages/Mitarbeiterverwaltung.html',
-          controller  : 'myCtrl'
-      })
+    // route for the Userverwaltung page
+    .when('/', {
+      templateUrl: 'webpages/Mitarbeiterverwaltung.html',
+      controller: 'myCtrl'
+    })
 
-      // route for the employeeregistration page
-      .when('/registerEmployee', {
-          templateUrl : 'webpages/EmployeeRegistrationPage.html',
-          controller  : 'registrationController'
-      });
+    // route for the employeeregistration page
+    .when('/registerEmployee', {
+      templateUrl: 'webpages/EmployeeRegistrationPage.html',
+      controller: 'registrationController'
+    });
 
-      
+
 });
 
 app.controller('myCtrl', function ($scope, $http) {
-
   $scope.newEmployee = {
     'id_employee': null,
     'forename': null,
@@ -33,8 +33,8 @@ app.controller('myCtrl', function ($scope, $http) {
     'addressLine1': null,
     'addressLine2': null,
     'postCode': null,
-    'city': '',
-    'country': ''
+    'city': null,
+    'country': null
   };
 
   $scope.getEmployees = function () {
@@ -49,7 +49,7 @@ app.controller('myCtrl', function ($scope, $http) {
   $scope.createEmployee = function () {
     $http.post('/api/employees', $scope.newEmployee)
       .then(function (response) {
-      //  $scope.newEmployee.id_employee=1;        
+        //  $scope.newEmployee.id_employee=1;        
         $scope.allEmployees.push($scope.newEmployee);
       }, function (response) {
         console.error(response);
@@ -69,8 +69,6 @@ app.controller('myCtrl', function ($scope, $http) {
   };
 });
 
-app.controller('registrationController', function($scope) {
+app.controller('registrationController', function ($scope) {
   $scope.message = 'Look! I am a page.';
 });
-
-

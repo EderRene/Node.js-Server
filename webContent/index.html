@@ -3,11 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="google-signin-client_id"
+        content="271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="scripts/angular/angular.min.js"></script>
     <script src="scripts/angular/angular-route.js"></script>
+    <script src="scripts/jQuery/jquery-3.4.1.js"></script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
     <script src="./ClientLogic.js"></script>
+    <script src="./googleLogin.js"></script>
+    
     <link rel="stylesheet" type="text/css" href="myStyles.css" />
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
@@ -29,10 +37,35 @@
                                 class="fa fa-home"></span> Administrator</a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-home"></span> Verwaltung</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-sign-in"></span> Login</a></li>
+                    <li class="nav-item"><a class="btn btn-default navbar-btn" data-toggle="modal"
+                            data-target="#exampleModalCenter" type="button"><span class="fa fa-sign-in"></span>
+                            Login</a>
+                    </li>
                 </ul>
             </div>
         </nav>
+
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Login mit:</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="my-signin2"></div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div id="main">
             <div ng-view></div>
@@ -40,5 +73,6 @@
 
     </div>
 </body>
+
 
 </html>
