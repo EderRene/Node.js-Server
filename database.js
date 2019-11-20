@@ -9,10 +9,11 @@ const queryStringSelectCampWithId = "SELECT c.id_Camp, c.id_Address, c.name, c.i
 const queryStringSelectEmployeeWithEmail = "SELECT id_Employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_Address, svn, uid, bankAccountNumber, email, phoneNumber FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_Address";
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_Employee";
-const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3)';
+const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3) RETURNING id_Camp';
 const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1)";
 const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateOfBirth=$3, svn=$4, uid=$5, bankAccountNumber=$6, email=$7, phoneNumber=$8 WHERE id_Employee=$9";
 const queryStringUpdateAddress = "UPDATE address SET addressLine1=$1, addressLine2=$2, postCode=$3, city=$4, country=$5 WHERE id_Address=$6";
+const queryStringUpdateCamp = "UPDATE camp SET name=$1 id_Leader=$2 WHERE id_Camp=$3";
 const queryStringUpdateCampLeader = "UPDATE camp SET id_Leader=$1 WHERE id_Camp=$2 AND id_Leader=$3";
 const queryStringDeleteEmployeeWithId = "DELETE FROM employee WHERE id_Employee=$1";
 const queryStringDeleteCampWithId = "DELETE FROM camp WHERE id_Camp=$1";
@@ -182,7 +183,7 @@ async function _updateEmployee(id_Employee, employee){
 /* #endregion */
 
 /* #region camp functions */
-function _getAllCamps(){
+async function _getAllCamps(){
     try{
         const client = await pool.connect();
 
@@ -205,34 +206,95 @@ function _getAllCamps(){
 }
 
 async function _getCampWithId(id_Camp){
-    return new Promise((resolve, reject)=>{
-        client.query(queryStringSelectCampWithId, [id_Camp])
-            .then((result)=>{
-                resolve(result.rows);
-            })
-            .catch((error)=>{
-                reject(error);
-            });
-    });
+    try{
+        const client = await pool.connect();
+
+        try{
+            let result=await client.query(queryStringSelectCampWithId, [id_Camp]);
+
+            if(result.rows.length==0){
+                throw new ErrorMessage('ERROR');
+            }
+
+            return result.rows;
+        } catch(error){
+            throw new ErrorMessage('ERROR');
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
+    }
 }
 
 async function _insertCamp(camp){
     try{
-        let result=await client.query(queryStringInsertAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country]);
-        await client.query(queryStringInsertCamp, [result.rows[0].id_address, camp.name, camp.id_Leader]);
-        return 'Insert of camp was successful';
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
+        const client = await pool.connect();
+
+        try{
+            if(isEmptyObject(camp)){
+                throw new ErrorMessage('ERROR');
+            }
+            
+            await client.query('BEGIN');
+            let resultAddress=await client.query(queryStringInsertAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country]);
+            let resultCamp=await client.query(queryStringInsertCamp, [resultAddress.rows[0].id_address, camp.name, camp.id_Leader]);
+            await client.query('COMMIT');
+            return new SuccessMessage(global.successMessages.SUCCESS_INSERT_CAMP, {'id_Address': resultAddress.rows[0].id_address, 'id_Employee': resultCamp.rows[0].id_camp});
+        } catch(error){
+            await client.query('ROLLBACK');
+            throw new ErrorMesssage('ERROR');
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
     }
 }
 
 async function _deleteCamp(id_Camp){
     try{
-        await client.query(queryStringDeleteWorksInWithIdCamp, [id_Camp]);
-        await client.query(queryStringDeleteCampWithId, [id_Camp]);
-        return 'Delete of camp was successful';
-    } catch(err){
-        throw new Error('Something unexpected happened: ' + err);
+        const client = await pool.connect();
+
+        try{
+            await client.query('BEGIN');
+            await client.query(queryStringDeleteWorksInWithIdCamp, [id_Camp]);
+            await client.query(queryStringDeleteCampWithId, [id_Camp]);
+            await client.query('COMMIT');
+            return new SuccessMessage(global.successMessages.SUCCESS_DELETE_CAMP);
+        } catch(error){
+            await client.query('ROLLBACK');
+            throw new ErrorMessage('ERROR');
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
+    }
+}
+
+async function _updateCamp(id_Camp, camp){
+    try{
+        const client = await pool.connect();
+
+        try{
+            if(isEmptyObject(camp)){
+                throw new ErrorMessage('ERROR');
+            }
+            
+            await client.query('BEGIN');
+            await client.query(queryStringUpdateAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country, camp.id_Address])
+            await client.query(queryStringUpdateCamp, [camp.name, camp.id_Leader]);
+            await client.query('COMMIT');
+            return new SuccessMessage(global.successMessages.SUCCESS_UPDATE_CAMP);
+        } catch(error){
+            await client.query('ROLLBACK');
+            throw new ErrorMessage('ERROR');
+        } finally {
+            client.release();
+        }
+    } catch(error){
+        throw error;
     }
 }
 /* #endregion */
@@ -275,8 +337,9 @@ module.exports.getEmployeeWithId = _getEmployeeWithId;
 module.exports.getCampWithId = _getCampWithId;
 module.exports.getEmployeeWithEmail = _getEmployeeWithEmail;
 module.exports.insertEmployee = _insertEmployee;
+module.exports.insertCamp = _insertCamp;
+module.exports.insertDocumentType = _insertDocumentType;
 module.exports.deleteEmployee = _deleteEmployee;
 module.exports.deleteCamp = _deleteCamp;
 module.exports.updateEmployee = _updateEmployee;
-module.exports.insertCamp = _insertCamp;
-module.exports.insertDocumentType = _insertDocumentType;
+module.exports.updateCamp = _updateCamp;
