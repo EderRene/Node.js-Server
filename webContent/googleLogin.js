@@ -21,8 +21,6 @@ function init() {
     renderButton();
 }
 
-
-
 // Sign-in success callback
 function onSignUpSuccess(googleUser) {
 

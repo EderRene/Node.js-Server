@@ -18,6 +18,7 @@ function authenticate(req, res, next) {
     if (loggedInUser == undefined) {
         res.status(401).send('Unauthorized');
     }
+    
     req.login = loggedInUser;
     next();
 }
@@ -26,12 +27,11 @@ function checkGoogleToken(req, res, token) {
 
     axios.get('https://oauth2.googleapis.com/tokeninfo?id_token=' + token)
 
-        .then(response => {
+        .then(async function callback(response) {
 
             if (response.status !== 200 || response.data.aud !== '271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com') {
 
                 var email = response.data.email;
-
                 var employee = await database.getEmployeeWithEmail(email);
 
                 if (employee != undefined) {         //schauen ob ein user diese email hat, wenn nicht weg wenn ja dann in tokentable 
