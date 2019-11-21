@@ -89,15 +89,29 @@ app.controller('myCtrl', function ($scope, $http, $location,CurrentEmployee) {
 app.controller('registrationController', function ($scope,CurrentEmployee,$location) {
   $scope.message = 'Look! I am a page.';
 });
+
 app.controller('editController', function ($scope,CurrentEmployee,$location) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
+
+  $scope.updateEmployee = function () {
+    $http.put('/api/employees/' + currentEmployee.id_employee)
+      .then(function success(response) {
+        $scope.allEmployees.splice($scope.allEmployees.indexOf(currentEmployee), 1);
+        $scope.allEmployees.push($scope.currentEmployee);
+      }, function error(response) {
+        console.log("error");
+      });
+  };
+  $scope.cancelView = function (){
+    $location.path('/');
+  };
 });
 
 app.controller('informationController', function ($scope,CurrentEmployee,$location) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
   $scope.editEmployee = function (employee){
-    $location.path('/registerEmployee');
+    $location.path('/editEmployee');
   };
   $scope.cancelView = function (){
      $location.path('/');

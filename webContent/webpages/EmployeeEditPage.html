@@ -1,72 +1,72 @@
 <form ng-submit="updateEmployee()" id="editPageForm" class="needs-validation">
-    <h2>Mitarbeiter anlegen</h2>
+    <h2>Mitarbeiter {{currentEmployee.forename}} {{currentEmployee.surname}} bearbeiten</h2>
     <div class="form-row">
         <div class="form-group col">
             <label for="forename">Vorname</label>
-            <input type="text" class="form-control" id="forename" placeholder="{{currentEmployee.forename}}" ng-model="newEmployee.forename"
+            <input type="text" class="form-control" id="forename"  ng-model="currentEmployee.forename"
                 required>
         </div>
         <div class="form-group col">
             <label for="surname">Nachname</label>
-            <input type="text" class="form-control" id="surname" placeholder="{{currentEmployee.surname}}" ng-model="newEmployee.surname"
+            <input type="text" class="form-control" id="surname"  ng-model="currentEmployee.surname"
                 required>
 
         </div>
         <div class="form-group col">
             <label for="dateOfBirth">Geburtsdatum</label>
-            <input type="date" class="form-control" id="dateOfBirth" placeholder="{{currentEmployee.dateofbirth}}"
-                ng-model="newEmployee.dateOfBirth" required>
+            <input type="date" class="form-control" id="dateOfBirth" 
+                ng-model="currentEmployee.dateOfBirth" required>
         </div>
     </div>
 
     <div class="form-row">
         <div class="form-group col">
             <label for="svn">Sozialversicherungsnummer</label>
-            <input type="number" class="form-control" id="svn" placeholder="{{currentEmployee.svn}}" ng-model="newEmployee.svn"
+            <input type="number" class="form-control" id="svn" ng-model="currentEmployee.svn"
                 required>
         </div>
         <div class="form-group col">
             <label for="phonenumber">Telefonnummer</label>
-            <input type="text" class="form-control" id="phonenumber" placeholder="0660 5097233"
-                ng-model="newEmployee.phonenumber" required>
+            <input type="text" class="form-control" id="phonenumber" 
+                ng-model="currentEmployee.phonenumber" required>
         </div>
     </div>
     <div class="form-group">
         <label for="addressLine1">Straße und Hausnummer</label>
-        <input type="text" class="form-control" id="addressLine1" placeholder="Kirchbach 99"
-            ng-model="newEmployee.addressLine1" required>
+        <input type="text" class="form-control" id="addressLine1" 
+            ng-model="currentEmployee.addressLine1" required>
     </div>
 
     <div class="form-group">
         <label for="addressLine2">Adresszusatz</label>
-        <input type="text" class="form-control" id="addressLine2" placeholder="2 Stockwerk"
-            ng-model="newEmployee.addressLine2" >
+        <input type="text" class="form-control" id="addressLine2" 
+            ng-model="currentEmployee.addressLine2" >
     </div>
 
     <div class="form-row">
         <div class="form-group col">
             <label for="postCode">Postleitzahl</label>
-            <input type="number" class="form-control" id="postCode" placeholder="9632" ng-model="newEmployee.postCode"
+            <input type="number" class="form-control" id="postCode"  ng-model="currentEmployee.postCode"
                 required>
         </div>
 
         <div class="form-group col">
             <label for="city">Stadt</label>
-            <input type="text" class="form-control" id="city" placeholder="Kirchbach" ng-model="newEmployee.city"
+            <input type="text" class="form-control" id="city" ng-model="currentEmployee.city"
                 required>
         </div>
     </div>
 
     <div class="form-group">
         <label for="country">Land</label>
-        <input type="text" class="form-control" id="country" placeholder="Österreich" ng-model="newEmployee.country"
+        <input type="text" class="form-control" id="country"  ng-model="currentEmployee.country"
             required>
     </div>
 
     <div class="form-group">
         <label for="email">Email-Adresse</label>
-        <input type="email" class="form-control" id="email" placeholder="name@example.com" name="forename"
-            ng-model="newEmployee.email" required>
+        <input type="email" class="form-control" id="email"  name="forename"
+            ng-model="currentEmployee.email" required>
         <small id="emailHelpBlock" class="form-text text-muted">
             Die Email MUSS eine GMAIL-Adresse sein.
         </small>
@@ -76,11 +76,11 @@
         <div class="form-group col">
             <label for="bankAccountNumber">IBAN</label>
             <input type="text" class="form-control" id="bankAccountNumber" placeholder="AT0664651315"
-                ng-model="newEmployee.bankAccountNumber" required>
+                ng-model="currentEmployee.bankAccountNumber" required>
         </div>
         <div class="form-group col">
             <label for="uid">UID</label>
-            <input type="text" class="form-control" id="uid" placeholder="4564521" ng-model="newEmployee.uid">
+            <input type="text" class="form-control" id="uid" placeholder="4564521" ng-model="currentEmployee.uid">
         </div>
     </div>
 
@@ -89,7 +89,8 @@
         <label class="form-check-label" for="exampleCheck1">Alles Korrekt?</label>
     </div>
 
-    <button type="submit" class="btn btn-primary">Mitarbeiter anlegen</button>
+    <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+    <button type="button" ng-click ="cancelView()" class="btn btn-primary">Cancel</button>
 
 </form>
 
