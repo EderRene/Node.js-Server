@@ -9,6 +9,7 @@ function renderButton() {
         'onfailure': onSignUpFailure
     });
 }
+
 function init() {
     gapi.load('auth2', () => {
         googleAuth = gapi.auth2.init({
