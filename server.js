@@ -18,6 +18,7 @@ const app = express();
 app.use(utils.centralErrorHandler);
 app.use(bodyParser.json());
 app.use(express.static(webContentDirectory));
+
 app.post('/api/login', security.login);
 
 //app.use(security.authenticate);
