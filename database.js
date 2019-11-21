@@ -111,7 +111,7 @@ async function _insertEmployee(employee) {
         try {
             await client.query('BEGIN');
             var newDate = new Date(employee.dateOfBirth);
-            var dateString = newDate.getDay() + "." + (newDate.getMonth()+1) + "." + newDate.getFullYear();
+            var dateString = newDate.getDate() + "." + (newDate.getMonth()+1) + "." + newDate.getFullYear();
 
             let resultAddress = await client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country]);
             let resultEmployee = await client.query(queryStringInsertEmployee, [employee.forename, employee.surname, dateString, resultAddress.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phonenumber]);
