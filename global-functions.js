@@ -15,8 +15,11 @@ var successMessages={
     SUCCESS_DATABASE_CONNECTION_CREATED: 'SUCCESS: Database connection could have been established',
     SUCCESS_INSERT_ADDRESS: 'SUCCESS: Insert of address was successful',
     SUCCESS_INSERT_EMPLOYEE: 'SUCCESS: Insert of employee was successful',
+    SUCCESS_INSERT_CAMP: 'SUCCESS: Insert of camp was successful',
     SUCCESS_DELETE_EMPLOYEE: 'SUCCESS: Delete of employee was successful',
-    SUCCESS_UPDATE_EMPLOYEE: 'SUCCESS: Update of employee was successful'
+    SUCCESS_DELETE_CAMP: 'SUCCESS: Delete of employee was successful',
+    SUCCESS_UPDATE_EMPLOYEE: 'SUCCESS: Update of employee was successful',
+    SUCCESS_UPDATE_CAMP: 'SUCCESS: Update of employee was successful'
 }
 
 var errorMessages={

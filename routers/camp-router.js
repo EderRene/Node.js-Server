@@ -42,7 +42,7 @@ router.delete('/:id', async(req, res) => {
 
 router.put('/:id', async (req, res)=>{
     try{
-        let result=await database.updateEmployee(req.params['id'], req.body);
+        let result=await database.updateCamp(req.params['id'], req.body);
         res.status(200).send(result);
     } catch(err){
         res.status(400).send(err);
