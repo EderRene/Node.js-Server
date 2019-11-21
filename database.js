@@ -25,7 +25,7 @@ var Camp = require('./dataModels/camp.js');
 var SuccessMessage = require('./dataModels/successMessage.js');
 var ErrorMessage = require('./dataModels/errorMessage.js');
 
-var pool2 = new Pool({
+var pool = new Pool({
     database: 'zeitverwaltung',
     user: 'plonig',
     password: 'plonig',
@@ -34,7 +34,7 @@ var pool2 = new Pool({
     ssl: false,
 });
 
-const pool = new Pool({
+const pool2 = new Pool({
     database: 'postgres',
     host: 'localhost',
     user: 'postgres',
@@ -118,7 +118,7 @@ async function _insertEmployee(employee) {
             await client.query('COMMIT');
             return resultEmployee.rows[0].id_employee;
         } catch (error) {
-            await client.query('ROLLBACK');
+            await client.erroquery('ROLLBACK');
             throw error;
         } finally {
             client.release();
