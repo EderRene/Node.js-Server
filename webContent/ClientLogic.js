@@ -14,12 +14,14 @@ app.config(function ($routeProvider) {
     .when('/registerEmployee', {
       templateUrl: 'webpages/EmployeeRegistrationPage.html',
       controller: 'registrationController'
+    })
+    .when('/showEmployee', {
+      templateUrl: 'webpages/EmployeeInformationPage.html',
+      controller: 'myCtrl'
     });
-
-
 });
 
-app.controller('myCtrl', function ($scope, $http) {
+app.controller('myCtrl', function ($scope, $http, $location) {
   $scope.newEmployee = {
     'id_employee': null,
     'forename': null,
@@ -36,6 +38,7 @@ app.controller('myCtrl', function ($scope, $http) {
     'city': null,
     'country': null
   };
+  $scope.currentEmployee = null;
 
   $scope.getEmployees = function () {
     $http.get('/api/employees')
@@ -66,6 +69,11 @@ app.controller('myCtrl', function ($scope, $http) {
       }, function error(response) {
         console.log("error");
       });
+  };
+  $scope.showEmployee = function (employee) {
+    $scope.currentEmployee = employee;
+    $location.path('/showEmployee');
+
   };
 });
 
