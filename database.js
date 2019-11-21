@@ -42,6 +42,14 @@ const pool=new Pool({
     port: 5432,
 });
 
+const pool3=new Pool({
+    database: 'zeitverwaltung',
+    host: 'postgres',
+    user: 'plonig',
+    password: 'plonig',
+    port: 5432,
+});
+
 /* #region employee functions */
 async function _getAllEmployees(){
     try{
