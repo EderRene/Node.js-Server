@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
         let result=await database.getAllEmployees();
         res.status(200).send(result);
     } catch(err){
-        res.status(400).send(err);
+        res.status(404).send(err);
     }
 });
 
@@ -18,14 +18,18 @@ router.get('/:id', async(req, res) => {
         let result=await database.getEmployeeWithId(req.params['id']);
         res.status(200).send(result);
     } catch(err){
-        res.status(400).send(err);
+        if(err.message==global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND){
+            res.status(404).send(err);
+        } else {
+            res.status(500).send(err);
+        }
     }
 })
 
 router.post('/', async (req, res) => {
     try{
         let result=await database.insertEmployee(req.body);
-        res.status(200).send(result);
+        res.status(201).send(result);
     } catch(err){
         res.status(400).send(err);
     }
@@ -34,9 +38,9 @@ router.post('/', async (req, res) => {
 router.delete('/:id', async(req, res) => {
     try{
         let result=await database.deleteEmployee(req.params['id'], req.body.id_Camp);
-        res.status(200).send(result);
+        res.status(204).send(result);
     } catch(err){
-        res.status(400).send(err);
+        res.status(405).send(err);
     }
 });
 

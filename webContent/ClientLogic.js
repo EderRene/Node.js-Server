@@ -27,8 +27,8 @@ app.config(function ($routeProvider) {
 
 app.controller('myCtrl', function ($scope, $http, $location,CurrentEmployee) {
 
-  $http.defaults.headers.post.Authorization = "Basic "+localStorage.getItem("google-token");
-  
+ // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
+
   $scope.newEmployee = {
     'id_employee': null,
     'forename': null,
@@ -58,7 +58,7 @@ app.controller('myCtrl', function ($scope, $http, $location,CurrentEmployee) {
   $scope.createEmployee = function () {
     $http.post('/api/employees', $scope.newEmployee)
       .then(function (response) {
-        //  $scope.newEmployee.id_employee=1;        
+        $scope.newEmployee.id_employee = response.data.id_Employee;
         $scope.allEmployees.push($scope.newEmployee);
       }, function (response) {
         console.error(response);

@@ -1,10 +1,10 @@
 'use strict';
 
-const {Pool} = require('pg');
-const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY'), e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
+const { Pool } = require('pg');
+const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY') AS dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
 const queryStringSelectAllCamps = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
 const queryStringSelectAllDocumentTypes = "SELECT id_DocumentType, type FROM documentType";
-const queryStringSelectEmployeeWithId = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY'), e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_Employee=$1";
+const queryStringSelectEmployeeWithId = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY') AS dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_Employee=$1";
 const queryStringSelectCampWithId = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address WHERE c.id_Camp=$1";
 const queryStringSelectEmployeeWithEmail = "SELECT id_Employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_Address, svn, uid, bankAccountNumber, email, phoneNumber FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_Address";
@@ -25,7 +25,7 @@ var Camp = require('./dataModels/camp.js');
 var SuccessMessage = require('./dataModels/successMessage.js');
 var ErrorMessage = require('./dataModels/errorMessage.js');
 
-var pool2=new Pool({
+var pool = new Pool({
     database: 'zeitverwaltung',
     user: 'plonig',
     password: 'plonig',
@@ -34,7 +34,7 @@ var pool2=new Pool({
     ssl: false,
 });
 
-const pool=new Pool({
+const pool2 = new Pool({
     database: 'postgres',
     host: 'localhost',
     user: 'postgres',
@@ -42,7 +42,7 @@ const pool=new Pool({
     port: 5432,
 });
 
-const pool3=new Pool({
+const pool3 = new Pool({
     database: 'zeitverwaltung',
     host: 'postgres',
     user: 'plonig',
@@ -51,288 +51,260 @@ const pool3=new Pool({
 });
 
 /* #region employee functions */
-async function _getAllEmployees(){
-    try{
+async function _getAllEmployees() {
+    try {
         const client = await pool.connect();
 
-        try{
-            let result=await client.query(queryStringSelectAllEmployees)
-
-            if(result.rows.length==0){
-                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
-            }
-
-            return result.rows;
-        } catch(error){
-            throw new ErrorMessage(global.errorMessages.ERROR_SELECT_EMPLOYEE_ALL_FAILED);
+        try {
+            return (await client.query(queryStringSelectAllEmployees)).rows;
+        } catch (error) {
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _getEmployeeWithId(id_Employee){
-    try{
+async function _getEmployeeWithId(id_Employee) {
+    try {
         const client = await pool.connect();
 
-        try{
-            let result=await client.query(queryStringSelectEmployeeWithId, [id_Employee]);
-
-            if(result.rows.length==0){
-                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
-            }
-
-            return result.rows;
-        } catch(error){
-            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_SELECT_ID_FAILED);
+        try {
+            return (await client.query(queryStringSelectEmployeeWithId, [id_Employee])).rows;
+        } catch (error) {
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _getEmployeeWithEmail(email){
-    try{
+async function _getEmployeeWithEmail(email) {
+    try {
         const client = await pool.connect();
 
-        try{
-            let result=await client.query(queryStringSelectEmployeeWithEmail, [email]);
-
-            if(result.rows.length==0){
-                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
-            }
-
+        try {
+            let result = await client.query(queryStringSelectEmployeeWithEmail, [email]);
             return new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateofbirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankaccountnumber, result.rows[0].email, result.rows[0].phonenumber);
-        } catch(error){
-            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_SELECT_EMAIL_FAILED);
+        } catch (error) {
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _insertEmployee(employee){
-    try{
+async function _insertEmployee(employee) {
+    try {
+        if (isEmptyObject(employee)) {
+            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
+        }
+
         const client = await pool.connect();
 
-        try{
-            if(isEmptyObject(employee)){
-                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
-            }
-            
+        try {
             await client.query('BEGIN');
-            let resultAddress=await client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country]);
-            let resultEmployee=await client.query(queryStringInsertEmployee, [employee.forename, employee.surname, employee.dateOfBirth, resultAddress.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber]);
+            var newDate = new Date(employee.dateOfBirth);
+            var dateString = newDate.getDate() + "." + (newDate.getMonth()+1) + "." + newDate.getFullYear();
+
+            let resultAddress = await client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country]);
+            let resultEmployee = await client.query(queryStringInsertEmployee, [employee.forename, employee.surname, dateString, resultAddress.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phonenumber]);
             await client.query('COMMIT');
-            return new SuccessMessage(global.successMessages.SUCCESS_INSERT_EMPLOYEE, {'id_Address': resultAddress.rows[0].id_address, 'id_Employee':resultEmployee.rows[0].id_employee});
-        } catch(error){
+            return {'id_Employee': resultEmployee.rows[0].id_employee, 'id_Address:': resultAddress.rows[0].id_address};
+        } catch (error) {
             await client.query('ROLLBACK');
-            throw new ErrorMesssage(global.errorMessages.ERROR_EMPLOYEE_INSERT_FAILED);
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _deleteEmployee(id_Employee, id_Camp){
-    try{
+async function _deleteEmployee(id_Employee, id_Camp) {
+    try {
         const client = await pool.connect();
 
-        try{
+        try {
             await client.query('BEGIN');
             await client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee]);
             await client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee]);
             await client.query(queryStringDeleteEmployeeWithId, [id_Employee]);
             await client.query('COMMIT');
-            return new SuccessMessage(global.successMessages.SUCCESS_DELETE_EMPLOYEE);
-        } catch(error){
+        } catch (error) {
             await client.query('ROLLBACK');
-            throw new ErrorMessage(global.errorMessages.ERORR_EMPLOYEE_DELETE_FAILED);
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _updateEmployee(id_Employee, employee){
-    try{
+async function _updateEmployee(id_Employee, employee) {
+    try {
+        if (isEmptyObject(employee)) {
+            throw error;
+        }
+
         const client = await pool.connect();
 
-        try{
-            if(isEmptyObject(employee)){
-                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
-            }
-            
+        try {
             await client.query('BEGIN');
             await client.query(queryStringUpdateAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country, employee.id_Address])
             await client.query(queryStringUpdateEmployee, [employee.forename, employee.surname, employee.dateOfBirth, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber, id_Employee])
             await client.query('COMMIT');
-            return new SuccessMessage(global.successMessages.SUCCESS_UPDATE_EMPLOYEE);
-        } catch(error){
+        } catch (error) {
             await client.query('ROLLBACK');
-            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_UPDATE_FAILED);
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 /* #endregion */
 
 /* #region camp functions */
-async function _getAllCamps(){
-    try{
+async function _getAllCamps() {
+    try {
         const client = await pool.connect();
 
-        try{
-            let result=await client.query(queryStringSelectAllCamps)
-
-            if(result.rows.length==0){
-                throw new ErrorMessage('ERROR');
-            }
-
-            return result.rows;
-        } catch(error){
-            throw new ErrorMessage('ERROR');
+        try {
+            return (await client.query(queryStringSelectAllCamps)).rows;
+        } catch (error) {
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _getCampWithId(id_Camp){
-    try{
+async function _getCampWithId(id_Camp) {
+    try {
         const client = await pool.connect();
 
-        try{
-            let result=await client.query(queryStringSelectCampWithId, [id_Camp]);
-
-            if(result.rows.length==0){
-                throw new ErrorMessage('ERROR');
-            }
-
-            return result.rows;
-        } catch(error){
-            throw new ErrorMessage('ERROR');
+        try {
+            return (await client.query(queryStringSelectCampWithId, [id_Camp])).rows;
+        } catch (error) {
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _insertCamp(camp){
-    try{
+async function _insertCamp(camp) {
+    try {
+        if (isEmptyObject(camp)) {
+            throw new Error();
+        }
+
         const client = await pool.connect();
 
-        try{
-            if(isEmptyObject(camp)){
-                throw new ErrorMessage('ERROR');
-            }
-            
+        try {
             await client.query('BEGIN');
-            let resultAddress=await client.query(queryStringInsertAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country]);
-            let resultCamp=await client.query(queryStringInsertCamp, [resultAddress.rows[0].id_address, camp.name, camp.id_Leader]);
+            let resultAddress = await client.query(queryStringInsertAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country]);
+            let resultCamp = await client.query(queryStringInsertCamp, [resultAddress.rows[0].id_address, camp.name, camp.id_Leader]);
             await client.query('COMMIT');
-            return new SuccessMessage(global.successMessages.SUCCESS_INSERT_CAMP, {'id_Address': resultAddress.rows[0].id_address, 'id_Employee': resultCamp.rows[0].id_camp});
-        } catch(error){
+            return new SuccessMessage(global.successMessages.SUCCESS_INSERT_CAMP, { 'id_Address': resultAddress.rows[0].id_address, 'id_Employee': resultCamp.rows[0].id_camp });
+        } catch (error) {
             await client.query('ROLLBACK');
-            throw new ErrorMesssage('ERROR');
+            throw error;
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _deleteCamp(id_Camp){
-    try{
+async function _deleteCamp(id_Camp) {
+    try {
         const client = await pool.connect();
 
-        try{
+        try {
             await client.query('BEGIN');
             await client.query(queryStringDeleteWorksInWithIdCamp, [id_Camp]);
             await client.query(queryStringDeleteCampWithId, [id_Camp]);
             await client.query('COMMIT');
             return new SuccessMessage(global.successMessages.SUCCESS_DELETE_CAMP);
-        } catch(error){
+        } catch (error) {
             await client.query('ROLLBACK');
             throw new ErrorMessage('ERROR');
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function _updateCamp(id_Camp, camp){
-    try{
+async function _updateCamp(id_Camp, camp) {
+    try {
         const client = await pool.connect();
 
-        try{
-            if(isEmptyObject(camp)){
+        try {
+            if (isEmptyObject(camp)) {
                 throw new ErrorMessage('ERROR');
             }
-            
+
             await client.query('BEGIN');
             await client.query(queryStringUpdateAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country, camp.id_Address])
             await client.query(queryStringUpdateCamp, [camp.name, camp.id_Leader]);
             await client.query('COMMIT');
             return new SuccessMessage(global.successMessages.SUCCESS_UPDATE_CAMP);
-        } catch(error){
+        } catch (error) {
             await client.query('ROLLBACK');
             throw new ErrorMessage('ERROR');
         } finally {
             client.release();
         }
-    } catch(error){
+    } catch (error) {
         throw error;
     }
 }
 /* #endregion */
 
 /* #region documentType functions */
-async function _getAllDocumentTypes(){
-    try{
-        let result=await client.query(queryStringSelectAllDocumentTypes);
+async function _getAllDocumentTypes() {
+    try {
+        let result = await client.query(queryStringSelectAllDocumentTypes);
         return result.rows;
-    } catch(err){
+    } catch (err) {
         throw new Error('Something unexpected happened: ' + err);
     }
 }
 
-async function _insertDocumentType(documentType){
-    try{
+async function _insertDocumentType(documentType) {
+    try {
         await client.query(queryStringInsertDocumentType, [documentType.type]);
         return 'Insert of documentType was successful';
-    } catch(err){
+    } catch (err) {
         throw new Error('Something unexpected happened: ' + err);
     }
 }
 
 /* #endregion */
-  
+
 function isEmptyObject(obj) {
     for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        return false;
-      }
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            return false;
+        }
     }
 
     return true;
