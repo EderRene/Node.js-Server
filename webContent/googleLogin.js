@@ -17,7 +17,6 @@ function init() {
             fetch_basic_profile: false,
             scope: 'profile email'  
         });
-        googleAuth.currentUser.listen(onSignUpSuccess);
     });
     renderButton();
 }
@@ -34,6 +33,8 @@ function onSignUpSuccess(googleUser) {
     var id_token = googleUser.getAuthResponse().id_token;
 
     alert("ID Token: " + id_token); 
+
+    localStorage.setItem('google-token', id_token);
 
     // Retrieve the Google account data
     gapi.client.load('oauth2', 'v2', function () {

@@ -22,6 +22,9 @@ app.config(function ($routeProvider) {
 });
 
 app.controller('myCtrl', function ($scope, $http, $location) {
+
+  $http.defaults.headers.post.Authorization = "Basic "+localStorage.getItem("google-token");
+  
   $scope.newEmployee = {
     'id_employee': null,
     'forename': null,
