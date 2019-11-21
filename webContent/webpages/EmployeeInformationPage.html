@@ -1,116 +1,96 @@
-<form ng-submit="showEmployee()" id="informationPageForm" class="needs-validation">
-    <h2>Mitarbeiter: {{currentEmployee.forename}} {{currentEmployee.surname}}</h2>
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="forename">Vorname</label>
-            <label type="text" id="forename" ng-model="currentEmployee.forename" >{{currentEmployee.forename}}</label>
-        </div>
-        <div class="form-group col">
-            <label for="surname">Nachname</label>
-            <input type="text" class="form-control" id="surname" placeholder="Musterman" ng-model="newEmployee.surname"
-                required>
+<h2>Mitarbeiter: {{currentEmployee.forename}} {{currentEmployee.surname}}</h2>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="forename">Vorname:</label>
+        <label type="text" id="forename">{{currentEmployee.forename}}</label>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="surname">Nachname:</label>
+        <label type="text" id="surname">{{currentEmployee.surname}}</label>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="dateOfBirth">Geburtsdatum:</label>
+        <label type="text" id="dateOfBirth">{{currentEmployee.dateofbirth}}</label>
+    </div>
+</div>
 
-        </div>
-        <div class="form-group col">
-            <label for="dateOfBirth">Geburtsdatum</label>
-            <input type="date" class="form-control" id="dateOfBirth" placeholder="19.09.1999"
-                ng-model="newEmployee.dateOfBirth" required>
-        </div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="svn">Sozialversicherungsnummer:</label>
+        <label type="text" id="svn">{{currentEmployee.svn}}</label>
     </div>
 
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="svn">Sozialversicherungsnummer</label>
-            <input type="number" class="form-control" id="svn" placeholder="54879190999" ng-model="newEmployee.svn"
-                required>
-        </div>
-        <div class="form-group col">
-            <label for="phonenumber">Telefonnummer</label>
-            <input type="text" class="form-control" id="phonenumber" placeholder="0660 5097233"
-                ng-model="newEmployee.phonenumber" required>
-        </div>
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="phonenumber">Telefonnummer:</label>
+        <label type="text" id="phonenumber">{{currentEmployee.phonenumber}}</label>
     </div>
-    <div class="form-group">
-        <label for="addressLine1">Straße und Hausnummer</label>
-        <input type="text" class="form-control" id="addressLine1" placeholder="Kirchbach 99"
-            ng-model="newEmployee.addressLine1" required>
-    </div>
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="addressLine1">Straße und Hausnummer:</label>
+        <label type="text" id="addressLine1">{{currentEmployee.addressline1}}</label>
 
-    <div class="form-group">
-        <label for="addressLine2">Adresszusatz</label>
-        <input type="text" class="form-control" id="addressLine2" placeholder="2 Stockwerk"
-            ng-model="newEmployee.addressLine2" required>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col">
+        <label for="addressLine2">Adresszusatz:</label>
+        <label type="text" id="addressLine2">{{currentEmployee.addressline2}}</label>
     </div>
 
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="postCode">Postleitzahl</label>
-            <input type="number" class="form-control" id="postCode" placeholder="9632" ng-model="newEmployee.postCode"
-                required>
-        </div>
+</div>
 
-        <div class="form-group col">
-            <label for="city">Stadt</label>
-            <input type="text" class="form-control" id="city" placeholder="Kirchbach" ng-model="newEmployee.city"
-                required>
-        </div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="postCode">Postleitzahl:</label>
+        <label type="text" id="postCode">{{currentEmployee.postcode}}</label>
     </div>
 
-    <div class="form-group">
-        <label for="country">Land</label>
-        <input type="text" class="form-control" id="country" placeholder="Österreich" ng-model="newEmployee.country"
-            required>
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="city">Stadt:</label>
+        <label type="text" id="city">{{currentEmployee.city}}</label>
+
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col">
+        <label for="country">Land:</label>
+        <label type="text" id="country">{{currentEmployee.country}}</label>
+
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col">
+        <label for="email">Email-Adresse:</label>
+        <label type="text" id="email">{{currentEmployee.email}}</label>
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col">
+        <label for="bankAccountNumber">IBAN:</label>
+        <label type="text" id="bankAccountNumber">{{currentEmployee.bankAccountNumber}}</label>
     </div>
 
-    <div class="form-group">
-        <label for="email">Email-Adresse</label>
-        <input type="email" class="form-control" id="email" placeholder="name@example.com" name="forename"
-            ng-model="newEmployee.email" required>
-        <small id="emailHelpBlock" class="form-text text-muted">
-            Die Email MUSS eine GMAIL-Adresse sein.
-        </small>
+</div>
+<div class="form-row">
+    <div class="form-group col">
+        <label for="uid" >UID:</label>
+        <label type="text" id="uid">{{currentEmployee.uid}}</label>
+
     </div>
+</div>
+<button type="button" ng-click="editEmployee(currentEmployee)" class="btn btn-primary">Mitarbeiter bearbeiten</button>
+<button type="button"ng-click="cancelView()" class="btn btn-primary">Cancel</button>
 
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="bankAccountNumber">IBAN</label>
-            <input type="text" class="form-control" id="bankAccountNumber" placeholder="AT0664651315"
-                ng-model="newEmployee.bankAccountNumber" required>
-        </div>
-        <div class="form-group col">
-            <label for="uid">UID</label>
-            <input type="text" class="form-control" id="uid" placeholder="4564521" ng-model="newEmployee.uid">
-        </div>
-    </div>
-
-
-
-    <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
-        <label class="form-check-label" for="exampleCheck1">Alles Korrekt?</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Mitarbeiter anlegen</button>
-
-</form>
-
-<script>
-    // Example starter JavaScript for disabling form submissions if there are invalid fields
-    (function () {
-        'use strict';
-        window.addEventListener('load', function () {
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.getElementsByClassName('needs-validation');
-            // Loop over them and prevent submission
-            var validation = Array.prototype.filter.call(forms, function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.checkValidity() === false) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-        }, false);
-    })();
-</script>

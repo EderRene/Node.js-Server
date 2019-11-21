@@ -1,20 +1,20 @@
-<form ng-submit="createEmployee()" id="registerPageForm" class="needs-validation">
+<form ng-submit="updateEmployee()" id="editPageForm" class="needs-validation">
     <h2>Mitarbeiter anlegen</h2>
     <div class="form-row">
         <div class="form-group col">
             <label for="forename">Vorname</label>
-            <input type="text" class="form-control" id="forename" placeholder="Max" ng-model="newEmployee.forename"
+            <input type="text" class="form-control" id="forename" placeholder="{{currentEmployee.forename}}" ng-model="newEmployee.forename"
                 required>
         </div>
         <div class="form-group col">
             <label for="surname">Nachname</label>
-            <input type="text" class="form-control" id="surname" placeholder="Musterman" ng-model="newEmployee.surname"
+            <input type="text" class="form-control" id="surname" placeholder="{{currentEmployee.surname}}" ng-model="newEmployee.surname"
                 required>
 
         </div>
         <div class="form-group col">
             <label for="dateOfBirth">Geburtsdatum</label>
-            <input type="date" class="form-control" id="dateOfBirth" placeholder="19.09.1999"
+            <input type="date" class="form-control" id="dateOfBirth" placeholder="{{currentEmployee.dateofbirth}}"
                 ng-model="newEmployee.dateOfBirth" required>
         </div>
     </div>
@@ -22,7 +22,7 @@
     <div class="form-row">
         <div class="form-group col">
             <label for="svn">Sozialversicherungsnummer</label>
-            <input type="number" class="form-control" id="svn" placeholder="54879190999" ng-model="newEmployee.svn"
+            <input type="number" class="form-control" id="svn" placeholder="{{currentEmployee.svn}}" ng-model="newEmployee.svn"
                 required>
         </div>
         <div class="form-group col">

@@ -17,11 +17,15 @@ app.config(function ($routeProvider) {
     })
     .when('/showEmployee', {
       templateUrl: 'webpages/EmployeeInformationPage.html',
-      controller: 'myCtrl'
+      controller: 'informationController'
+    })
+    .when('/editEmployee', {
+      templateUrl: 'webpages/EmployeeEditPage.html',
+      controller: 'editController'
     });
 });
 
-app.controller('myCtrl', function ($scope, $http, $location) {
+app.controller('myCtrl', function ($scope, $http, $location,CurrentEmployee) {
 
   $http.defaults.headers.post.Authorization = "Basic "+localStorage.getItem("google-token");
   
@@ -41,7 +45,6 @@ app.controller('myCtrl', function ($scope, $http, $location) {
     'city': null,
     'country': null
   };
-  $scope.currentEmployee = null;
 
   $scope.getEmployees = function () {
     $http.get('/api/employees')
@@ -74,12 +77,58 @@ app.controller('myCtrl', function ($scope, $http, $location) {
       });
   };
   $scope.showEmployee = function (employee) {
-    $scope.currentEmployee = employee;
+   CurrentEmployee.setCurrentEmployee(employee);
     $location.path('/showEmployee');
-
+  };
+  $scope.editEmployee = function (employee) {
+    CurrentEmployee.setCurrentEmployee(employee);
+    $location.path('/editEmployee');
   };
 });
 
-app.controller('registrationController', function ($scope) {
+app.controller('registrationController', function ($scope,CurrentEmployee,$location) {
   $scope.message = 'Look! I am a page.';
+});
+app.controller('editController', function ($scope,CurrentEmployee,$location) {
+  $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
+});
+
+app.controller('informationController', function ($scope,CurrentEmployee,$location) {
+  $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
+
+  $scope.editEmployee = function (employee){
+    $location.path('/registerEmployee');
+  };
+  $scope.cancelView = function (){
+     $location.path('/');
+   };
+});
+
+app.factory('CurrentEmployee', function () {
+
+  var currentEmployee = {
+    'id_employee': null,
+    'forename': null,
+    'surname': null,
+    'dateOfBirth': null,
+    'svn': null,
+    'uid': null,
+    'bankAccountNumber': null,
+    'email': null,
+    'phonenumber': null,
+    'addressLine1': null,
+    'addressLine2': null,
+    'postCode': null,
+    'city': null,
+    'country': null
+  };
+
+  return {
+      getCurrentEmployee: function () {
+          return currentEmployee;
+      },
+      setCurrentEmployee: function (newCEmp) {
+        currentEmployee = newCEmp;
+      }
+  };
 });
