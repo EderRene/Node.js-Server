@@ -23,8 +23,8 @@ app.config(function ($routeProvider) {
 
 app.controller('myCtrl', function ($scope, $http, $location) {
 
-  $http.defaults.headers.post.Authorization = "Basic "+localStorage.getItem("google-token");
-  
+  $http.defaults.headers.post.Authorization = "Basic " + localStorage.getItem("google-token");
+
   $scope.newEmployee = {
     'id_employee': null,
     'forename': null,
@@ -55,7 +55,7 @@ app.controller('myCtrl', function ($scope, $http, $location) {
   $scope.createEmployee = function () {
     $http.post('/api/employees', $scope.newEmployee)
       .then(function (response) {
-        //  $scope.newEmployee.id_employee=1;        
+        $scope.newEmployee.id_employee=response.data.values.id_Employee;        
         $scope.allEmployees.push($scope.newEmployee);
       }, function (response) {
         console.error(response);
@@ -78,6 +78,16 @@ app.controller('myCtrl', function ($scope, $http, $location) {
     $location.path('/showEmployee');
 
   };
+
+  $scope.login = function () {
+    $http.post('/api/login', $scope.newEmployee)
+      .then(function (response) {
+        
+      }, function (response) {
+      
+      });
+  };
+
 });
 
 app.controller('registrationController', function ($scope) {
