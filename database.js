@@ -56,15 +56,9 @@ async function _getAllEmployees(){
         const client = await pool.connect();
 
         try{
-            let result=await client.query(queryStringSelectAllEmployees)
-
-            if(result.rows.length==0){
-                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
-            }
-
-            return result.rows;
+            return (await client.query(queryStringSelectAllEmployees)).rows;
         } catch(error){
-            throw new ErrorMessage(global.errorMessages.ERROR_SELECT_EMPLOYEE_ALL_FAILED);
+            throw error;
         } finally {
             client.release();
         }
@@ -78,15 +72,9 @@ async function _getEmployeeWithId(id_Employee){
         const client = await pool.connect();
 
         try{
-            let result=await client.query(queryStringSelectEmployeeWithId, [id_Employee]);
-
-            if(result.rows.length==0){
-                throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND);
-            }
-
-            return result.rows;
+            return (await client.query(queryStringSelectEmployeeWithId, [id_Employee])).rows;
         } catch(error){
-            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_SELECT_ID_FAILED);
+            throw error;
         } finally {
             client.release();
         }
@@ -196,15 +184,9 @@ async function _getAllCamps(){
         const client = await pool.connect();
 
         try{
-            let result=await client.query(queryStringSelectAllCamps)
-
-            if(result.rows.length==0){
-                throw new ErrorMessage('ERROR');
-            }
-
-            return result.rows;
+            return (await client.query(queryStringSelectAllCamps)).rows;
         } catch(error){
-            throw new ErrorMessage('ERROR');
+            throw error;
         } finally {
             client.release();
         }
@@ -218,15 +200,9 @@ async function _getCampWithId(id_Camp){
         const client = await pool.connect();
 
         try{
-            let result=await client.query(queryStringSelectCampWithId, [id_Camp]);
-
-            if(result.rows.length==0){
-                throw new ErrorMessage('ERROR');
-            }
-
-            return result.rows;
+            return (await client.query(queryStringSelectCampWithId, [id_Camp])).rows;
         } catch(error){
-            throw new ErrorMessage('ERROR');
+            throw error;
         } finally {
             client.release();
         }
