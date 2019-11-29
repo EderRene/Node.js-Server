@@ -51,53 +51,74 @@ const pool3 = new Pool({
 });
 
 /* #region employee functions */
-async function _getAllEmployees() {
-    try {
-        const client = await pool.connect();
-
-        try {
-            return (await client.query(queryStringSelectAllEmployees)).rows;
-        } catch (error) {
-            throw error;
-        } finally {
-            client.release();
-        }
-    } catch (error) {
-        throw error;
-    }
+function _getAllEmployees() {
+    return new Promise((resolve, reject)=>{
+        pool.connect()
+            .then((client)=>{
+                client.query(queryStringSelectAllEmployees)
+                    .then((result)=>{
+                        let response={'statusCode': 200, 'values': result.rows};
+                        resolve(response);
+                    })
+                    .catch((error)=>{
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error);
+            })
+    })
 }
 
-async function _getEmployeeWithId(id_Employee) {
-    try {
-        const client = await pool.connect();
+function _getEmployeeWithId(id_Employee) {
+    return new Promise((resolve, reject)=>{
+        pool.connect()
+            .then((client)=>{
+                client.query(queryStringSelectEmployeeWithId, [id_Employee])
+                    .then((result)=>{
+                        if(result.rows.length==0){
+                            let error={'statusCode': 404, 'message':global.errorMessages.ERROR_DATABASE_QUERY_NO_DATA_FOUND};
+                            reject(error);
+                        }
 
-        try {
-            return (await client.query(queryStringSelectEmployeeWithId, [id_Employee])).rows;
-        } catch (error) {
-            throw error;
-        } finally {
-            client.release();
-        }
-    } catch (error) {
-        throw error;
-    }
+                        let response={'statusCode': 200, 'values':result.rows};
+                        resolve(response);
+                    })
+                    .catch((error)=>{
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    });
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error);
+            });
+    });
 }
 
 async function _getEmployeeWithEmail(email) {
-    try {
-        const client = await pool.connect();
-
-        try {
-            let result = await client.query(queryStringSelectEmployeeWithEmail, [email]);
-            return new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateofbirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankaccountnumber, result.rows[0].email, result.rows[0].phonenumber);
-        } catch (error) {
-            throw error;
-        } finally {
-            client.release();
-        }
-    } catch (error) {
-        throw error;
-    }
+    return new Promise((resolve, reject)=>{
+        pool.connect()
+            .then((client)=>{
+                client.query(queryStringSelectEmployeeWithEmail, [email])
+                    .then((result)=>{
+                        resolve(new Employee(result.rows[0].id_employee, result.rows[0].forename, result.rows[0].surname, result.rows[0].dateofbirth, result.rows[0].id_address, result.rows[0].svn, result.rows[0].uid, result.rows[0].bankaccountnumber, result.rows[0].email, result.rows[0].phonenumber));
+                    })
+                    .catch((error)=>{
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+            })
+            .catch((error)=>{
+                reject(error);
+            });
+    })
 }
 
 async function _insertEmployee(employee) {

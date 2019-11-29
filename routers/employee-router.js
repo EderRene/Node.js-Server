@@ -6,23 +6,19 @@ var router = express.Router();
 
 router.get('/', async (req, res) => {
     try{
-        let result=await database.getAllEmployees();
-        res.status(200).send(result);
-    } catch(err){
-        res.status(404).send(err);
+        let response=await database.getAllEmployees();
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 });
 
 router.get('/:id', async(req, res) => {
     try{
-        let result=await database.getEmployeeWithId(req.params['id']);
-        res.status(200).send(result);
-    } catch(err){
-        if(err.message==global.errorMessages.ERROR_EMPLOYEE_NO_DATA_FOUND){
-            res.status(404).send(err);
-        } else {
-            res.status(500).send(err);
-        }
+        let response=await database.getEmployeeWithId(req.params['id']);
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 })
 

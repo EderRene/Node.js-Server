@@ -24,19 +24,19 @@ var successMessages={
 
 var errorMessages={
     ERROR_DATABASE_CONNECTION_FAILURE: 'ERROR: Database connection could not have been established',
-    ERROR_DATABASE_CONNECTION_LOST: 'ERROR: Database connection lost',
+    ERROR_DATABASE_QUERY_FAILURE: 'ERROR: Database query could not have been established',
+    ERROR_DATABASE_QUERY_NO_DATA_FOUND: 'ERROR: No data could be found in database',
     
     ERROR_EMPTY_STRING_OF_EMAIL: 'ERROR: email was empty',
-
 
     ERROR_EMPLOYEE_MISSING_DATA: 'ERROR: Employee data is missing',
     ERROR_EMPLOYEE_NO_DATA_FOUND: 'ERROR: No employee data could be found in database',
     ERROR_EMPLOYEE_SELECT_ALL_FAILED: 'ERROR: Select of employees failed',
     ERROR_EMPLOYEE_SELECT_ID_FAILED: 'ERROR: Select of employee with specific id failed',
     ERROR_EMPLOYEE_SELECT_EMAIL_FAILED: 'ERROR: Select of employee with specifi email failed',
-    ERROR_EMPLOYEE_INSERT_FAILED: 'ERROR: Insert of employee failed',
+    ERROR_EMPLOYEE_INSERT_FAILED: 'Es konnte kein neuer Mitarbeiter eingefügt werden, bitte überprüfen Sie Ihre Eingaben!',
     ERROR_EMPLOYEE_DELETE_FAILED: 'ERROR: Delete of employee failed',
-    ERROR_EMPLOYEE_UPDATE_FAILED: 'ERROR: Update of employee failed'
+    ERROR_EMPLOYEE_UPDATE_FAILED: 'ERROR: Update of employee failed',
 }
 
 global.successMessages=successMessages;
