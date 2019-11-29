@@ -22,7 +22,7 @@
     <div class="form-row">
         <div class="form-group col">
             <label for="svn">Sozialversicherungsnummer</label>
-            <input type="number" class="form-control" id="svn" ng-model="currentEmployee.svn"
+            <input type="number" class="form-control" id="svn" ng-model= "currentEmployee.svn"
                 required>
         </div>
         <div class="form-group col">
@@ -33,20 +33,20 @@
     </div>
     <div class="form-group">
         <label for="addressLine1">Straße und Hausnummer</label>
-        <input type="text" class="form-control" id="addressLine1" 
-            ng-model="currentEmployee.addressLine1" required>
+        <input type="text" class="form-control" id="addressline1" 
+            ng-model="currentEmployee.addressline1" required>
     </div>
 
     <div class="form-group">
         <label for="addressLine2">Adresszusatz</label>
-        <input type="text" class="form-control" id="addressLine2" 
-            ng-model="currentEmployee.addressLine2" >
+        <input type="text" class="form-control" id="addressline2" 
+            ng-model="currentEmployee.addressline2" >
     </div>
 
     <div class="form-row">
         <div class="form-group col">
             <label for="postCode">Postleitzahl</label>
-            <input type="number" class="form-control" id="postCode"  ng-model="currentEmployee.postCode"
+            <input type="number" class="form-control" id="postCode"  ng-model="currentEmployee.postcode"
                 required>
         </div>
 
@@ -75,7 +75,7 @@
     <div class="form-row">
         <div class="form-group col">
             <label for="bankAccountNumber">IBAN</label>
-            <input type="text" class="form-control" id="bankAccountNumber" placeholder="AT0664651315"
+            <input type="text" class="form-control" id="bankAccountNumber"  ng-model="currentEmployee.IBAN"
                 ng-model="currentEmployee.bankAccountNumber" required>
         </div>
         <div class="form-group col">

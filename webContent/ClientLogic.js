@@ -141,12 +141,22 @@ app.factory('CurrentEmployee', function () {
     'country': null
   };
 
+  
+
   return {
       getCurrentEmployee: function () {
           return currentEmployee;
       },
       setCurrentEmployee: function (newCEmp) {
         currentEmployee = newCEmp;
+        currentEmployee.svn = parseInt(newCEmp.svn);
+        currentEmployee.dateOfBirth = new Date(newCEmp.dateOfBirth);
       }
+  };
+});
+
+app.filter('num', function() {
+  return function(input) {
+    return parseInt(input, 10);
   };
 });
