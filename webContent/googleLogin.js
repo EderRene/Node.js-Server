@@ -14,7 +14,7 @@ function init() {
     gapi.load('auth2', () => {
         googleAuth = gapi.auth2.init({
             client_id: '271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com',
-            fetch_basic_profile: false,
+            fetch_basic_profile: true,
             scope: 'profile email'
         });
     });
@@ -30,9 +30,9 @@ function onSignUpSuccess(googleUser) {
     // The ID token you need to pass to your backend:
     var id_token = googleUser.getAuthResponse().id_token;
 
-    alert("ID Token: " + id_token);
+   // alert("ID Token: " + id_token);
 
-
+   alert("Hallo " + profile.getName());
    // loginRequest(id_token);
 
 
@@ -43,7 +43,7 @@ function onSignUpSuccess(googleUser) {
         });
         request.execute(function (resp) {
             // Display the user details
-
+          
         });
     });
 }

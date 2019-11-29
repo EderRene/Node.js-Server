@@ -90,17 +90,21 @@ app.controller('registrationController', function ($scope,CurrentEmployee,$locat
   $scope.message = 'Look! I am a page.';
 });
 
-app.controller('editController', function ($scope,CurrentEmployee,$location) {
+app.controller('editController', function ($scope,CurrentEmployee,$location,$http) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
   $scope.updateEmployee = function () {
-    $http.put('/api/employees/' + currentEmployee.id_employee)
+    $scope.allEmployees.splice($scope.allEmployees.indexOf($scope.currentEmployee), 1);
+    $scope.allEmployees.push($scope.currentEmployee);
+    /*
+    $http.put('/api/employees/' + $scope.currentEmployee.id_employee)
       .then(function success(response) {
         $scope.allEmployees.splice($scope.allEmployees.indexOf(currentEmployee), 1);
         $scope.allEmployees.push($scope.currentEmployee);
       }, function error(response) {
-        console.log("error");
+        console.log("error"+ response.data);
       });
+      */
   };
   $scope.cancelView = function (){
     $location.path('/');
@@ -137,12 +141,22 @@ app.factory('CurrentEmployee', function () {
     'country': null
   };
 
+  
+
   return {
       getCurrentEmployee: function () {
           return currentEmployee;
       },
       setCurrentEmployee: function (newCEmp) {
         currentEmployee = newCEmp;
+        currentEmployee.svn = parseInt(newCEmp.svn);
+        currentEmployee.dateOfBirth = new Date(newCEmp.dateOfBirth);
       }
+  };
+});
+
+app.filter('num', function() {
+  return function(input) {
+    return parseInt(input, 10);
   };
 });
