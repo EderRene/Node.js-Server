@@ -1,10 +1,10 @@
 'use strict';
 
 const { Pool } = require('pg');
-const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY') AS dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
+const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, e.dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
 const queryStringSelectAllCamps = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
 const queryStringSelectAllDocumentTypes = "SELECT id_DocumentType, type FROM documentType";
-const queryStringSelectEmployeeWithId = "SELECT e.id_Employee, e.forename, e.surname, TO_CHAR(e.dateOfBirth, 'DD.MM.YYYY') AS dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_Employee=$1";
+const queryStringSelectEmployeeWithId = "SELECT e.id_Employee, e.forename, e.surname, e.dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_Employee=$1";
 const queryStringSelectCampWithId = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address WHERE c.id_Camp=$1";
 const queryStringSelectEmployeeWithEmail = "SELECT id_Employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_Address, svn, uid, bankAccountNumber, email, phoneNumber FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_Address";
