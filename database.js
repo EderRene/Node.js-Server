@@ -1,24 +1,24 @@
 'use strict';
 
 const { Pool } = require('pg');
-const queryStringSelectAllEmployees = "SELECT e.id_Employee, e.forename, e.surname, e.dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
-const queryStringSelectAllCamps = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
-const queryStringSelectAllDocumentTypes = "SELECT id_DocumentType, type FROM documentType";
-const queryStringSelectEmployeeWithId = "SELECT e.id_Employee, e.forename, e.surname, e.dateOfBirth, e.id_Address, e.svn, e.uid, e.bankAccountNumber, e.email, e.phoneNumber, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_Employee=$1";
-const queryStringSelectCampWithId = "SELECT c.id_Camp, c.id_Address, c.name, c.id_Leader, a.addressLine1, a.addressLine2, a.postCode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address WHERE c.id_Camp=$1";
-const queryStringSelectEmployeeWithEmail = "SELECT id_Employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_Address, svn, uid, bankAccountNumber, email, phoneNumber FROM employee WHERE email=$1";
-const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_Address";
-const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_Employee";
-const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3) RETURNING id_Camp';
+const queryStringSelectAllEmployees = "SELECT e.id_employee, e.forename, e.surname, e.dateofbirth, e.id_address, e.svn, e.uid, e.bankaccountnumber , e.email, e.phonenumber, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
+const queryStringSelectAllCamps = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
+const queryStringSelectAllDocumentTypes = "SELECT id_documenttype, type FROM documentType";
+const queryStringSelectEmployeeWithId = "SELECT e.id_employee, e.forename, e.surname, e.dateofbirth, e.id_address, e.svn, e.uid, e.bankaccountnumber, e.email, e.phonenumber, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_employee=$1";
+const queryStringSelectCampWithId = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address WHERE c.id_camp=$1";
+const queryStringSelectEmployeeWithEmail = "SELECT id_employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_address, svn, uid, bankaccountnumber, email, phonenumber FROM employee WHERE email=$1";
+const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_address";
+const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_employee";
+const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3) RETURNING id_camp';
 const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1)";
-const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateOfBirth=$3, svn=$4, uid=$5, bankAccountNumber=$6, email=$7, phoneNumber=$8 WHERE id_Employee=$9";
-const queryStringUpdateAddress = "UPDATE address SET addressLine1=$1, addressLine2=$2, postCode=$3, city=$4, country=$5 WHERE id_Address=$6";
-const queryStringUpdateCamp = "UPDATE camp SET name=$1 id_Leader=$2 WHERE id_Camp=$3";
-const queryStringUpdateCampLeader = "UPDATE camp SET id_Leader=$1 WHERE id_Camp=$2 AND id_Leader=$3";
-const queryStringDeleteEmployeeWithId = "DELETE FROM employee WHERE id_Employee=$1";
-const queryStringDeleteCampWithId = "DELETE FROM camp WHERE id_Camp=$1";
-const queryStringDeleteWorksInWithIdEmployee = "DELETE FROM worksIn WHERE id_Employee=$1";
-const queryStringDeleteWorksInWithIdCamp = "DELETE FROM worksIn WHERE id_Camp=$1";
+const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateofbirth=$3, svn=$4, uid=$5, bankaccountnumber=$6, email=$7, phonenumber=$8 WHERE id_employee=$9";
+const queryStringUpdateAddress = "UPDATE address SET addressline1=$1, addressline2=$2, postcode=$3, city=$4, country=$5 WHERE id_address=$6";
+const queryStringUpdateCamp = "UPDATE camp SET name=$1 id_leader=$2 WHERE id_camp=$3";
+const queryStringUpdateCampLeader = "UPDATE camp SET id_leader=$1 WHERE id_camp=$2 AND id_leader=$3";
+const queryStringDeleteEmployeeWithId = "DELETE FROM employee WHERE id_employee=$1";
+const queryStringDeleteCampWithId = "DELETE FROM camp WHERE id_camp=$1";
+const queryStringDeleteWorksInWithIdEmployee = "DELETE FROM worksIn WHERE id_employee=$1";
+const queryStringDeleteWorksInWithIdCamp = "DELETE FROM worksIn WHERE id_camp=$1";
 var Employee = require('./dataModels/employee.js');
 var Address = require('./dataModels/address.js');
 var Camp = require('./dataModels/camp.js');
@@ -102,7 +102,7 @@ function _getEmployeeWithId(id_Employee) {
     });
 }
 
-async function _getEmployeeWithEmail(email) {
+function _getEmployeeWithEmail(email) {
     return new Promise((resolve, reject)=>{
         pool.connect()
             .then((client)=>{
@@ -121,53 +121,125 @@ async function _getEmployeeWithEmail(email) {
     })
 }
 
-async function _insertEmployee(employee) {
-    try {
-        if (isEmptyObject(employee)) {
-            throw new ErrorMessage(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
+function _insertEmployee(employee) {
+    return new Promise((resolve, reject)=>{
+        if(isEmptyObject(employee)){
+            reject(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
         }
 
-        const client = await pool.connect();
+        var resultAddress;
+        var resultEmployee;
 
-        try {
-            await client.query('BEGIN');
-            var newDate = new Date(employee.dateOfBirth);
-            var dateString = newDate.getDate() + "." + (newDate.getMonth()+1) + "." + newDate.getFullYear();
+        pool.connect()
+            .then((client)=>{
+                client.query('BEGIN')
+                    .then(()=>{
+                        var newDate = new Date(employee.dateOfBirth);
+                        var dateString = newDate.getDate() + "." + (newDate.getMonth()+1) + "." + newDate.getFullYear();
 
-            let resultAddress = await client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country]);
-            let resultEmployee = await client.query(queryStringInsertEmployee, [employee.forename, employee.surname, dateString, resultAddress.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phonenumber]);
-            await client.query('COMMIT');
-            return {'id_Employee': resultEmployee.rows[0].id_employee, 'id_Address:': resultAddress.rows[0].id_address};
-        } catch (error) {
-            await client.query('ROLLBACK');
-            throw error;
-        } finally {
-            client.release();
-        }
-    } catch (error) {
-        throw error;
-    }
+                        client.query(queryStringInsertAddress, [employee.addressLine1, employee.addressLine2, employee.postCode, employee.city, employee.country])
+                            .then((result)=>{
+                                resultAddress=result;
+                                client.query(queryStringInsertEmployee, [employee.forename, employee.surname, dateString, resultAddress.rows[0].id_address, employee.svn, employee.uid, employee.bankAccountNumber, employee.email, employee.phoneNumber])
+                                    .then((result)=>{
+                                        resultEmployee=result;
+                                        client.query('COMMIT')
+                                            .then(()=>{
+                                                resolve({'statusCode': 201, 'values': {'id_Employee': resultEmployee.rows[0].id_employee, 'id_Address:': resultAddress.rows[0].id_address}});
+                                            })
+                                            .catch((error)=>{
+                                                rollbackDatabase(client);
+                                                error.statusCode=500;
+                                                error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                                reject(error);
+                                            })
+                                    })
+                                    .catch((error)=>{
+                                        rollbackDatabase(client);
+                                        error.statusCode=500;
+                                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                        reject(error);
+                                    });
+                            })
+                            .catch((error)=>{
+                                rollbackDatabase(client);
+                                error.statusCode=500;
+                                error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                reject(error);
+                            });
+                    })
+                    .catch((error)=>{
+                        rollbackDatabase(client);
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    });
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error);
+            });
+    });
 }
 
-async function _deleteEmployee(id_Employee, id_Camp) {
-    try {
-        const client = await pool.connect();
-
-        try {
-            await client.query('BEGIN');
-            await client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee]);
-            await client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee]);
-            await client.query(queryStringDeleteEmployeeWithId, [id_Employee]);
-            await client.query('COMMIT');
-        } catch (error) {
-            await client.query('ROLLBACK');
-            throw error;
-        } finally {
-            client.release();
-        }
-    } catch (error) {
-        throw error;
-    }
+function _deleteEmployee(id_Employee, id_Camp) {
+    return new Promise((resolve, reject)=>{
+        pool.connect()
+            .then((client)=>{
+                client.query('BEGIN')
+                    .then(()=>{
+                        client.query(queryStringUpdateCampLeader, [null, id_Camp, id_Employee])
+                            .then(()=>{
+                                client.query(queryStringDeleteWorksInWithIdEmployee, [id_Employee])
+                                    .then(()=>{
+                                        client.query(queryStringDeleteEmployeeWithId, [id_Employee])
+                                            .then(()=>{
+                                                client.query('COMMIT')
+                                                    .then(()=>{
+                                                        resolve({'statusCode':204, 'values':{}});
+                                                    })
+                                                    .catch((error)=>{
+                                                        rollbackDatabase(client);
+                                                        error.statusCode=500;
+                                                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                                        reject(error);
+                                                    });
+                                            })
+                                            .catch((error)=>{
+                                                rollbackDatabase(client);
+                                                error.statusCode=500;
+                                                error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                                reject(error);
+                                            });
+                                    })
+                                    .catch((error)=>{
+                                        rollbackDatabase(client);
+                                        error.statusCode=500;
+                                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                        reject(error);
+                                    });
+                            })
+                            .catch((error)=>{
+                                rollbackDatabase(client);
+                                error.statusCode=500;
+                                error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                reject(error);
+                            });
+                    })
+                    .catch((error)=>{
+                        rollbackDatabase(client);
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error);
+            });
+    });
 }
 
 async function _updateEmployee(id_Employee, employee) {
@@ -329,6 +401,14 @@ function isEmptyObject(obj) {
     }
 
     return true;
+}
+
+function rollbackDatabase(client){
+    try{
+        client.query('ROLLBACK');
+    } catch(error){
+        throw error;
+    }
 }
 
 module.exports.getAllEmployees = _getAllEmployees;
