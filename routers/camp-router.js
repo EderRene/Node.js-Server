@@ -6,10 +6,10 @@ var router = express.Router();
 
 router.get('/', async (req, res) => {
     try{
-        let result=await database.getAllCamps();
-        res.status(200).send(result);
-    } catch(err){
-        res.status(400).send(err);
+        let response=await database.getAllCamps();
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 });
 
