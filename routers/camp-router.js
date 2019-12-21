@@ -15,37 +15,37 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async(req, res) => {
     try{
-        let result=await database.getCampWithId(req.params['id']);
-        res.status(200).send(result);
-    } catch(err){
-        res.status(400).send(err);
+        let response=await database.getCampWithId(req.params['id']);
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 })
 
 router.post('/', async (req, res) => {
     try{
-        let result=await database.insertCamp(req.body);
-        res.status(200).send(result);
-    } catch(err){
-        res.status(400).send(err);
+        let response=await database.insertCamp(req.body);
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 });
 
 router.delete('/:id', async(req, res) => {
     try{
-        let result=await database.deleteCamp(req.params['id']);
-        res.status(200).send(result);
-    } catch(err){
-        res.status(400).send(err);
+        let response=await database.deleteCamp(req.params['id']);
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 });
 
 router.put('/:id', async (req, res)=>{
     try{
-        let result=await database.updateCamp(req.params['id'], req.body);
-        res.status(200).send(result);
-    } catch(err){
-        res.status(400).send(err);
+        let response=await database.updateCamp(req.params['id'], req.body);
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 });
 

@@ -10,7 +10,7 @@ const queryStringSelectEmployeeWithEmail = "SELECT id_employee, forename, surnam
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_address";
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_employee";
 const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3) RETURNING id_camp';
-const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1)";
+const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1) RETURNING id_documentType";
 const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateofbirth=$3, svn=$4, uid=$5, bankaccountnumber=$6, email=$7, phonenumber=$8 WHERE id_employee=$9";
 const queryStringUpdateAddress = "UPDATE address SET addressline1=$1, addressline2=$2, postcode=$3, city=$4, country=$5 WHERE id_address=$6";
 const queryStringUpdateCamp = "UPDATE camp SET name=$1 id_leader=$2 WHERE id_camp=$3";
@@ -330,6 +330,7 @@ function _insertCamp(camp) {
                         resolve({'statusCode':201, 'values':{'id_Address': resultAddress.rows[0].id_address, 'id_Employee': resultCamp.rows[0].id_camp}});
                     })
                     .catch((error)=>{
+                        rollbackDatabase(client);
                         error.statusCode=500;
                         error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
                         reject(error);
@@ -346,70 +347,140 @@ function _insertCamp(camp) {
     });
 }
 
-async function _deleteCamp(id_Camp) {
-    try {
-        const client = await pool.connect();
-
-        try {
-            await client.query('BEGIN');
-            await client.query(queryStringDeleteWorksInWithIdCamp, [id_Camp]);
-            await client.query(queryStringDeleteCampWithId, [id_Camp]);
-            await client.query('COMMIT');
-            return new SuccessMessage(global.successMessages.SUCCESS_DELETE_CAMP);
-        } catch (error) {
-            await client.query('ROLLBACK');
-            throw new ErrorMessage('ERROR');
-        } finally {
-            client.release();
-        }
-    } catch (error) {
-        throw error;
-    }
+function _deleteCamp(id_Camp) {
+    return new Promise((resolve, reject)=>{
+        pool.connect()
+            .then((client)=>{
+                client.query('BEGIN')
+                    .then(()=>{
+                        return client.query(queryStringDeleteWorksInWithIdCamp, [id_Camp]);
+                    })
+                    .then(()=>{
+                        return client.query(queryStringDeleteCampWithId, [id_Camp]);
+                    })
+                    .then(()=>{
+                        return client.query('COMMIT');
+                    })
+                    .then(()=>{
+                        resolve({'statusCode':204});
+                    })
+                    .catch((error)=>{
+                        rollbackDatabase(client);
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+                    .finally(()=>{
+                        client.release();
+                    });
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error); 
+            });
+    });
 }
 
-async function _updateCamp(id_Camp, camp) {
-    try {
-        const client = await pool.connect();
-
-        try {
-            if (isEmptyObject(camp)) {
-                throw new ErrorMessage('ERROR');
-            }
-
-            await client.query('BEGIN');
-            await client.query(queryStringUpdateAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country, camp.id_Address])
-            await client.query(queryStringUpdateCamp, [camp.name, camp.id_Leader]);
-            await client.query('COMMIT');
-            return new SuccessMessage(global.successMessages.SUCCESS_UPDATE_CAMP);
-        } catch (error) {
-            await client.query('ROLLBACK');
-            throw new ErrorMessage('ERROR');
-        } finally {
-            client.release();
+function _updateCamp(id_Camp, camp) {
+    return new Promise((resolve, reject)=>{
+        if (isEmptyObject(camp)) {
+            reject(global.errorMessages.ERROR_CAMP_MISSING_DATA);
         }
-    } catch (error) {
-        throw error;
-    }
+
+        pool.connect()
+            .then((client)=>{
+                client.query('BEGIN')
+                    .then(()=>{
+                        return client.query(queryStringUpdateAddress, [camp.addressLine1, camp.addressLine2, camp.postCode, camp.city, camp.country, camp.id_Address]);
+                    })
+                    .then(()=>{
+                        return client.query(queryStringUpdateCamp, [camp.name, camp.id_Leader]);
+                    })
+                    .then(()=>{
+                        return client.query('COMMIT');
+                    })
+                    .then(()=>{
+                        resolve({'statusCode':204});
+                    })
+                    .catch((error)=>{
+                        rollbackDatabase(client);
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+                    .finally(()=>{
+                        client.release();
+                    })
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error); 
+            });
+    });
 }
 /* #endregion */
 
 /* #region documentType functions */
-async function _getAllDocumentTypes() {
-    try {
-        let result = await client.query(queryStringSelectAllDocumentTypes);
-        return result.rows;
-    } catch (err) {
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _getAllDocumentTypes() {
+    return new Promise((resolve, reject)=>{
+        pool.connect()
+            .then((client)=>{
+                client.query(queryStringSelectAllDocumentTypes)
+                    .then((result)=>{
+                        resolve({'statusCode':200, 'values':result.rows});
+                    })
+                    .catch((error)=>{
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+                    .finally(()=>{
+                        client.release();
+                    });
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error); 
+            });
+    });
 }
 
-async function _insertDocumentType(documentType) {
-    try {
-        await client.query(queryStringInsertDocumentType, [documentType.type]);
-        return 'Insert of documentType was successful';
-    } catch (err) {
-        throw new Error('Something unexpected happened: ' + err);
-    }
+function _insertDocumentType(documentType) {
+    return new Promise((resolve, reject)=>{
+        var resultDocumentType;
+
+        pool.connect()
+            .then((client)=>{
+                client.query('BEGIN')
+                    .then(()=>{
+                        return client.query(queryStringInsertDocumentType, [documentType.type]);
+                    })
+                    .then((result)=>{
+                        resultDocumentType=result;
+                        return client.query('COMMIT');
+                    })
+                    .then(()=>{
+                        resolve({'statusCode':201, 'values':{'id_documentType':resultDocumentType.rows[0].id_documenttype}})
+                    })
+                    .catch((error)=>{
+                        rollbackDatabase(client);
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+                    .finally(()=>{
+                        client.release();
+                    });
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error); 
+            });
+    });
 }
 
 /* #endregion */
