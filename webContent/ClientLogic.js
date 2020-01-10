@@ -22,6 +22,10 @@ app.config(function ($routeProvider) {
     .when('/editEmployee', {
       templateUrl: 'webpages/EmployeeEditPage.html',
       controller: 'editController'
+    })
+    .when('/enterWorkday',{
+      templateUrl: 'webpages/enterWorkday.html',
+      controller: 'enterWorkDay'
     });
 });
 

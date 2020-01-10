@@ -2,109 +2,112 @@
 <html lang="de">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="google-signin-client_id"
-        content="271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="scripts/angular/angular.min.js"></script>
-    <script src="scripts/angular/angular-route.js"></script>
-    <script src="scripts/jQuery/jquery-3.4.1.js"></script>
-    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
-    <script src="scripts/bootstrap/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
-    <script src="https://apis.google.com/js/client:plusone.js" async defer></script>
+  <meta charset="UTF-8">
+  <meta name="google-signin-client_id"
+    content="271184372430-6qtb5ajg14i0fph28u33e6tvv0qhvc42.apps.googleusercontent.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="scripts/angular/angular.min.js"></script>
+  <script src="scripts/angular/angular-route.js"></script>
+  <script src="scripts/jQuery/jquery-3.4.1.js"></script>
+  <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+  <script src="scripts/bootstrap/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
+  <script src="https://apis.google.com/js/client:plusone.js" async defer></script>
 
-    <script src="./ClientLogic.js"></script>
-    <script src="./googleLogin.js"></script>
+  <script src="./ClientLogic.js"></script>
+  <script src="./googleLogin.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="myStyles.css" />
+  <link rel="stylesheet" type="text/css" href="myStyles.css" />
 
-    <link rel="stylesheet" href="scripts/bootstrap/bootstrap-4.3.1-dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="scripts/bootstrap/bootstrap-4.3.1-dist/css/bootstrap.min.css" />
 
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
 
-    <title>Sportcamp Salcher - Mitarbeiterverwaltung</title>
+  <title>Sportcamp Salcher - Mitarbeiterverwaltung</title>
 </head>
 
 <body>
-    <div ng-app="myApp" ng-controller="myCtrl" ng-init="getEmployees()">
+  <div ng-app="myApp" ng-controller="myCtrl" ng-init="getEmployees()">
 
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/">Sportcamp Salcher</a>
-                </div>
-                <ul class="navbar-nav ml-auto">60
-                    <li class="nav-item"><a class="nav-link" href="/index.html#!/registerEmployee"><span
-                                class="fa fa-user"></span> Mitarbeiter anlegen</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-home"></span> Verwaltung</a>
-                    </li>
-                    <li class="nav-item"><a class="btn btn-default navbar-btn" data-toggle="modal"
-                            data-target="#exampleModalCenter" type="button"><span class="fa fa-sign-in"></span>
-                            Login</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <mat-drawer-container class="example-container mat-typography" autosize>
-            <mat-drawer #drawer mode="side" disableClose="true" opened="true">
-              <button mat-mini-fab (click)="isExpanded = !isExpanded" color="warn" style="margin: 10px;">
-                <mat-icon aria-label="Menu">menu</mat-icon>
-              </button>
-          
-              <mat-nav-list>
-                <mat-list-item>
-                  <mat-icon mat-list-icon>person</mat-icon>
-                  <h4 mat-line *ngIf="isExpanded">Management A</h4>
-                </mat-list-item>
-                <mat-list-item>
-                  <mat-icon mat-list-icon>assignment</mat-icon>
-                  <h4 mat-line *ngIf="isExpanded">Management B</h4>
-                </mat-list-item>
-                <mat-list-item>
-                  <mat-icon mat-list-icon>domain</mat-icon>
-                  <h4 mat-line *ngIf="isExpanded">Management C</h4>
-                </mat-list-item>
-                <mat-list-item>
-                  <mat-icon mat-list-icon>folder_shared</mat-icon>
-                  <h4 mat-line *ngIf="isExpanded">Management X</h4>
-                </mat-list-item>
-              </mat-nav-list>
-            </mat-drawer>
-          
-            <div class="example-sidenav-content">
-              You cards and screen Contents goes here..
-              Will be pushed towards right on expanding side navbar.
-            </div>
-          </mat-drawer-container>
-
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Login mit:</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="my-signin2"></div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Sportcamp Salcher</a>
         </div>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item"><a class="nav-link" href="/index.html#!/enterWorkday"><span class="fa fa-user"></span>
+              Zeit
+              eintragen</a></li>
+          <li class="nav-item"><a class="nav-link" href="/index.html#!/enterWorkday"><span class="fa fa-user"></span>
+              Mitarbeiter anlegen</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-home"></span> Verwaltung</a>
+          </li>
+          <li class="nav-item"><a class="btn btn-default navbar-btn" data-toggle="modal"
+              data-target="#exampleModalCenter" type="button"><span class="fa fa-sign-in"></span>
+              Login</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <mat-drawer-container class="example-container mat-typography" autosize>
+      <mat-drawer #drawer mode="side" disableClose="true" opened="true">
+        <button mat-mini-fab (click)="isExpanded = !isExpanded" color="warn" style="margin: 10px;">
+          <mat-icon aria-label="Menu">menu</mat-icon>
+        </button>
 
+        <mat-nav-list>
+          <mat-list-item>
+            <mat-icon mat-list-icon>person</mat-icon>
+            <h4 mat-line *ngIf="isExpanded">Management A</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>assignment</mat-icon>
+            <h4 mat-line *ngIf="isExpanded">Management B</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>domain</mat-icon>
+            <h4 mat-line *ngIf="isExpanded">Management C</h4>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon mat-list-icon>folder_shared</mat-icon>
+            <h4 mat-line *ngIf="isExpanded">Management X</h4>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-drawer>
 
-        <div id="main">
-            <div ng-view></div>
+      <div class="example-sidenav-content">
+        You cards and screen Contents goes here..
+        Will be pushed towards right on expanding side navbar.
+      </div>
+    </mat-drawer-container>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Login mit:</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="my-signin2"></div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
         </div>
-
+      </div>
     </div>
+
+
+    <div id="main">
+      <div ng-view></div>
+    </div>
+
+  </div>
 </body>
 
 
