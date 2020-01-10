@@ -25,7 +25,7 @@ app.config(function ($routeProvider) {
     })
     .when('/enterWorkday',{
       templateUrl: 'webpages/enterWorkday.html',
-      controller: 'enterWorkDay'
+      controller: 'enterWorkdayController'
     });
 });
 
@@ -121,6 +121,10 @@ app.controller('informationController', function ($scope,CurrentEmployee,$locati
   $scope.cancelView = function (){
      $location.path('/');
    };
+});
+
+app.controller('enterWorkdayController', function ($scope,CurrentEmployee,$location) {
+  $scope.message = 'Look! I am a page.';
 });
 
 app.factory('CurrentEmployee', function () {
