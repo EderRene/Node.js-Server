@@ -11,6 +11,7 @@ const database = require('./database.js');
 var utils = require('./global-functions');
 var employeeRouter = require("./routers/employee-router");
 var campRouter = require('./routers/camp-router')
+var documentTypeRouter = require('./routers/documentType-router');
 const security = require('./security');
 
 const app = express();
@@ -24,6 +25,7 @@ app.post('/api/login', security.login);
 //app.use(security.authenticate);
 app.use('/api/employees', employeeRouter);
 app.use('/api/camps', campRouter);
+app.use('/api/documentTypes', documentTypeRouter);
 
 //connectMongo();
 

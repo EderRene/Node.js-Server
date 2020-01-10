@@ -28,7 +28,7 @@ var errorMessages={
     ERROR_DATABASE_QUERY_NO_DATA_FOUND: 'ERROR: No data could be found in database',
 
     ERROR_EMPLOYEE_MISSING_DATA: 'ERROR: Employee data is missing',
-
+    ERROR_CAMP_MISSING_DATA: 'ERROR: Camp data is missing',
     
     ERROR_EMPTY_STRING_OF_EMAIL: 'ERROR: email was empty',
     ERROR_EMPLOYEE_NO_DATA_FOUND: 'ERROR: No employee data could be found in database',

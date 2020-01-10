@@ -33,19 +33,19 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async(req, res) => {
     try{
-        let result=await database.deleteEmployee(req.params['id'], req.body.id_Camp);
-        res.status(204).send(result);
-    } catch(err){
-        res.status(405).send(err);
+        let response=await database.deleteEmployee(req.params['id'], req.body.id_Camp);
+        res.sendStatus(response.statusCode);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 });
 
 router.put('/:id', async (req, res)=>{
     try{
-        let result=await database.updateEmployee(req.params['id'], req.body);
-        res.status(200).send(result);
-    } catch(err){
-        res.status(400).send(err);
+        let response=await database.updateEmployee(req.params['id'], req.body);
+        res.sendStatus(response.statusCode);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
     }
 });
 
