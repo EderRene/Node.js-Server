@@ -14,7 +14,7 @@
 <div class="form-row">
     <div class="form-group col">
         <label for="dateOfBirth">Geburtsdatum:</label>
-        <label type="text" id="dateOfBirth">{{currentEmployee.dateofbirth}}</label>
+        <label type="text" id="dateOfBirth">{{currentEmployee.dateofbirth | date :  "dd.MM.yyyy" }}</label>
     </div>
 </div>
 
@@ -80,7 +80,7 @@
 <div class="form-row">
     <div class="form-group col">
         <label for="bankAccountNumber">IBAN:</label>
-        <label type="text" id="bankAccountNumber">{{currentEmployee.bankAccountNumber}}</label>
+        <label type="text" id="bankAccountNumber">{{currentEmployee.bankaccountnumber}}</label>
     </div>
 
 </div>

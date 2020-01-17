@@ -22,6 +22,10 @@ app.config(function ($routeProvider) {
     .when('/editEmployee', {
       templateUrl: 'webpages/EmployeeEditPage.html',
       controller: 'editController'
+    })
+    .when('/enterWorkday',{
+      templateUrl: 'webpages/enterWorkday.html',
+      controller: 'enterWorkdayController'
     });
 });
 
@@ -94,17 +98,14 @@ app.controller('editController', function ($scope,CurrentEmployee,$location,$htt
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
   $scope.updateEmployee = function () {
-    $scope.allEmployees.splice($scope.allEmployees.indexOf($scope.currentEmployee), 1);
-    $scope.allEmployees.push($scope.currentEmployee);
-    /*
-    $http.put('/api/employees/' + $scope.currentEmployee.id_employee)
+    $http.put('/api/employees/' + $scope.currentEmployee.id_employee,$scope.currentEmployee)
       .then(function success(response) {
         $scope.allEmployees.splice($scope.allEmployees.indexOf(currentEmployee), 1);
         $scope.allEmployees.push($scope.currentEmployee);
       }, function error(response) {
-        console.log("error"+ response.data);
+        console.log("error"+ response.message);
       });
-      */
+      
   };
   $scope.cancelView = function (){
     $location.path('/');
@@ -114,12 +115,16 @@ app.controller('editController', function ($scope,CurrentEmployee,$location,$htt
 app.controller('informationController', function ($scope,CurrentEmployee,$location) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
-  $scope.editEmployee = function (employee){
+  $scope.editEmployee = function (){
     $location.path('/editEmployee');
   };
   $scope.cancelView = function (){
      $location.path('/');
    };
+});
+
+app.controller('enterWorkdayController', function ($scope,CurrentEmployee,$location) {
+  $scope.message = 'Look! I am a page.';
 });
 
 app.factory('CurrentEmployee', function () {
@@ -128,20 +133,18 @@ app.factory('CurrentEmployee', function () {
     'id_employee': null,
     'forename': null,
     'surname': null,
-    'dateOfBirth': null,
+    'dateofbirth': null,
     'svn': null,
     'uid': null,
-    'bankAccountNumber': null,
     'email': null,
     'phonenumber': null,
-    'addressLine1': null,
-    'addressLine2': null,
-    'postCode': null,
+    'addressline1': null,
+    'addressline2': null,
+    'postcode': null,
     'city': null,
-    'country': null
+    'country': null,
+    'bankaccountnumber': null
   };
-
-  
 
   return {
       getCurrentEmployee: function () {
@@ -150,13 +153,7 @@ app.factory('CurrentEmployee', function () {
       setCurrentEmployee: function (newCEmp) {
         currentEmployee = newCEmp;
         currentEmployee.svn = parseInt(newCEmp.svn);
-        currentEmployee.dateOfBirth = new Date(newCEmp.dateOfBirth);
+        currentEmployee.dateofbirth = new Date(newCEmp.dateofbirth);
       }
-  };
-});
-
-app.filter('num', function() {
-  return function(input) {
-    return parseInt(input, 10);
   };
 });
