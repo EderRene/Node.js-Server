@@ -485,6 +485,14 @@ function _insertDocumentType(documentType) {
 
 /* #endregion */
 
+/* #region documentType functions */
+
+function insertDocument(){
+     
+}
+
+/* #endregion */
+
 function isEmptyObject(obj) {
     for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {

@@ -23,8 +23,12 @@
     "bootstrap": "^4.3.1",
     "bootstrap-material-design": "^4.1.2",
     "express": "^4.17.1",
+    "express-fileupload": "^1.1.6",
     "mongoose": "^5.7.8",
-    "pg": "^7.12.1",
-    "pg-pool": "^2.0.7"
+    "multer": "^1.4.2",
+    "pg": "^7.17.0",
+    "pg-hstore": "^2.3.3",
+    "pg-pool": "^2.0.7",
+    "sequelize": "^5.21.3"
   }
 }
