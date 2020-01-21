@@ -31,6 +31,11 @@ app.config(function ($routeProvider) {
 
 app.controller('myCtrl', function ($scope, $http, $location,CurrentEmployee) {
 
+  /* <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="#" ><span class="fa fa-user"></span>Zeit&nbsp;eintragen</a>
+      <a href="#" ><span class="fa fa-user"></span>Mitarbeiter&nbsp;anlegen</a>
+      <a href="#" ><span class="fa fa-home"></span>Verwaltung</a> */
+
  // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
 
   $scope.newEmployee = {
@@ -156,4 +161,22 @@ app.factory('CurrentEmployee', function () {
         currentEmployee.dateofbirth = new Date(newCEmp.dateofbirth);
       }
   };
+});
+
+function openNav() {
+  document.getElementById("mySidenav").style.width = "300px";
+  document.getElementById("main").style.marginLeft = "300px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "5%";
+  document.getElementById("main").style.marginLeft= "5%";
+}
+
+$(document).ready(function () {
+
+  $('#sidebarCollapse').on('click', function () {
+      $('#sidebar').toggleClass('active');
+  });
+
 });
