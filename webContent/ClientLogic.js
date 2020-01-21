@@ -26,10 +26,10 @@ app.config(function ($routeProvider) {
     .when('/enterWorkday',{
       templateUrl: 'webpages/enterWorkday.html',
       controller: 'enterWorkdayController'
-    }
-    .when('/addCamp',{
-      templateUrl: 'webpages/enterWorkday.html',
-      controller: 'enterWorkdayController'
+    })
+    .when('/addCamp', {
+      templateUrl: 'webpages/CampRegistrationPage.html',
+      controller: 'CampRegistrationController'
     });
 });
 
@@ -136,8 +136,8 @@ app.controller('enterWorkdayController', function ($scope,CurrentEmployee,$locat
   $scope.message = 'Look! I am a page.';
 });
 
-app.controller('addCamp', function ($scope,CurrentEmployee,$location) {
-  $scope.message = 'Look! I am a page.';
+app.controller('CampRegistrationController', function ($scope,CurrentEmployee,$location) {
+  $scope.message = 'Look! I am a camp registration controller.';
 });
 
 app.factory('CurrentEmployee', function () {
