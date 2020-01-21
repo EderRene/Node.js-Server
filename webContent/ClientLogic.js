@@ -9,7 +9,7 @@ app.config(function ($routeProvider) {
       templateUrl: 'webpages/Mitarbeiterverwaltung.html',
       controller: 'myCtrl'
     })
-
+    
     // route for the employeeregistration page
     .when('/registerEmployee', {
       templateUrl: 'webpages/EmployeeRegistrationPage.html',
