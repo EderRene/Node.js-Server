@@ -1,6 +1,11 @@
 <div class="table-responsive-md " id="employeetablediv">
     <h2>Mitarbeiterverwaltung</h2>
-    <table class="table table-hover table-bordered table-striped" id="employeetable">
+
+    <div class="input-group">
+        <input id="filter" onkeyup="searchTable()" type="text" class="form-control" placeholder="Type here...">
+    </div>
+
+    <table id="MitarbeiterTable" class="table table-hover table-bordered table-striped" id="employeetable">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">ID</th>
@@ -12,7 +17,7 @@
                 <th scope="col">Aktionen</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="searchable">
             <tr scope="row" ng-repeat="myEmployee in allEmployees">
                 <td>{{myEmployee.id_employee}}</td>
                 <td>{{myEmployee.forename}}</td>
@@ -21,9 +26,12 @@
                 <td>{{myEmployee.phonenumber}}</td>
                 <td>{{myEmployee.city}}</td>
                 <td>
-                    <button type="button" class="btn btn-primary" ng-click="showEmployee(myEmployee)"  title="Informationen anzeigen"><i class="fa fa-eye"></i></button>
-                    <button type="button" class="btn btn-success" ng-click="editEmployee(myEmployee)" title="Mitarbeiter bearbeiten"><i class="fa fa-edit"></i></button>
-                    <button type="button" class="btn btn-danger" ng-click="deleteEmployee(myEmployee)" title="Mitarbeiter löschen"><i class="fa fa-trash-o"></i></button>
+                    <button type="button" class="btn btn-primary" ng-click="showEmployee(myEmployee)"
+                        title="Informationen anzeigen"><i class="fa fa-eye"></i></button>
+                    <button type="button" class="btn btn-success" ng-click="editEmployee(myEmployee)"
+                        title="Mitarbeiter bearbeiten"><i class="fa fa-edit"></i></button>
+                    <button type="button" class="btn btn-danger" ng-click="deleteEmployee(myEmployee)"
+                        title="Mitarbeiter löschen"><i class="fa fa-trash-o"></i></button>
                 </td>
             </tr>
         </tbody>
