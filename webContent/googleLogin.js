@@ -33,7 +33,7 @@ function onSignUpSuccess(googleUser) {
    // alert("ID Token: " + id_token);
 
    alert("Hallo " + profile.getName());
-   // loginRequest(id_token);
+   loginRequest(id_token);
 
 
     // Retrieve the Google account data
@@ -43,7 +43,8 @@ function onSignUpSuccess(googleUser) {
         });
         request.execute(function (resp) {
             // Display the user details
-          
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.disconnect();
         });
     });
 }

@@ -35,9 +35,9 @@ function checkGoogleToken(req, res, token) {
                 var email = response.data.email;
                 var employee = await database.getEmployeeWithEmail(email);
 
-                if (employee != undefined) {         //schauen ob ein user diese email hat, wenn nicht weg wenn ja dann in tokentable 
+                if (employee != undefined) {         //schauen ob ein user diese email hat, wenn nicht weg -- wenn ja dann in tokentable 
                     userTokenTable[token] = employee;
-                    res.status(200).send(token);
+                    userres.status(200).send(token);
                 } else {
                     res.status(401).send('Unauthorized');
                 }
