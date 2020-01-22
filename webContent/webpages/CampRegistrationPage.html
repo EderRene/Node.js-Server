@@ -1,87 +1,51 @@
 <form ng-submit="createEmployee()" id="registerPageForm" class="needs-validation">
     <h2>Mitarbeiter anlegen</h2>
+
     <div class="form-row">
         <div class="form-group col">
-            <label for="forename">Vorname</label>
-            <input type="text" class="form-control" id="forename" placeholder="Max" ng-model="newEmployee.forename"
+            <label for="campname">Name</label>
+            <input type="text" class="form-control" id="campname" placeholder="Camp Süd" ng-model="newCamp.name"
                 required>
-        </div>
-        <div class="form-group col">
-            <label for="surname">Nachname</label>
-            <input type="text" class="form-control" id="surname" placeholder="Musterman" ng-model="newEmployee.surname"
-                required>
-
-        </div>
-        <div class="form-group col">
-            <label for="dateOfBirth">Geburtsdatum</label>
-            <input type="date" class="form-control" id="dateOfBirth" placeholder="19.09.1999"
-                ng-model="newEmployee.dateOfBirth" required>
         </div>
     </div>
 
     <div class="form-row">
-        <div class="form-group col">
-            <label for="svn">Sozialversicherungsnummer</label>
-            <input type="number" class="form-control" id="svn" placeholder="54879190999" ng-model="newEmployee.svn"
-                required>
-        </div>
-        <div class="form-group col">
-            <label for="phonenumber">Telefonnummer</label>
-            <input type="text" class="form-control" id="phonenumber" placeholder="0660 5097233"
-                ng-model="newEmployee.phonenumber" required>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="addressLine1">Straße und Hausnummer</label>
-        <input type="text" class="form-control" id="addressLine1" placeholder="Kirchbach 99"
-            ng-model="newEmployee.addressLine1" required>
-    </div>
 
-    <div class="form-group">
-        <label for="addressLine2">Adresszusatz</label>
-        <input type="text" class="form-control" id="addressLine2" placeholder="2 Stockwerk"
-            ng-model="newEmployee.addressLine2" >
-    </div>
+        <div class="form-group">
+            <label for="addressLine1">Straße und Hausnummer</label>
+            <input type="text" class="form-control" id="addressLine1" placeholder="Kirchbach 99"
+                ng-model="newCamp.addressLine1" required>
+        </div>
 
-    <div class="form-row">
+        <div class="form-group">
+            <label for="addressLine2">Adresszusatz</label>
+            <input type="text" class="form-control" id="addressLine2" placeholder="2 Stockwerk"
+                ng-model="newCamp.addressLine2">
+        </div>
+
+
         <div class="form-group col">
             <label for="postCode">Postleitzahl</label>
-            <input type="number" class="form-control" id="postCode" placeholder="9632" ng-model="newEmployee.postCode"
+            <input type="number" class="form-control" id="postCode" placeholder="9632" ng-model="newCamp.postCode"
                 required>
         </div>
 
         <div class="form-group col">
             <label for="city">Stadt</label>
-            <input type="text" class="form-control" id="city" placeholder="Kirchbach" ng-model="newEmployee.city"
+            <input type="text" class="form-control" id="city" placeholder="Kirchbach" ng-model="newCamp.city" required>
+        </div>
+        <div class="form-group">
+            <label for="country">Land</label>
+            <input type="text" class="form-control" id="country" placeholder="Österreich" ng-model="newCamp.country"
                 required>
         </div>
     </div>
 
     <div class="form-group">
-        <label for="country">Land</label>
-        <input type="text" class="form-control" id="country" placeholder="Österreich" ng-model="newEmployee.country"
-            required>
-    </div>
-
-    <div class="form-group">
-        <label for="email">Email-Adresse</label>
-        <input type="email" class="form-control" id="email" placeholder="name@example.com" name="forename"
-            ng-model="newEmployee.email" required>
-        <small id="emailHelpBlock" class="form-text text-muted">
-            Die Email MUSS eine GMAIL-Adresse sein.
-        </small>
-    </div>
-
-    <div class="form-row">
-        <div class="form-group col">
-            <label for="bankAccountNumber">IBAN</label>
-            <input type="text" class="form-control" id="bankAccountNumber" placeholder="AT0664651315"
-                ng-model="newEmployee.bankAccountNumber" required>
-        </div>
-        <div class="form-group col">
-            <label for="uid">UID</label>
-            <input type="number" class="form-control" id="uid" placeholder="4564521" ng-model="newEmployee.uid">
-        </div>
+        <label for="sel1">Select list:</label>
+        <select class="form-control" id="sel1" ng-repeat="myEmployee in allEmployees">
+            <option>{{myEmployee.forename}}</option>
+        </select>
     </div>
 
     <div class="form-group form-check">

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 
@@ -15,71 +14,122 @@
   <script src="scripts/bootstrap/bootstrap-4.3.1-dist/js/bootstrap.min.js"></script>
   <script src="https://apis.google.com/js/client:plusone.js" async defer></script>
 
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+    integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <!-- CSS for sidenav-->
+  <link rel="stylesheet" href="style4.css">
+
+  <!-- Font Awesome JS -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+    integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+    crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+    integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+    crossorigin="anonymous"></script>
+  <!-- jQuery CDN - Slim version (=without AJAX) -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <!-- Popper.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+    integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+    crossorigin="anonymous"></script>
+
+
   <script src="./ClientLogic.js"></script>
   <script src="./googleLogin.js"></script>
 
   <link rel="stylesheet" type="text/css" href="myStyles.css" />
 
-  <link rel="stylesheet" href="scripts/bootstrap/bootstrap-4.3.1-dist/css/bootstrap.min.css" />
-
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
 
   <title>Sportcamp Salcher - Mitarbeiterverwaltung</title>
 </head>
 
 <body>
-  <div ng-app="myApp" ng-controller="myCtrl" ng-init="getEmployees()">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/">Sportcamp Salcher</a>
-        </div>
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item"><a class="nav-link" href="/index.html#!/enterWorkday"><span class="fa fa-user"></span>
-              Zeit
-              eintragen</a></li>
-          <li class="nav-item"><a class="nav-link" href="/index.html#!/enterWorkday"><span class="fa fa-user"></span>
-              Mitarbeiter anlegen</a></li>
-          <li class="nav-item"><a class="nav-link" href="#"><span class="fa fa-home"></span> Verwaltung</a>
-          </li>
-          <li class="nav-item"><a class="btn btn-default navbar-btn" data-toggle="modal"
-              data-target="#exampleModalCenter" type="button"><span class="fa fa-sign-in"></span>
-              Login</a>
-          </li>
-        </ul>
+  <div ng-app="myApp" ng-controller="myCtrl" ng-init="getEmployees()" class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3>Navigation</h3>
       </div>
+
+      <ul class="list-unstyled components">
+        <li>
+          <a href="/index.html#!/registerEmployee">
+            <i class="fas fa-user"></i>
+            Mitarbeiter anlegen
+          </a> 
+        </li>
+        <li>
+          <a href="/index.html#!/enterWorkday">
+            <i class="fas fa-clock"></i>
+            Zeit eintragen
+          </a>
+        </li>
+        <li>
+          <a href="/index.html#!/">
+            <i class="fas fa-copy"></i>
+            Verwaltung
+          </a> 
+        </li>
+        <li>
+          <a href="/index.html#!/addCamp">
+            <i class="fas fa-copy"></i>
+            Camp hinzufügen
+          </a> 
+        </li>
+      </ul>
+ 
     </nav>
-    
 
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-      aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Login mit:</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div id="my-signin2"></div>
+    <!-- Page Content  -->
+    <div id="content">
 
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <span id ="sidebarCollapse" style="font-size:30px;cursor:pointer">&#9776;</span>
+            <a class="navbar-brand" href="/">Sportcamp Salcher</a> 
+        <div class="container">
+          
+          <div class="navbar-header">
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="btn btn-default navbar-btn" data-toggle="modal"
+                data-target="#exampleModalCenter" type="button"><span class="fa fa-sign-in"></span>
+                Login</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Login mit:</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="my-signin2"></div>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <div id="main">
+        <div ng-view></div>
+      </div>
     </div>
-
-
-    <div id="main">
-      <div ng-view></div>
-    </div>
-
   </div>
 </body>
-
 
 </html>
