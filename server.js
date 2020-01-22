@@ -6,7 +6,7 @@ const express = require('express');
 const expressUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const connectionsStringMongo = 'nothing_yet';
+const connectionsStringMongo = 'mongodb://localhost:27017/WorkingHours';
 const database = require('./database.js');
 
 var utils = require('./global-functions');
@@ -14,6 +14,7 @@ var employeeRouter = require("./routers/employee-router");
 var campRouter = require('./routers/camp-router')
 var fileRouter = require('./routers/file-Router')
 var documentTypeRouter = require('./routers/documentType-router');
+var workingHoursRouter = require('./routers/workingHours-router');
 const security = require('./security');
 
 const app = express();
@@ -30,8 +31,9 @@ app.use('/api/employees', employeeRouter);
 app.use('/api/camps', campRouter);
 app.use('/api/documentTypes', documentTypeRouter);
 app.use('/api/files', fileRouter);
+app.use('/api/workingHours', workingHoursRouter);
 
-//connectMongo();
+connectMongo();
 
 app.listen(port, function () {
   console.log('Time management API is up and running on port ' + port + '.');
