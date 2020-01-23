@@ -6,7 +6,7 @@
             <input type="radio" id="optionMitarbeiter" autocomplete="off" checked> Mitarbeiter
         </label>
         <label class="btn btn-secondary">
-            <input type="radio" id="optionCamps" autocomplete="off"> Camp
+            <input type="radio" id="optionCamps" ng-click="toggleVerwaltung()" autocomplete="off"> Camp
         </label>
     </div>
 
@@ -15,7 +15,8 @@
             <div class="input-group-prepend">
                 <div class="input-group-text">Filter</div>
             </div>
-            <input id="filterMitarbeiter" onkeyup="searchTableMitarbeiter()" type="text" class="form-control" placeholder="Search ...">
+            <input id="filterMitarbeiter" onkeyup="searchTableMitarbeiter()" type="text" class="form-control"
+                placeholder="Search ...">
         </div>
     </div>
 
