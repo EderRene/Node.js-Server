@@ -30,7 +30,7 @@ function _getWorkingHoursWithId(idEmployee){
         client.connect()
         .then((database)=>{
             databaseObj=database.db(databaseWorkingTimeManagement);
-            databaseObj.collection(collectionWorkingHours).findOne({'id_Employee': parseInt(idEmployee)})
+            databaseObj.collection(collectionWorkingHours).find({'id_Employee': parseInt(idEmployee)}).toArray()
                 .then((result)=>{
                     resolve({'statusCode': 200, 'values': result});
                 })

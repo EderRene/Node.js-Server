@@ -485,7 +485,7 @@ function _insertDocumentType(documentType) {
 
 /* #endregion */
 
-/* #region documentType functions */
+/* #region document functions */
 
 function insertDocument(){
      
@@ -493,6 +493,7 @@ function insertDocument(){
 
 /* #endregion */
 
+/* #region helpful functions for database*/
 function isEmptyObject(obj) {
     for (var key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -510,6 +511,8 @@ function rollbackDatabase(client){
         throw error;
     }
 }
+
+/* #endregion */
 
 module.exports.getAllEmployees = _getAllEmployees;
 module.exports.getAllCamps = _getAllCamps;
