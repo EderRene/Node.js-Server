@@ -1,5 +1,5 @@
-<form ng-submit="createEmployee()" id="registerPageForm" class="needs-validation">
-    <h2>Mitarbeiter anlegen</h2>
+<form ng-submit="createCamp()" id="registerPageForm" class="needs-validation">
+    <h2>Camp anlegen</h2>
 
     <div class="form-row">
         <div class="form-group col">
@@ -11,18 +11,19 @@
 
     <div class="form-row">
 
-        <div class="form-group">
+        <div class="form-group col">
             <label for="addressLine1">Straße und Hausnummer</label>
             <input type="text" class="form-control" id="addressLine1" placeholder="Kirchbach 99"
                 ng-model="newCamp.addressLine1" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group col">
             <label for="addressLine2">Adresszusatz</label>
             <input type="text" class="form-control" id="addressLine2" placeholder="2 Stockwerk"
                 ng-model="newCamp.addressLine2">
         </div>
-
+    </div>
+    <div class="form-row">
 
         <div class="form-group col">
             <label for="postCode">Postleitzahl</label>
@@ -34,17 +35,20 @@
             <label for="city">Stadt</label>
             <input type="text" class="form-control" id="city" placeholder="Kirchbach" ng-model="newCamp.city" required>
         </div>
-        <div class="form-group">
+        <div class="form-group col">
             <label for="country">Land</label>
             <input type="text" class="form-control" id="country" placeholder="Österreich" ng-model="newCamp.country"
                 required>
         </div>
+
     </div>
 
     <div class="form-group">
-        <label for="sel1">Select list:</label>
-        <select class="form-control" id="sel1" ng-repeat="myEmployee in allEmployees">
-            <option>{{myEmployee.forename}}</option>
+        <label for="campleiter">Campleiter festlegen:</label>
+        <select required class="form-control" id="campleiter" ng-model="newCamp.id_Leader" >
+            <option value="" selected disabled hidden>Please select</option>
+            <option ng-repeat="myEmployee in allEmployees" value="{{myEmployee.id_employee}}">{{myEmployee.id_employee}}. {{myEmployee.forename}}
+                {{myEmployee.surname}}</option>
         </select>
     </div>
 
@@ -53,7 +57,7 @@
         <label class="form-check-label" for="exampleCheck1">Alles Korrekt?</label>
     </div>
 
-    <button type="submit" class="btn btn-primary">Mitarbeiter anlegen</button>
+    <button type="submit" class="btn btn-primary">Camp anlegen</button>
 
 </form>
 
