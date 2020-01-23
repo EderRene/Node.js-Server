@@ -1,4 +1,4 @@
-var app = angular.module('myApp', ['ngRoute']);
+var app = angular.module('myApp', ['ngRoute','ngAnimate', 'ngSanitize', 'ui.bootstrap']);
 
 
 app.config(function ($routeProvider) {
@@ -33,7 +33,7 @@ app.config(function ($routeProvider) {
     });
 });
 
-app.controller('myCtrl', function ($scope, $http, $location,CurrentEmployee) {
+app.controller('myCtrl', function ($scope, $http, $location,CurrentEmployee,$log) {
 
   /* <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
       <a href="#" ><span class="fa fa-user"></span>Zeit&nbsp;eintragen</a>
@@ -132,8 +132,36 @@ app.controller('informationController', function ($scope,CurrentEmployee,$locati
    };
 });
 
-app.controller('enterWorkdayController', function ($scope,CurrentEmployee,$location) {
-  $scope.message = 'Look! I am a page.';
+app.controller('enterWorkdayController', function ($scope,CurrentEmployee,$location,$log) {
+  $scope.mytime = new Date();
+
+  $scope.hstep = 1;
+  $scope.mstep = 15;
+
+  $scope.options = {
+    hstep: [1, 2, 3],
+    mstep: [1, 5, 10, 15, 25, 30]
+  };
+
+  $scope.ismeridian = true;
+  $scope.toggleMode = function() {
+    $scope.ismeridian = ! $scope.ismeridian;
+  };
+
+  $scope.update = function() {
+    var d = new Date();
+    d.setHours( 14 );
+    d.setMinutes( 0 );
+    $scope.mytime = d;
+  };
+
+  $scope.changed = function () {
+    $log.log('Time changed to: ' + $scope.mytime);
+  };
+
+  $scope.clear = function() {
+    $scope.mytime = null;
+  };
 });
 
 app.controller('CampRegistrationController', function ($scope,CurrentEmployee,$location) {
