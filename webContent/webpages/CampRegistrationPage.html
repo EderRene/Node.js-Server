@@ -1,4 +1,4 @@
-<form ng-submit="createCamp()" id="registerPageForm" class="needs-validation">
+<form ng-submit="createCamp()" id="registerPageForm" class="needs-validation" ng-init="getEmployees()">
     <h2>Camp anlegen</h2>
 
     <div class="form-row">
@@ -45,9 +45,10 @@
 
     <div class="form-group">
         <label for="campleiter">Campleiter festlegen:</label>
-        <select required class="form-control" id="campleiter" ng-model="newCamp.id_Leader" >
+        <select required class="form-control" id="campleiter" ng-model="newCamp.id_Leader">
             <option value="" selected disabled hidden>Please select</option>
-            <option ng-repeat="myEmployee in allEmployees" value="{{myEmployee.id_employee}}">{{myEmployee.id_employee}}. {{myEmployee.forename}}
+            <option ng-repeat="myEmployee in allEmployees" value="{{myEmployee.id_employee}}">
+                {{myEmployee.id_employee}}. {{myEmployee.forename}}
                 {{myEmployee.surname}}</option>
         </select>
     </div>

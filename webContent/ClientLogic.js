@@ -58,6 +58,21 @@ app.controller('campController', function ($scope, $http, $location, CurrentCamp
         alert('Could not get camps:' + response.data);
       });
   };
+
+  $scope.deleteCamp = function (camp) {
+    $http.delete('/api/camps/' + camp.id_camp)
+      .then(function success(response) {
+
+        $scope.allCamps.splice($scope.allCamps.indexOf(camp), 1);
+
+      }, function error(response) {
+        console.log("error");
+      });
+  };
+});
+
+app.controller('registrationController', function ($scope, CurrentEmployee, $location) {
+  $scope.message = 'Look! I am a page.';
 });
 
 app.controller('campRegistrationController', function ($scope, $http, $location, CurrentCamp) {
@@ -83,14 +98,6 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
     'id_Leader': null
   };
 
-  $scope.getCamps = function () {
-    $http.get('/api/camps')
-      .then(function mySuccess(response) {
-        $scope.allCamps = response.data;
-      }, function myError(response) {
-        alert('Could not get camps:' + response.data);
-      });
-  };
 
   $scope.createCamp = function () {
     $http.post('/api/camps', $scope.newCamp)
@@ -103,16 +110,7 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
       });
   }
 
-  $scope.deleteCamp = function (camp) {
-    $http.delete('/api/camps/' + camp.id_camp)
-      .then(function success(response) {
 
-        $scope.allCamps.splice($scope.allCamps.indexOf(camp), 1);
-
-      }, function error(response) {
-        console.log("error");
-      });
-  };
   $scope.editCamp = function (camp) {
     CurrentCamp.setCurrentEmployee(employee);
     $location.path('/editCamp');
