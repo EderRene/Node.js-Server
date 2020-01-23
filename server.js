@@ -5,7 +5,6 @@ const webContentDirectory = './webContent';
 const express = require('express');
 const expressUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 
 var utils = require('./global-functions');
 var employeeRouter = require("./routers/employee-router");

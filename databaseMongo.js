@@ -71,5 +71,53 @@ function _insertWorkingHours(workingHours){
     });
 }
 
+function _updateWorkingHours(id_Employee, workingHours){
+    return new Promise((resolve, reject)=>{
+        client.connect()
+            .then((database)=>{
+                databaseObj=database.db(databaseWorkingTimeManagement);
+                databaseObj.collection(collectionWorkingHours).updateOne({'id_Employee': parseInt(id_Employee)}, {$set: workingHours})
+                    .then(()=>{
+                        resolve({'statusCode': 204, 'values': {}});
+                    })
+                    .catch((error)=>{
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error); 
+                    });
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error);
+            })
+    });
+}
+
+function _deleteWorkingHours(id_Employee){
+    return new Promise((resolve, reject)=>{
+        client.connect()
+            .then((database)=>{
+                databaseObj=database.db(databaseWorkingTimeManagement);
+                databaseObj.collection(collectionWorkingHours).deleteOne({'id_Employee': parseInt(id_Employee)})
+                    .then(()=>{
+                        resolve({'statusCode': 204, 'values': {}});
+                    })
+                    .catch((error)=>{
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error); 
+                    });
+            })
+            .catch((error)=>{
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error);
+            });
+    });
+}
+
 module.exports.getWorkingHoursWithId=_getWorkingHoursWithId;
 module.exports.insertWorkingHours=_insertWorkingHours;
+module.exports.updateWorkingHours=_updateWorkingHours;
+module.exports.deleteWorkingHours=_deleteWorkingHours;
