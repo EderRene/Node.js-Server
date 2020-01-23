@@ -1,35 +1,62 @@
-<div class="md-form">
+<form ng-submit="createTimeEntry()" id="createTimeEntryForm" class="needs-validation">
 
-    <div ng-controller="enterWorkdayController">
-        <h2>Arbeitszeiten vom {{mytime | date:'dd.MM.yyyy'}}</h2>
-        <div class="alert alert-info">
+    
+        <h2>Arbeitszeiten vom {{newWorkDay.workingDate | date:'dd.MM.yyyy'}}</h2>
+
         <div class="form-row">
-            <label>Von:</label>
-            <div uib-timepicker ng-model="mytimeFromF" ng-change="changed()" hour-step="1" minute-step="1"
+            <label>Vormittag</label>
+            <label>&nbsp;&nbsp;Von:</label>
+            <div uib-timepicker ng-model="newWorkDay.workingHours.forenoon.startTime" ng-change="changed()" hour-step="1" minute-step="1"
                 show-meridian="false"></div>
-            <label>Bis:</label>
-            <div uib-timepicker ng-model="mytimeToF" ng-change="changed()" hour-step="1" minute-step="1"
-                show-meridian="false"></div>
-        </div>
-        <label>Info:</label>
-        <input type="text" class="input-group" id="forename" placeholder="Max" ng-model="newEmployee.forename"
-                required>
-        </div>
         
-        <div class="form-row">
-            <label>Von:</label>
-            <div uib-timepicker ng-model="mytimeFromA" ng-change="changed()" hour-step="1" minute-step="1"
-                show-meridian="false"></div>
-            <label>Bis:</label>
-            <div uib-timepicker ng-model="mytimeToA" ng-change="changed()" hour-step="1" minute-step="1"
-                show-meridian="false"></div>
-
+        <label>Bis:</label>
+        <div uib-timepicker ng-model="newWorkDay.workingHours.forenoon.endTime" ng-change="changed()" hour-step="1"
+            minute-step="1" show-meridian="false"></div>
         </div>
-        <pre class="alert alert-info">Time is: {{mytimeFromF | date:'shortTime' }} to {{mytimeToF | date:'shortTime' }} and {{mytimeFromA | date:'shortTime' }} to {{mytimeToA | date:'shortTime' }}  </pre>
+    <label>Info:</label>
+    <input type="text" class="input-group" id="txtForenoon" placeholder="Tätigkeit Vormittag"
+        ng-model="newWorkDay.workingHours.forenoon.info" required>
 
-  
-        <button type="button" class="btn btn-default" ng-click="update()">Set to 14:00</button>
-        <button type="button" class="btn btn-danger" ng-click="clear()">Clear</button>
-
+        <hr>
+    <div class="form-row">
+        <label>Nachmittag </label>
+        <label>&nbsp;&nbsp;Von:</label>
+        <div uib-timepicker ng-model="newWorkDay.workingHours.afternoon.startTime" ng-change="changed()" hour-step="1"
+            minute-step="1" show-meridian="false"></div>
+        <label>Bis:</label>
+        <div uib-timepicker ng-model="newWorkDay.workingHours.afternoon.endTime" ng-change="changed()" hour-step="1"
+            minute-step="1" show-meridian="false"></div>
     </div>
-</div>
+    <label>Info:</label>
+    <input type="text" class="input-group" id="txtAfternoon" placeholder="Tätigkeit Nachmittag"
+        ng-model="newWorkDay.workingHours.afternoon.info" required>
+
+
+    <pre
+        class="alert alert-info">Time is: {{newWorkDay.workingHours.afternoon.startTime| date:'shortTime' }} to {{forenoon.endTime | date:'shortTime' }} and {{afternoon.startTime | date:'shortTime' }} to {{afternoon.endTime | date:'shortTime' }}  </pre>
+
+    <button type="button" class="btn btn-danger" ng-click="clear()">Clear</button>
+    <button type="submit" class="btn btn-primary">Zeit eintragen</button>
+
+</form>
+
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
