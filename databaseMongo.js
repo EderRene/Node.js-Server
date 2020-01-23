@@ -1,15 +1,59 @@
 const MongoClient = require('mongodb').MongoClient;
 const connectionStringMongo = 'mongodb://salcher.synology.me:27017/WorkingTimeManagement';
 const client = new MongoClient(connectionStringMongo);
-const collectionWorkingHours = 'workingHours';
+const collectionWorkingHours = 'WorkingHours';
 const databaseWorkingTimeManagement = 'WorkingTimeManagement';
+
+_createUniqueIndex();
+
+function _createUniqueIndex(){
+    client.connect()
+        .then((database)=>{
+            databaseObj=database.db(databaseWorkingTimeManagement);
+            databaseObj.collection(collectionWorkingHours).createIndex({'id_Employee': 1}, {unique: true})
+                .then(()=>{
+                    console.log('MongoDB Index for id_Employee created');
+                })
+                .catch((error)=>{
+                    error.message='Could not create MongoDB Index for id_Employee';
+                    throw error;
+                })
+        })
+        .catch((error)=>{
+            error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+            throw error;
+        })
+}
+
+function _getWorkingHoursWithId(idEmployee){
+    return new Promise((resolve, reject)=>{
+        client.connect()
+        .then((database)=>{
+            databaseObj=database.db(databaseWorkingTimeManagement);
+            databaseObj.collection(collectionWorkingHours).findOne({'id_Employee': parseInt(idEmployee)})
+                .then((result)=>{
+                    resolve({'statusCode': 200, 'values': result});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error);
+                });
+        })
+        .catch((error)=>{
+            error.statusCode=500;
+            error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+            reject(error);
+        })
+    })
+}
 
 function _insertWorkingHours(workingHours){
     return new Promise((resolve, reject)=>{
         client.connect()
             .then((database)=>{
                 databaseObj=database.db(databaseWorkingTimeManagement);
-                databaseObj.collection(collectionWorkingHours)
+                databaseObj.collection(collectionWorkingHours).insertOne(workingHours)
                     .then(()=>{
                         resolve({'statusCode': 201, 'values': {}});
                     })
@@ -17,7 +61,7 @@ function _insertWorkingHours(workingHours){
                         error.statusCode=500;
                         error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
                         reject(error);
-                    })
+                    });
             })
             .catch((error)=>{
                 error.statusCode=500;
@@ -27,4 +71,5 @@ function _insertWorkingHours(workingHours){
     });
 }
 
+module.exports.getWorkingHoursWithId=_getWorkingHoursWithId;
 module.exports.insertWorkingHours=_insertWorkingHours;
