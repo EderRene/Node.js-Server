@@ -41,6 +41,8 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
 
   // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
 
+  $scope.allCamps=[];
+  
   $scope.newCamp = {
     'id_Camp': null,
     'name': null,
@@ -64,7 +66,7 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
   $scope.createCamp = function () {
     $http.post('/api/camps', $scope.newCamp)
       .then(function (response) {
-        $scope.newCamp.id_camp = response.data.id_camp;
+        $scope.newCamp.id_Camp = response.data.id_Camp;
         $scope.allCamps.push($scope.newCamp);
       }, function (response) {
         console.error(response);
