@@ -9,8 +9,7 @@ _createUniqueIndex();
 function _createUniqueIndex(){
     client.connect()
         .then((database)=>{
-            databaseObj=database.db(databaseWorkingTimeManagement);
-            databaseObj.collection(collectionWorkingHours).createIndex({'id_Employee': 1, 'workingDate': 1}, {unique: true})
+            database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).createIndex({'id_Employee': 1, 'workingDate': 1}, {unique: true})
                 .then(()=>{
                     console.log('MongoDB Index for id_Employee created');
                 })
@@ -29,8 +28,7 @@ function _getWorkingHoursWithId(idEmployee){
     return new Promise((resolve, reject)=>{
         client.connect()
         .then((database)=>{
-            databaseObj=database.db(databaseWorkingTimeManagement);
-            databaseObj.collection(collectionWorkingHours).find({'id_Employee': parseInt(idEmployee)}).toArray()
+            database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).find({'id_Employee': parseInt(idEmployee)}).toArray()
                 .then((result)=>{
                     resolve({'statusCode': 200, 'values': result});
                 })
@@ -52,8 +50,7 @@ function _insertWorkingHours(workingHours){
     return new Promise((resolve, reject)=>{
         client.connect()
             .then((database)=>{
-                databaseObj=database.db(databaseWorkingTimeManagement);
-                databaseObj.collection(collectionWorkingHours).insertOne(workingHours)
+                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).insertOne(workingHours)
                     .then(()=>{
                         resolve({'statusCode': 201, 'values': {}});
                     })
@@ -75,8 +72,7 @@ function _updateWorkingHours(id_Employee, workingHours){
     return new Promise((resolve, reject)=>{
         client.connect()
             .then((database)=>{
-                databaseObj=database.db(databaseWorkingTimeManagement);
-                databaseObj.collection(collectionWorkingHours).updateOne({'id_Employee': parseInt(id_Employee)}, {$set: workingHours})
+                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).updateOne({'id_Employee': parseInt(id_Employee)}, {$set: workingHours})
                     .then(()=>{
                         resolve({'statusCode': 204, 'values': {}});
                     })
@@ -98,8 +94,7 @@ function _deleteWorkingHours(id_Employee){
     return new Promise((resolve, reject)=>{
         client.connect()
             .then((database)=>{
-                databaseObj=database.db(databaseWorkingTimeManagement);
-                databaseObj.collection(collectionWorkingHours).deleteOne({'id_Employee': parseInt(id_Employee)})
+                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).deleteOne({'id_Employee': parseInt(id_Employee)})
                     .then(()=>{
                         resolve({'statusCode': 204, 'values': {}});
                     })
