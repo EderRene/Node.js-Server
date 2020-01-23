@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const database = require('../database.js');
+const database = require('../databasePostgres.js');
 var router = express.Router();
 
 router.get('/', async (req, res) => {

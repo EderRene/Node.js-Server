@@ -24,6 +24,7 @@
     "bootstrap-material-design": "^4.1.2",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.6",
+    "mongodb": "^3.5.2",
     "mongoose": "^5.7.8",
     "multer": "^1.4.2",
     "pg": "^7.17.0",

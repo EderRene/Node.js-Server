@@ -257,7 +257,7 @@ function _getAllCamps() {
     return new Promise((resolve, reject)=>{
         pool.connect()
             .then((client)=>{
-                client.query(queryStringSelectAllEmployees)
+                client.query(queryStringSelectAllCamps)
                     .then((result)=>{
                         resolve({'statusCode': 200, 'values': result.rows});
                     })
@@ -327,7 +327,7 @@ function _insertCamp(camp) {
                         return client.query('COMMIT');
                     })
                     .then(()=>{
-                        resolve({'statusCode':201, 'values':{'id_Address': resultAddress.rows[0].id_address, 'id_Employee': resultCamp.rows[0].id_camp}});
+                        resolve({'statusCode':201, 'values':{'id_Address': resultAddress.rows[0].id_address, 'id_Camp': resultCamp.rows[0].id_camp}});
                     })
                     .catch((error)=>{
                         rollbackDatabase(client);

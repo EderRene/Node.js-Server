@@ -1,5 +1,5 @@
 const axios = require('axios');
-const database = require('./database');
+const database = require('./databasePostgres');
 
 module.exports.login = login;
 module.exports.authenticate = authenticate;
