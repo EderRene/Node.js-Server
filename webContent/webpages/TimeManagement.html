@@ -1,52 +1,30 @@
-<div class="table-responsive-md " id="employeetablediv" ng-init="getEmployees()">
-    <h2>Verwaltung</h2>
+<div class="table-responsive-md " id="workdaytablediv" ng-init="getWorkdays()">
+    <h2>Arbeitstage</h2>
 
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" id="optionMitarbeiter" autocomplete="off" checked> Mitarbeiter
-        </label>
-        <label class="btn btn-secondary">
-            <input type="radio" id="optionCamps" ng-click="toggleVerwaltung()" autocomplete="off"> Camp
-        </label>
-    </div>
-
-    <div class="float-right mb-2">
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <div class="input-group-text">Filter</div>
-            </div>
-            <input id="filterMitarbeiter" onkeyup="searchTableMitarbeiter()" type="text" class="form-control"
-                placeholder="Search ...">
-        </div>
-    </div>
-
-    <table id="MitarbeiterTable" class="table table-hover table-bordered table-striped" id="employeetable">
+    <table id="WorkdayTable" class="table table-hover table-bordered table-striped" id="workdaytable">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Vorname</th>
-                <th scope="col">Nachname</th>
-                <th scope="col">Anstellung</th>
-                <th scope="col">Telefonnummer</th>
-                <th scope="col">Arbeitsort</th>
-                <th scope="col">Aktionen</th>
+                <th scope="col">Day</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Info</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Info</th>
             </tr>
         </thead>
-        <tbody id="searchableMitarbeiter">
-            <tr scope="row" ng-repeat="myEmployee in allEmployees">
-                <td>{{myEmployee.id_employee}}</td>
-                <td>{{myEmployee.forename}}</td>
-                <td>{{myEmployee.surname}}</td>
-                <td>Mitarbeiter</td>
-                <td>{{myEmployee.phonenumber}}</td>
-                <td>{{myEmployee.city}}</td>
+        <tbody id="searchableWorkdays">
+            <tr scope="row" ng-repeat="myWorkday in allWorkdays">
+                <td>{{myWorkday.workingDate | date: 'dd.MM.yyyy'}}</td>
+                <td>{{myWorkday.workingHours.forenoon.startTime | date: 'HH:mm'}}</td>
+                <td>{{myWorkday.workingHours.forenoon.endTime| date: 'HH:mm'}}</td>
+                <td>{{myWorkday.workingHours.forenoon.info}}</td>
+                <td>{{myWorkday.workingHours.afternoon.startTime| date: 'HH:mm'}}</td>
+                <td>{{myWorkday.workingHours.afternoon.endTime| date: 'HH:mm'}}</td>
+                <td>{{myWorkday.workingHours.afternoon.info}}</td>
                 <td>
-                    <button type="button" class="btn btn-primary" ng-click="showEmployee(myEmployee)"
-                        title="Informationen anzeigen"><i class="fa fa-eye"></i></button>
-                    <button type="button" class="btn btn-success" ng-click="editEmployee(myEmployee)"
-                        title="Mitarbeiter bearbeiten"><i class="fa fa-edit"></i></button>
-                    <button type="button" class="btn btn-danger" ng-click="deleteEmployee(myEmployee)"
-                        title="Mitarbeiter löschen"><i class="fas fa-trash-alt"></i></button>
+                    <button type="button" class="btn btn-success" ng-click="editWorkday(myWorkday)"
+                        title="Arbeitstag bearbeiten"><i class="fa fa-edit"></i></button>
                 </td>
             </tr>
         </tbody>

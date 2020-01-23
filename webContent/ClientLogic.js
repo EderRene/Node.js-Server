@@ -120,8 +120,23 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
       <a href="#" ><span class="fa fa-home"></span>Verwaltung</a> */
 
   // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
-
-
+  
+  $scope.employeeSelected = function (employee) {
+    CurrentEmployee.setCurrentEmployee(employee);
+    
+    $scope.alerts = [
+      { type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.' },
+      { type: 'success', msg: 'Well done! You successfully read this important alert message.' }
+    ];
+  
+    $scope.addAlert = function() {
+      $scope.alerts.push({msg: 'Another alert!'});
+    };
+  
+    $scope.closeAlert = function(index) {
+      $scope.alerts.splice(index, 1);
+    };
+  };
 
   $scope.toggleVerwaltung = function () {
 
@@ -208,8 +223,17 @@ app.controller('editController', function ($scope, CurrentEmployee, $location, $
     $location.path('/');
   };
 });
-app.controller('timeManagementController', function ($scope, CurrentEmployee, $location,$log) {
-  $scope.message = 'Look! I am a page.';
+app.controller('timeManagementController', function ($scope, CurrentEmployee, $location,$http) {
+  $scope.allWorkdays = [];
+
+  $scope.getWorkdays = function () {
+    $http.get('/api/workingHours/' + CurrentEmployee.getCurrentEmployee().id_employee)
+      .then(function mySuccess(response) {
+        $scope.allWorkdays = response.data;
+      }, function myError(response) {
+        alert('Could not get Workdays:' + response.data);
+      });
+  };
 });
 
 app.controller('employeeinformationController', function ($scope, CurrentEmployee, $location) {
@@ -286,7 +310,6 @@ app.factory('CurrentEmployee', function () {
     }
   };
 });
-
 
 app.factory('CurrentCamp', function () {
 
