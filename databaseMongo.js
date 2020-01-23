@@ -6,6 +6,7 @@ const databaseWorkingTimeManagement = 'WorkingTimeManagement';
 
 _createUniqueIndex();
 
+/* #region workingHours functions*/
 function _createUniqueIndex(){
     client.connect()
         .then((database)=>{
@@ -111,6 +112,7 @@ function _deleteWorkingHours(id_Employee){
             });
     });
 }
+/* #endregion */
 
 module.exports.getWorkingHoursWithId=_getWorkingHoursWithId;
 module.exports.insertWorkingHours=_insertWorkingHours;

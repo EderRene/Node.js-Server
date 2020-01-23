@@ -490,7 +490,6 @@ function _insertDocumentType(documentType) {
 function insertDocument() {
 
 }
-
 /* #endregion */
 
 /* #region helpful functions for database*/
