@@ -42,7 +42,7 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
   // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
 
   $scope.allCamps=[];
-  
+
   $scope.newCamp = {
     'id_Camp': null,
     'name': null,
@@ -264,9 +264,16 @@ $(document).ready(function () {
   });
 });
 
-function searchTable(){
-  var value = $("#filter").val().toLowerCase();
-    $("#searchable tr").filter(function () {
+function searchTableMitarbeiter(){
+  var value = $("#filterMitarbeiter").val().toLowerCase();
+    $("#searchableMitarbeiter tr").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+}
+
+function searchTableCamp(){
+  var value = $("#filterCamp").val().toLowerCase();
+    $("#searchableCamp tr").filter(function () {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
 }

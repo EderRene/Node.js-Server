@@ -1,37 +1,35 @@
 <div class="md-form">
-    <input placeholder="Selected time" type="text" id="input_starttime" class="form-control timepicker">
-    <label for="input_starttime">Light version, 12hours</label>
 
     <div ng-controller="enterWorkdayController">
-
-        <div uib-timepicker ng-model="mytime" ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></div>
-    
-        <pre class="alert alert-info">Time is: {{mytime | date:'shortTime' }}</pre>
-    
-        <div class="row">
-          <div class="col-xs-6">
-            Hours step is:
-            <select class="form-control" ng-model="hstep" ng-options="opt for opt in options.hstep"></select>
-          </div>
-          <div class="col-xs-6">
-            Minutes step is:
-            <select class="form-control" ng-model="mstep" ng-options="opt for opt in options.mstep"></select>
-          </div>
+        <h2>Arbeitszeiten vom {{mytime | date:'dd.MM.yyyy'}}</h2>
+        <div class="alert alert-info">
+        <div class="form-row">
+            <label>Von:</label>
+            <div uib-timepicker ng-model="mytimeFromF" ng-change="changed()" hour-step="1" minute-step="1"
+                show-meridian="false"></div>
+            <label>Bis:</label>
+            <div uib-timepicker ng-model="mytimeToF" ng-change="changed()" hour-step="1" minute-step="1"
+                show-meridian="false"></div>
         </div>
-    
-        <hr>
-    
-        <button type="button" class="btn btn-info" ng-click="toggleMode()">12H / 24H</button>
+        <label>Info:</label>
+        <input type="text" class="input-group" id="forename" placeholder="Max" ng-model="newEmployee.forename"
+                required>
+        </div>
+        
+        <div class="form-row">
+            <label>Von:</label>
+            <div uib-timepicker ng-model="mytimeFromA" ng-change="changed()" hour-step="1" minute-step="1"
+                show-meridian="false"></div>
+            <label>Bis:</label>
+            <div uib-timepicker ng-model="mytimeToA" ng-change="changed()" hour-step="1" minute-step="1"
+                show-meridian="false"></div>
+
+        </div>
+        <pre class="alert alert-info">Time is: {{mytimeFromF | date:'shortTime' }} to {{mytimeToF | date:'shortTime' }} and {{mytimeFromA | date:'shortTime' }} to {{mytimeToA | date:'shortTime' }}  </pre>
+
+  
         <button type="button" class="btn btn-default" ng-click="update()">Set to 14:00</button>
         <button type="button" class="btn btn-danger" ng-click="clear()">Clear</button>
-    
-      </div>
+
+    </div>
 </div>
-
-
-<script>
-    $('#input_starttime').pickatime({
-        // 12 or 24 hour
-        twelvehour: false,
-    });
-</script>
