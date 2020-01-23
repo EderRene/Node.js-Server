@@ -10,7 +10,7 @@ function _createUniqueIndex(){
     client.connect()
         .then((database)=>{
             databaseObj=database.db(databaseWorkingTimeManagement);
-            databaseObj.collection(collectionWorkingHours).createIndex({'id_Employee': 1}, {unique: true})
+            databaseObj.collection(collectionWorkingHours).createIndex({'id_Employee': 1, 'workingDate': 1}, {unique: true})
                 .then(()=>{
                     console.log('MongoDB Index for id_Employee created');
                 })

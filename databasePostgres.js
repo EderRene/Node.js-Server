@@ -2,10 +2,10 @@
 
 const { Pool } = require('pg');
 const queryStringSelectAllEmployees = "SELECT e.id_employee, e.forename, e.surname, e.dateofbirth, e.id_address, e.svn, e.uid, e.bankaccountnumber , e.email, e.phonenumber, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
-const queryStringSelectAllCamps = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address";
+const queryStringSelectAllCamps = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, e.forename, e.surname, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address INNER JOIN employee e ON e.id_Employee=c.id_Leader";
 const queryStringSelectAllDocumentTypes = "SELECT id_documenttype, type FROM documentType";
 const queryStringSelectEmployeeWithId = "SELECT e.id_employee, e.forename, e.surname, e.dateofbirth, e.id_address, e.svn, e.uid, e.bankaccountnumber, e.email, e.phonenumber, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_employee=$1";
-const queryStringSelectCampWithId = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address WHERE c.id_camp=$1";
+const queryStringSelectCampWithId = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, e.forename, e.surname, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address INNER JOIN employee e ON e.id_Employee=c.id_Leader WHERE c.id_camp=$1";
 const queryStringSelectEmployeeWithEmail = "SELECT id_employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_address, svn, uid, bankaccountnumber, email, phonenumber FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_address";
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_employee";

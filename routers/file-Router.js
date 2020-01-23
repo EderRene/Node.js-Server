@@ -2,8 +2,10 @@ let express = require('express');
 let router = express.Router();
 
 router.post('/', async (req, res) => {
-    if(req.files){
-        console.log(req.files);
+    try{
+        res.status(201).send(req.files);
+    } catch(error){
+        res.status(500).send(error.message);
     }
 });
 
