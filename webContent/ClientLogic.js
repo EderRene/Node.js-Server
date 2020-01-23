@@ -1,4 +1,4 @@
-var app = angular.module('myApp', ['ngRoute','ngAnimate', 'ngSanitize', 'ui.bootstrap']);
+var app = angular.module('myApp', ['ngRoute', 'ngAnimate', 'ngSanitize', 'ui.bootstrap']);
 
 
 app.config(function ($routeProvider) {
@@ -8,6 +8,10 @@ app.config(function ($routeProvider) {
     .when('/', {
       templateUrl: 'webpages/Mitarbeiterverwaltung.html',
       controller: 'myCtrl'
+    })
+    .when('/campVerwaltung', {
+      templateUrl: 'webpages/Campverwaltung.html',
+      controller: 'campController'
     })
     // route for the employeeregistration page
     .when('/registerEmployee', {
@@ -32,7 +36,9 @@ app.config(function ($routeProvider) {
     });
 });
 
-app.controller('campRegistrationController', function ($scope, $http, $location, CurrentEmployee) {
+
+
+app.controller('campController', function ($scope, $http, $location, CurrentCamp) {
 
   /* <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
       <a href="#" ><span class="fa fa-user"></span>Zeit&nbsp;eintragen</a>
@@ -41,7 +47,45 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
 
   // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
 
-  $scope.allCamps=[];
+
+  $scope.allCamps = [];
+
+  $scope.getCamps = function () {
+    $http.get('/api/camps')
+      .then(function mySuccess(response) {
+        $scope.allCamps = response.data;
+      }, function myError(response) {
+        alert('Could not get camps:' + response.data);
+      });
+  };
+
+  $scope.deleteCamp = function (camp) {
+    $http.delete('/api/camps/' + camp.id_camp)
+      .then(function success(response) {
+
+        $scope.allCamps.splice($scope.allCamps.indexOf(camp), 1);
+
+      }, function error(response) {
+        console.log("error");
+      });
+  };
+});
+
+app.controller('registrationController', function ($scope, CurrentEmployee, $location) {
+  $scope.message = 'Look! I am a page.';
+});
+
+app.controller('campRegistrationController', function ($scope, $http, $location, CurrentCamp) {
+
+  /* <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="#" ><span class="fa fa-user"></span>Zeit&nbsp;eintragen</a>
+      <a href="#" ><span class="fa fa-user"></span>Mitarbeiter&nbsp;anlegen</a>
+      <a href="#" ><span class="fa fa-home"></span>Verwaltung</a> */
+
+  // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
+
+
+  $scope.allCamps = [];
 
   $scope.newCamp = {
     'id_Camp': null,
@@ -54,14 +98,6 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
     'id_Leader': null
   };
 
-  $scope.getCamps = function () {
-    $http.get('/api/camps')
-      .then(function mySuccess(response) {
-        $scope.allCamps = response.data;
-      }, function myError(response) {
-        alert('Could not get camps:' + response.data);
-      });
-  };
 
   $scope.createCamp = function () {
     $http.post('/api/camps', $scope.newCamp)
@@ -74,16 +110,7 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
       });
   }
 
-  $scope.deleteCamp = function (camp) {
-    $http.delete('/api/camps/' + camp.id_camp)
-      .then(function success(response) {
 
-        $scope.allCamps.splice($scope.allCamps.indexOf(camp), 1);
-
-      }, function error(response) {
-        console.log("error");
-      });
-  };
   $scope.editCamp = function (camp) {
     CurrentCamp.setCurrentEmployee(employee);
     $location.path('/editCamp');
@@ -98,6 +125,19 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
       <a href="#" ><span class="fa fa-home"></span>Verwaltung</a> */
 
   // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
+
+
+
+  $scope.toggleVerwaltung = function () {
+
+    if ($location.path() == "/") {
+
+      $location.path('/campVerwaltung');
+
+    } else {
+      $location.path('/');
+    }
+  };
 
   $scope.newEmployee = {
     'id_employee': null,
@@ -154,10 +194,6 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
     CurrentEmployee.setCurrentEmployee(employee);
     $location.path('/editEmployee');
   };
-});
-
-app.controller('registrationController', function ($scope, CurrentEmployee, $location) {
-  $scope.message = 'Look! I am a page.';
 });
 
 app.controller('editController', function ($scope, CurrentEmployee, $location, $http) {
@@ -264,16 +300,16 @@ $(document).ready(function () {
   });
 });
 
-function searchTableMitarbeiter(){
+function searchTableMitarbeiter() {
   var value = $("#filterMitarbeiter").val().toLowerCase();
-    $("#searchableMitarbeiter tr").filter(function () {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
+  $("#searchableMitarbeiter tr").filter(function () {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  });
 }
 
-function searchTableCamp(){
+function searchTableCamp() {
   var value = $("#filterCamp").val().toLowerCase();
-    $("#searchableCamp tr").filter(function () {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
+  $("#searchableCamp tr").filter(function () {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  });
 }

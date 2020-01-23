@@ -1,9 +1,9 @@
-<div class="table-responsive-md " id="camptablediv">
+<div class="table-responsive-md " id="camptablediv" ng-init="getCamps()">
     <h2>Verwaltung</h2>
 
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary ">
-            <input type="radio" id="optionMitarbeiter" autocomplete="off"> Mitarbeiter
+            <input type="radio" id="optionMitarbeiter" ng-click="toggleVerwaltung()" autocomplete="off"> Mitarbeiter
         </label>
         <label class="btn btn-secondary active">
             <input type="radio" id="optionCamps" autocomplete="off" checked> Camp
@@ -15,7 +15,8 @@
             <div class="input-group-prepend">
                 <div class="input-group-text">Filter</div>
             </div>
-            <input id="filter" onkeyup="searchTable()" type="text" class="form-control" placeholder="Search ...">
+            <input id="filterCamp" onkeyup="searchTableCamp()" type="text" class="form-control"
+                placeholder="Search ...">
         </div>
     </div>
 
@@ -25,20 +26,21 @@
                 <th scope="col">ID</th>
                 <th scope="col">Name</th>
                 <th scope="col">Campleiter</th>
+                <th scope="col">Aktionen</th>
             </tr>
         </thead>
         <tbody id="searchableCamp">
             <tr scope="row" ng-repeat="myCamp in allCamps">
-                <td>{{myCamp.id_employee}}</td>
+                <td>{{myCamp.id_camp}}</td>
                 <td>{{myCamp.name}}</td>
-                <td>{{myCamp.id_Leader}}</td>
+                <td>{{myCamp.id_leader}}</td>
                 <td>
                     <button type="button" class="btn btn-primary" ng-click="showCamp(myCamp)"
                         title="Informationen anzeigen"><i class="fa fa-eye"></i></button>
                     <button type="button" class="btn btn-success" ng-click="editCamp(myCamp)"
                         title="Mitarbeiter bearbeiten"><i class="fa fa-edit"></i></button>
                     <button type="button" class="btn btn-danger" ng-click="deleteCamp(myCamp)"
-                        title="Mitarbeiter löschen"><i class="fa fa-trash-o"></i></button>
+                        title="Mitarbeiter löschen"><i class="fas fa-trash-alt"></i></button>
                 </td>
             </tr>
         </tbody>
