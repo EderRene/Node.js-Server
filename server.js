@@ -6,8 +6,6 @@ const express = require('express');
 const expressUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const connectionsStringMongo = 'mongodb://localhost:27017/WorkingHours';
-const database = require('./database.js');
 
 var utils = require('./global-functions');
 var employeeRouter = require("./routers/employee-router");
@@ -33,20 +31,6 @@ app.use('/api/documentTypes', documentTypeRouter);
 app.use('/api/files', fileRouter);
 app.use('/api/workingHours', workingHoursRouter);
 
-connectMongo();
-
 app.listen(port, function () {
   console.log('Time management API is up and running on port ' + port + '.');
 });
-
-function connectMongo() {
-  mongoose.connect(connectionsStringMongo, { useNewUrlParser: true, useCreateIndex: true },
-    function (err) {
-      if (err) {
-        console.warn('could not Connect to DB ' + err);
-      } else {
-        console.log('database connection to mongodb successfully established');
-      }
-    }
-  );
-} 
