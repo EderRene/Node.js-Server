@@ -20,7 +20,7 @@ app.config(function ($routeProvider) {
     })
     .when('/showEmployee', {
       templateUrl: 'webpages/EmployeeInformationPage.html',
-      controller: 'informationController'
+      controller: 'employeeinformationController'
     })
     .when('/editEmployee', {
       templateUrl: 'webpages/EmployeeEditPage.html',
@@ -33,6 +33,10 @@ app.config(function ($routeProvider) {
     .when('/addCamp', {
       templateUrl: 'webpages/CampRegistrationPage.html',
       controller: 'campRegistrationController'
+    })
+    .when('/timeManagement', {
+      templateUrl: 'webpages/TimeManagement.html',
+      controller: 'timeManagementController'
     });
 });
 
@@ -76,15 +80,6 @@ app.controller('registrationController', function ($scope, CurrentEmployee, $loc
 });
 
 app.controller('campRegistrationController', function ($scope, $http, $location, CurrentCamp) {
-
-  /* <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-      <a href="#" ><span class="fa fa-user"></span>Zeit&nbsp;eintragen</a>
-      <a href="#" ><span class="fa fa-user"></span>Mitarbeiter&nbsp;anlegen</a>
-      <a href="#" ><span class="fa fa-home"></span>Verwaltung</a> */
-
-  // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
-
-
   $scope.allCamps = [];
 
   $scope.newCamp = {
@@ -213,8 +208,11 @@ app.controller('editController', function ($scope, CurrentEmployee, $location, $
     $location.path('/');
   };
 });
+app.controller('timeManagementController', function ($scope, CurrentEmployee, $location,$log) {
+  $scope.message = 'Look! I am a page.';
+});
 
-app.controller('informationController', function ($scope, CurrentEmployee, $location) {
+app.controller('employeeinformationController', function ($scope, CurrentEmployee, $location) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
   $scope.editEmployee = function () {
@@ -224,11 +222,40 @@ app.controller('informationController', function ($scope, CurrentEmployee, $loca
     $location.path('/');
   };
 });
+//Controller für Zeit eintragen
+app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $location,$http) {
+  $scope.thistimeFornoon = null;
+  $scope.newWorkDay = {
+    'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
+    'workingDate': new Date(),
+    'workingHours':{
+      'forenoon': {
+        'startTime': null,
+        'endTime':null
+      },
+      'afternoon': {
+        'startTime': null,
+        'endTime':null
+      }
+    }    
+  };
 
-app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $location) {
-  $scope.message = 'Look! I am a page.';
+  $scope.createTimeEntry = function () {
+    $http.post('/api/workingHours', $scope.newWorkDay)
+      .then(function (response) {
+       // $scope.timeTable.push($scope.newWorkDay);
+      }, function (response) {
+        console.error(response);
+        alert('Could not register user:' + response.data);
+      });
+  }
+
+  $scope.clear = function() {
+    $scope.newWorkDay.workingHours.forenoon = null;
+    $scope.newWorkDay.workingHours.afternoon = null;
+  };
 });
-
+// "Klasse" für den ausgewählten Employee
 app.factory('CurrentEmployee', function () {
 
   var currentEmployee = {
