@@ -8,8 +8,7 @@ const queryStringSelectEmployeeWithId = "SELECT e.id_employee, e.forename, e.sur
 const queryStringSelectCampWithId = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, e.forename, e.surname, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address INNER JOIN employee e ON e.id_Employee=c.id_Leader WHERE c.id_camp=$1";
 const queryStringSelectEmployeeWithEmail = "SELECT id_employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_address, svn, uid, bankaccountnumber, email, phonenumber FROM employee WHERE email=$1";
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_address";
-const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, TO_DATE($3, 'DD.MM.YYYY'), $4, $5, $6, $7, $8, $9) RETURNING id_employee";
-const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3) RETURNING id_camp';
+const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id_employee";
 const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1) RETURNING id_documentType";
 const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateofbirth=$3, svn=$4, uid=$5, bankaccountnumber=$6, email=$7, phonenumber=$8 WHERE id_employee=$9";
 const queryStringUpdateAddress = "UPDATE address SET addressline1=$1, addressline2=$2, postcode=$3, city=$4, country=$5 WHERE id_address=$6";
