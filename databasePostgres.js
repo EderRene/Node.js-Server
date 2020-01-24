@@ -13,7 +13,7 @@ const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3) RETU
 const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1) RETURNING id_documentType";
 const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateofbirth=$3, svn=$4, uid=$5, bankaccountnumber=$6, email=$7, phonenumber=$8 WHERE id_employee=$9";
 const queryStringUpdateAddress = "UPDATE address SET addressline1=$1, addressline2=$2, postcode=$3, city=$4, country=$5 WHERE id_address=$6";
-const queryStringUpdateCamp = "UPDATE camp SET name=$1 id_leader=$2 WHERE id_camp=$3";
+const queryStringUpdateCamp = "UPDATE camp SET name=$1, id_Leader=$2 WHERE id_camp=$3";
 const queryStringUpdateCampLeader = "UPDATE camp SET id_leader=$1 WHERE id_camp=$2 AND id_leader=$3";
 const queryStringDeleteEmployeeWithId = "DELETE FROM employee WHERE id_employee=$1";
 const queryStringDeleteCampWithId = "DELETE FROM camp WHERE id_camp=$1";
