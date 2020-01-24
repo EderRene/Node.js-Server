@@ -33,7 +33,7 @@
 
 
     <pre
-        class="alert alert-info">Time is: {{newWorkDay.workingHours.afternoon.startTime| date:'shortTime' }} to {{forenoon.endTime | date:'shortTime' }} and {{afternoon.startTime | date:'shortTime' }} to {{afternoon.endTime | date:'shortTime' }}  </pre>
+        class="alert alert-info">Time is: {{newWorkDay.workingHours.forenoon.startTime| date:'shortTime' }} to {{newWorkDay.workingHours.forenoon.endTime | date:'shortTime' }} and {{newWorkDay.workingHours.afternoon.startTime | date:'shortTime' }} to {{newWorkDay.workingHours.afternoon.endTime | date:'shortTime' }}  </pre>
 
     <button type="button" class="btn btn-danger" ng-click="clear()">Clear</button>
     <button type="submit" class="btn btn-primary">Zeit eintragen</button>
