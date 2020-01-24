@@ -1,0 +1,78 @@
+<form ng-submit="updateCamp()" id="editPageForm" class="needs-validation" ng-init="getEmployees()">
+    <h2>Camp {{currentCamp.name}} bearbeiten</h2>
+    <div class="form-row">
+        <div class="form-group col">
+            <label for="campname">Name</label>
+            <input type="text" class="form-control" id="campname" ng-model="currentCamp.name" required>
+        </div>
+    </div>
+
+    <div class="form-row">
+
+        <div class="form-group col">
+            <label for="addressLine1">Straße und Hausnummer</label>
+            <input type="text" class="form-control" id="addressLine1" ng-model="currentCamp.addressline1" required>
+        </div>
+
+        <div class="form-group col">
+            <label for="addressLine2">Adresszusatz</label>
+            <input type="text" class="form-control" id="addressLine2" ng-model="currentCamp.addressline2">
+        </div>
+    </div>
+    <div class="form-row">
+
+        <div class="form-group col">
+            <label for="postCode">Postleitzahl</label>
+            <input type="number" class="form-control" id="postCode" ng-model="currentCamp.postcode" required>
+        </div>
+
+        <div class="form-group col">
+            <label for="city">Stadt</label>
+            <input type="text" class="form-control" id="city" ng-model="currentCamp.city" required>
+        </div>
+        <div class="form-group col">
+            <label for="country">Land</label>
+            <input type="text" class="form-control" id="country" + ng-model="currentCamp.country" required>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <label for="campleiter">Campleiter festlegen:</label>
+        <select required class="form-control" id="campleiter" ng-model="currentCamp.id_leader">
+            <option value="" selected disabled hidden>Please select</option>
+            <option ng-repeat="myEmployee in allEmployees" value="{{myEmployee.id_employee}}">
+                {{myEmployee.id_employee}}. {{myEmployee.forename}}
+                {{myEmployee.surname}}</option>
+        </select>
+    </div>
+
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+        <label class="form-check-label" for="exampleCheck1">Alles Korrekt?</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+    <button type="button" class="btn btn-primary">Cancel</button>
+</form>
+
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function () {
+        'use strict';
+        window.addEventListener('load', function () {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>

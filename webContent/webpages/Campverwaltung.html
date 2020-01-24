@@ -33,7 +33,7 @@
             <tr scope="row" ng-repeat="myCamp in allCamps">
                 <td>{{myCamp.id_camp}}</td>
                 <td>{{myCamp.name}}</td>
-                <td>{{myCamp.id_leader}}</td>
+                <td>{{myCamp.forename}} {{myCamp.surname}}</td>
                 <td>
                     <button type="button" class="btn btn-primary" ng-click="showCamp(myCamp)"
                         title="Informationen anzeigen"><i class="fa fa-eye"></i></button>

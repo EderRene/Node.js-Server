@@ -24,7 +24,7 @@ app.config(function ($routeProvider) {
     })
     .when('/editEmployee', {
       templateUrl: 'webpages/EmployeeEditPage.html',
-      controller: 'editController'
+      controller: 'editEmployeeController'
     })
     .when('/enterWorkday', {
       templateUrl: 'webpages/enterWorkday.html',
@@ -33,6 +33,14 @@ app.config(function ($routeProvider) {
     .when('/addCamp', {
       templateUrl: 'webpages/CampRegistrationPage.html',
       controller: 'campRegistrationController'
+    })
+    .when('/editCamp', {
+      templateUrl: 'webpages/CampEditPage.html',
+      controller: 'editCampController'
+    })
+    .when('/showCamp', {
+      templateUrl: 'webpages/CampInformationPage.html',
+      controller: 'campInformationController'
     })
     .when('/timeManagement', {
       templateUrl: 'webpages/TimeManagement.html',
@@ -73,6 +81,15 @@ app.controller('campController', function ($scope, $http, $location, CurrentCamp
         console.log("error");
       });
   };
+
+  $scope.showCamp = function (camp) {
+    CurrentCamp.setCurrentCamp(camp);
+    $location.path('/showCamp');
+  };
+  $scope.editCamp = function (camp) {
+    CurrentCamp.setCurrentCamp(camp);
+    $location.path('/editCamp');
+  };
 });
 
 app.controller('registrationController', function ($scope, CurrentEmployee, $location) {
@@ -96,19 +113,17 @@ app.controller('campRegistrationController', function ($scope, $http, $location,
 
   $scope.createCamp = function () {
     $http.post('/api/camps', $scope.newCamp)
-      .then(function (response) {
-        $scope.newCamp.id_Camp = response.data.id_Camp;
-        $scope.allCamps.push($scope.newCamp);
-      }, function (response) {
+      .then(function success(response) {
+        $scope.cancelView();
+        // $scope.newCamp.id_Camp = response.data.id_Camp;
+        //$scope.allCamps.push($scope.newCamp);
+      }, function error(response) {
         console.error(response);
         alert('Could not register camp:' + response.data);
       });
   }
-
-
-  $scope.editCamp = function (camp) {
-    CurrentCamp.setCurrentEmployee(employee);
-    $location.path('/editCamp');
+  $scope.cancelView = function () {
+    $location.path('/campVerwaltung');
   };
 });
 
@@ -120,20 +135,20 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
       <a href="#" ><span class="fa fa-home"></span>Verwaltung</a> */
 
   // $http.defaults.headers.get.Authorization = "Basic " + localStorage.getItem("google-token");
-  
+
   $scope.employeeSelected = function (employee) {
     CurrentEmployee.setCurrentEmployee(employee);
-    
+
     $scope.alerts = [
       { type: 'danger', msg: 'Oh snap! Change a few things up and try submitting again.' },
       { type: 'success', msg: 'Well done! You successfully read this important alert message.' }
     ];
-  
-    $scope.addAlert = function() {
-      $scope.alerts.push({msg: 'Another alert!'});
+
+    $scope.addAlert = function () {
+      $scope.alerts.push({ msg: 'Another alert!' });
     };
-  
-    $scope.closeAlert = function(index) {
+
+    $scope.closeAlert = function (index) {
       $scope.alerts.splice(index, 1);
     };
   };
@@ -206,14 +221,34 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
   };
 });
 
-app.controller('editController', function ($scope, CurrentEmployee, $location, $http) {
+app.controller('editCampController', function ($scope, CurrentCamp, $location, $http) {
+  $scope.currentCamp = CurrentCamp.getCurrentCamp();
+
+  $scope.updateCamp = function () {
+    $http.put('/api/camps/' + $scope.currentCamp.id_camp, $scope.currentCamp)
+      .then(function success(response) {
+        $scope.cancelView();
+        //  $scope.allEmployees.splice($scope.allEmployees.indexOf(currentEmployee), 1);
+        //  $scope.allEmployees.push($scope.currentEmployee);
+      }, function error(response) {
+        console.log("error" + response.message);
+      });
+
+  };
+  $scope.cancelView = function () {
+    $location.path('/campVerwaltung');
+  };
+});
+
+app.controller('editEmployeeController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
   $scope.updateEmployee = function () {
     $http.put('/api/employees/' + $scope.currentEmployee.id_employee, $scope.currentEmployee)
       .then(function success(response) {
-        $scope.allEmployees.splice($scope.allEmployees.indexOf(currentEmployee), 1);
-        $scope.allEmployees.push($scope.currentEmployee);
+        $scope.cancelView();
+        //  $scope.allEmployees.splice($scope.allEmployees.indexOf(currentEmployee), 1);
+        //  $scope.allEmployees.push($scope.currentEmployee);
       }, function error(response) {
         console.log("error" + response.message);
       });
@@ -223,7 +258,7 @@ app.controller('editController', function ($scope, CurrentEmployee, $location, $
     $location.path('/');
   };
 });
-app.controller('timeManagementController', function ($scope, CurrentEmployee, $location,$http) {
+app.controller('timeManagementController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.allWorkdays = [];
 
   $scope.getWorkdays = function () {
@@ -247,34 +282,34 @@ app.controller('employeeinformationController', function ($scope, CurrentEmploye
   };
 });
 //Controller für Zeit eintragen
-app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $location,$http) {
+app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.thistimeFornoon = null;
   $scope.newWorkDay = {
     'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
     'workingDate': new Date(),
-    'workingHours':{
+    'workingHours': {
       'forenoon': {
         'startTime': null,
-        'endTime':null
+        'endTime': null
       },
       'afternoon': {
         'startTime': null,
-        'endTime':null
+        'endTime': null
       }
-    }    
+    }
   };
 
   $scope.createTimeEntry = function () {
     $http.post('/api/workingHours', $scope.newWorkDay)
       .then(function (response) {
-       // $scope.timeTable.push($scope.newWorkDay);
+        // $scope.timeTable.push($scope.newWorkDay);
       }, function (response) {
         console.error(response);
         alert('Could not register user:' + response.data);
       });
   }
 
-  $scope.clear = function() {
+  $scope.clear = function () {
     $scope.newWorkDay.workingHours.forenoon = null;
     $scope.newWorkDay.workingHours.afternoon = null;
   };
@@ -316,19 +351,21 @@ app.factory('CurrentCamp', function () {
   var currentCamp = {
     'id_Camp': null,
     'name': null,
-    'addressLine1': null,
-    'addressLine2': null,
-    'postCode': null,
+    'addressline1': null,
+    'addressline2': null,
+    'postcode': null,
     'city': null,
     'country': null,
-    'id_Leader': null
+    'id_leader': null,
+    'forname': null,
+    'surname': null
   };
 
   return {
     getCurrentCamp: function () {
       return currentCamp;
     },
-    setCurrentEmployee: function (newCCamp) {
+    setCurrentCamp: function (newCCamp) {
       currentCamp = newCCamp;
     }
   };
