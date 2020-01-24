@@ -10,6 +10,7 @@ const queryStringSelectEmployeeWithEmail = "SELECT id_employee, forename, surnam
 const queryStringInsertAddress = "INSERT INTO address VALUES(DEFAULT, $1, $2, $3, $4, $5) RETURNING id_address";
 const queryStringInsertEmployee = "INSERT INTO employee VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id_employee";
 const queryStringInsertDocumentType = "INSERT INTO documentType VALUES(DEFAULT, $1) RETURNING id_documentType";
+const queryStringInsertCamp = 'INSERT INTO camp VALUES(DEFAULT, $1, $2, $3) RETURNING id_camp';
 const queryStringUpdateEmployee = "UPDATE employee SET forename=$1, surname=$2, dateofbirth=$3, svn=$4, uid=$5, bankaccountnumber=$6, email=$7, phonenumber=$8 WHERE id_employee=$9";
 const queryStringUpdateAddress = "UPDATE address SET addressline1=$1, addressline2=$2, postcode=$3, city=$4, country=$5 WHERE id_address=$6";
 const queryStringUpdateCamp = "UPDATE camp SET name=$1, id_Leader=$2 WHERE id_camp=$3";
@@ -18,6 +19,7 @@ const queryStringDeleteEmployeeWithId = "DELETE FROM employee WHERE id_employee=
 const queryStringDeleteCampWithId = "DELETE FROM camp WHERE id_camp=$1";
 const queryStringDeleteWorksInWithIdEmployee = "DELETE FROM worksIn WHERE id_employee=$1";
 const queryStringDeleteWorksInWithIdCamp = "DELETE FROM worksIn WHERE id_camp=$1";
+
 var Employee = require('./dataModels/employee.js');
 var Address = require('./dataModels/address.js');
 var Camp = require('./dataModels/camp.js');

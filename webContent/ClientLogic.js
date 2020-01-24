@@ -193,8 +193,9 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
   $scope.createEmployee = function () {
     $http.post('/api/employees', $scope.newEmployee)
       .then(function (response) {
-        $scope.newEmployee.id_employee = response.data.id_Employee;
-        $scope.allEmployees.push($scope.newEmployee);
+        // $scope.newEmployee.id_employee = response.data.id_Employee;
+        // $scope.allEmployees.push($scope.newEmployee);
+        $location.path('/');
       }, function (response) {
         console.error(response);
         alert('Could not register user:' + response.data);
