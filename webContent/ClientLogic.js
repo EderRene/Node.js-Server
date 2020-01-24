@@ -272,6 +272,18 @@ app.controller('timeManagementController', function ($scope, CurrentEmployee, $l
   };
 });
 
+
+app.controller('campInformationController', function ($scope, CurrentCamp, $location) {
+  $scope.currentCamp = CurrentCamp.getCurrentCamp();
+
+  $scope.editCamp = function () {
+    $location.path('/editCamp');
+  };
+  $scope.cancelView = function () {
+    $location.path('/Campverwaltung');
+  };
+});
+
 app.controller('employeeinformationController', function ($scope, CurrentEmployee, $location) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
