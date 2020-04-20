@@ -199,14 +199,18 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
 
   $scope.createEmployee = function () {
     $http.post('/api/employees', $scope.newEmployee)
-      .then(function (response) {
-        // $scope.newEmployee.id_employee = response.data.id_Employee;
-        // $scope.allEmployees.push($scope.newEmployee);
+      .then(function (responseEmp) {
 
-        $location.path('/');
-      }, function (response) {
-        console.error(response);
-        alert('Could not register user:' + response.data);
+        $http.post('/api/files/' + responseEmp.data.id_Employee, $scope.newEmployee.files, {
+          headers: { 'enctype': 'multipart/form-data' }
+        }).then(function (responseFiles) {
+          $location.path('/');
+        }, function (responseFiles) {
+          console.error(responseFiles);
+        })
+      }, function (responseEmp) {
+        console.error(responseEmp);
+        alert('Could not register user:' + responseEmp.data);
       });
   }
 
@@ -232,35 +236,35 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
 
 app.directive('ngFileModel', ['$parse', function ($parse) {
   return {
-      restrict: 'A',
-      link: function (scope, element, attrs) {
-          var model = $parse(attrs.ngFileModel);
-          var isMultiple = attrs.multiple;
-          var modelSetter = model.assign;
-          element.bind('change', function () {
-              var values = [];
-              angular.forEach(element[0].files, function (item) {
-                  var value = {
-                     // File Name 
-                      name: item.name,
-                      //File Size 
-                      size: item.size,
-                      //File URL to view 
-                      url: URL.createObjectURL(item),
-                      // File Input Value 
-                      _file: item
-                  };
-                  values.push(value);
-              });
-              scope.$apply(function () {
-                  if (isMultiple) {
-                      modelSetter(scope, values);
-                  } else {
-                      modelSetter(scope, values[0]);
-                  }
-              });
-          });
-      }
+    restrict: 'A',
+    link: function (scope, element, attrs) {
+      var model = $parse(attrs.ngFileModel);
+      var isMultiple = attrs.multiple;
+      var modelSetter = model.assign;
+      element.bind('change', function () {
+        var values = [];
+        angular.forEach(element[0].files, function (item) {
+          var value = {
+            //File Name 
+            name: item.name,
+            //File Size 
+            size: item.size,
+            //File URL to view 
+            url: URL.createObjectURL(item),
+            // File Input Value 
+            _file: item
+          };
+          values.push(value);
+        });
+        scope.$apply(function () {
+          if (isMultiple) {
+            modelSetter(scope, values);
+          } else {
+            modelSetter(scope, values[0]);
+          }
+        });
+      });
+    }
   };
 }]);
 
@@ -340,19 +344,18 @@ app.controller('employeeinformationController', function ($scope, CurrentEmploye
 app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
-    $scope.commentArray = [];  //Main Object hare I'm adding all Comment informations
-    $scope.addComment = function () {  // Comment Button click Event
-        if($scope.CommentText!=null)  
-        {  
-            $scope.commentArray.push($scope.CommentText);  
-            $scope.CommentText = "";  
-        }  
-    }  
-    $scope.removeComment = function ($comText) {  // Delete button click Event
-        $scope.commentArray.splice($comText,1);  
-    }  
+  $scope.commentArray = [];  //Main Object hare I'm adding all Comment informations
+  $scope.addComment = function () {  // Comment Button click Event
+    if ($scope.CommentText != null) {
+      $scope.commentArray.push($scope.CommentText);
+      $scope.CommentText = "";
+    }
+  }
+  $scope.removeComment = function ($comText) {  // Delete button click Event
+    $scope.commentArray.splice($comText, 1);
+  }
 
-  
+
   $scope.editEmployee = function () {
     $location.path('/editEmployee');
   };
