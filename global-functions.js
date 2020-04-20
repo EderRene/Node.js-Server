@@ -29,7 +29,6 @@ var errorMessages={
 
     ERROR_EMPLOYEE_MISSING_DATA: 'ERROR: Employee data is missing',
     ERROR_CAMP_MISSING_DATA: 'ERROR: Camp data is missing',
-    
     ERROR_EMPTY_STRING_OF_EMAIL: 'ERROR: email was empty',
     ERROR_EMPLOYEE_NO_DATA_FOUND: 'ERROR: No employee data could be found in database',
     ERROR_EMPLOYEE_SELECT_ALL_FAILED: 'ERROR: Select of employees failed',
@@ -38,6 +37,7 @@ var errorMessages={
     ERROR_EMPLOYEE_INSERT_FAILED: 'Es konnte kein neuer Mitarbeiter eingefügt werden, bitte überprüfen Sie Ihre Eingaben!',
     ERROR_EMPLOYEE_DELETE_FAILED: 'ERROR: Delete of employee failed',
     ERROR_EMPLOYEE_UPDATE_FAILED: 'ERROR: Update of employee failed',
+    ERROR_EMPLOYEE_INSERT_FAILED_FILE: 'ERROR: Insert of file failed',
 }
 
 global.successMessages=successMessages;

@@ -13,7 +13,7 @@ router.get('/:id', async (req, res) => {
     } catch(error){
         res.status(error.statusCode).send(error.message);
     }
-})
+});
 
 router.post('/', async (req, res) => {
     try{
@@ -24,7 +24,16 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id/:wd', async (req, res) => {
+    try{
+        let response=await databaseMongo.updateWorkingHours(req.params['id'], req.params['wd'], req.body);
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
+    }
+});
+
+router.put('/:id/', async (req, res) => {
     try{
         let response=await databaseMongo.updateWorkingHours(req.params['id'], req.body);
         res.status(response.statusCode).send(response.values);

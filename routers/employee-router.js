@@ -3,6 +3,7 @@
 const express = require('express');
 const database = require('../databasePostgres.js');
 var router = express.Router();
+const fs = require('fs');
 
 router.get('/', async (req, res) => {
     try{
