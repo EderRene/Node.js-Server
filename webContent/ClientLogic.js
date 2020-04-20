@@ -164,6 +164,8 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
     }
   };
 
+  $scope.files = [];
+
   $scope.newEmployee = {
     'id_employee': null,
     'forename': null,
@@ -178,7 +180,8 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
     'addressLine2': null,
     'postCode': null,
     'city': null,
-    'country': null
+    'country': null,
+    'files': null
   };
 
   $scope.getEmployees = function () {
@@ -195,6 +198,7 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
       .then(function (response) {
         // $scope.newEmployee.id_employee = response.data.id_Employee;
         // $scope.allEmployees.push($scope.newEmployee);
+
         $location.path('/');
       }, function (response) {
         console.error(response);
@@ -221,6 +225,40 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
     $location.path('/editEmployee');
   };
 });
+
+app.directive('ngFileModel', ['$parse', function ($parse) {
+  return {
+      restrict: 'A',
+      link: function (scope, element, attrs) {
+          var model = $parse(attrs.ngFileModel);
+          var isMultiple = attrs.multiple;
+          var modelSetter = model.assign;
+          element.bind('change', function () {
+              var values = [];
+              angular.forEach(element[0].files, function (item) {
+                  var value = {
+                     // File Name 
+                      name: item.name,
+                      //File Size 
+                      size: item.size,
+                      //File URL to view 
+                      url: URL.createObjectURL(item),
+                      // File Input Value 
+                      _file: item
+                  };
+                  values.push(value);
+              });
+              scope.$apply(function () {
+                  if (isMultiple) {
+                      modelSetter(scope, values);
+                  } else {
+                      modelSetter(scope, values[0]);
+                  }
+              });
+          });
+      }
+  };
+}]);
 
 app.controller('editCampController', function ($scope, CurrentCamp, $location, $http) {
   $scope.currentCamp = CurrentCamp.getCurrentCamp();
