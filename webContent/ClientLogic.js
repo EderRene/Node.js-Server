@@ -42,6 +42,10 @@ app.config(function ($routeProvider) {
       templateUrl: 'webpages/CampInformationPage.html',
       controller: 'campInformationController'
     })
+    .when('/newsEmployee', {
+      templateUrl: 'webpages/EmployeeNewsPage.html',
+      controller: 'newsEmployeeController'
+    })
     .when('/timeManagement', {
       templateUrl: 'webpages/TimeManagement.html',
       controller: 'timeManagementController'
@@ -325,6 +329,30 @@ app.controller('campInformationController', function ($scope, CurrentCamp, $loca
 app.controller('employeeinformationController', function ($scope, CurrentEmployee, $location) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
+  $scope.editEmployee = function () {
+    $location.path('/editEmployee');
+  };
+  $scope.cancelView = function () {
+    $location.path('/');
+  };
+});
+
+app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location) {
+  $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
+
+    $scope.commentArray = [];  //Main Object hare I'm adding all Comment informations
+    $scope.addComment = function () {  // Comment Button click Event
+        if($scope.CommentText!=null)  
+        {  
+            $scope.commentArray.push($scope.CommentText);  
+            $scope.CommentText = "";  
+        }  
+    }  
+    $scope.removeComment = function ($comText) {  // Delete button click Event
+        $scope.commentArray.splice($comText,1);  
+    }  
+
+  
   $scope.editEmployee = function () {
     $location.path('/editEmployee');
   };

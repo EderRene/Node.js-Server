@@ -1,0 +1,19 @@
+<div class="container">  
+    <h1>Comment   
+    </h1>  
+    <hr />  
+    <div class="form-group" >  
+        <form ng-controller="newsEmployeeController">  
+            <textarea class="form-control" rows="5" placeholder="Your Comment Please....."  ng-model="CommentText"></textarea>  
+            <br />  
+            <button class="btn btn-success pull-right" ng-click="addComment()">Comment.</button>  
+            <br />  
+            <hr />  
+            <ul class="list-group" >  
+                <li class="list-group-item" ng-repeat="cmt in commentArray">{{cmt}}  
+                    <a href="" ng-click="removeComment($comText);" ><span class="glyphicon glyphicon-trash" style="float:right"> </span></a>  
+                </li>  
+            </ul>  
+        </form>  
+    </div>  
+</div>  
