@@ -7,32 +7,34 @@ const collectionWorkingHours = 'WorkingHours';
 const collectionHoliday = 'Holiday';
 const collectionEmployeeFiles = 'EmployeeFiles';
 const databaseWorkingTimeManagement = 'WorkingTimeManagement';
+const database=null;
+var MongoPool = require("./mongo-pool.js");
 
-_createUniqueIndex();
+createUniqueIndex();
 
 /* #region workingHours functions*/
-function _createUniqueIndex(){
-    client.connect()
-        .then((database)=>{
-            database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).createIndex({'id_Employee': 1, 'workingDate': 1}, {unique: true})
-                .then(()=>{
-                    console.log('MongoDB Index for id_Employee and workingDate created');
-                })
-                .catch((error)=>{
-                    error.message='Could not create MongoDB Index for id_Employee and workingDate';
-                    throw error;
-                })
+function createUniqueIndex(){
+    MongoPool.getInstance(function (database){
+        database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).createIndex({'id_Employee': 1, 'workingDate': 1}, {unique: true})
+        .then(()=>{
+            console.log('MongoDB index for id_Employee and workingDate created');
         })
         .catch((error)=>{
-            error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+            error.message='ERROR: Could not create MongoDB index for id_Employee and workingDate';
+            throw error;
+        })
+    });
+
+    MongoPool.getInstance(function (database){
+        database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).createIndex({'id_Employee': 1, 'filename': 1}, {unique: true})
+        .then(()=>{
+            console.log('MongoDB index for id_Employee and filename created');
+        }) 
+        .catch((error)=>{
+            error.message='ERROR: Could not create MongoDB index for id_Employee and filename';
             throw error;
         });
-}
-
-function _createWorkingHoursProfil(id_Employee){
-    var workingHours={
-        'id_Employee': id_Employee
-    };
+    });
 }
 
 function _getWorkingHoursWithId(idEmployee){
@@ -53,7 +55,7 @@ function _getWorkingHoursWithId(idEmployee){
                 error.statusCode=500;
                 error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
                 reject(error);
-            })
+            });
     })
 }
 
@@ -75,7 +77,7 @@ function _insertWorkingHours(workingHours){
                 error.statusCode=500;
                 error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
                 reject(error);
-            })
+            });
     });
 }
 
@@ -97,29 +99,7 @@ function _updateWorkingHours(id_Employee, workingHours){
                 error.statusCode=500;
                 error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
                 reject(error);
-            })
-    });
-}
-
-function _updateWorkingHoursWithIdAndDate(id_Employee, workingDate, workingHours){
-    return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).updateOne({'id_Employee': parseInt(id_Employee), 'workingDate': workingDate})
-                    .then(()=>{
-                        resolve({'statusCode': 204, 'values': {}});
-                    })
-                    .catch((error)=>{
-                        error.statusCode=500;
-                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-                        reject(error); 
-                    });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            })
+            });
     });
 }
 
@@ -165,7 +145,7 @@ function _getHolidaysWithId(id_Employee){
                 error.statusCode=500;
                 error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
                 reject(error);
-            })
+            });
     });
 }
 
@@ -215,127 +195,127 @@ function _updateHolidayState(id_Employee, id_Holiday, state){
 /* #endregion */
 
 /* #region file functions*/
-function _getEmployeeFiles(id_Employee){
 
-}
-
-function _insertEmployeeFiles(database, id_Employee, id_File){
-    database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).insertOne({'id_Employee': id_Employee, 'id_File': id_File})
-        .catch((error)=>{
-            error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-            throw error;
-        });
-}
-
-function _getFileWithId(id_Employee){
-    return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                res.set('content-type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-                res.set('accept-ranges', 'bytes');
-                
-                let bucket = new mongodb.GridFSBucket(database.db(), {
-                    bucketName: 'files'
-                });
-                
-                 let downloadStream = bucket.openDownloadStream(trackID);
-                
-                downloadStream.on('data', (chunk) => {
-                    res.write(chunk);
-                });
-                
-                downloadStream.on('error', () => {
-                    res.sendStatus(404);
-                });
-                
-                downloadStream.on('end', () => {
-                    res.end();
-                }); 
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            })
-    });
-}
-
-function _insertFile(file){
-    return new Promise((resolve, reject)=>{     
-        const session = client.startSession();
-        
+function _getFileWithId(id_Employee, id_File){
+    return new Promise(async (resolve, reject)=>{
         try{
-            const transactionResults=session.withTransaction(async ()=>{
-                const readableTrackStream = new Readable();
-                readableTrackStream.push(file.data);
-                readableTrackStream.push(null);
-            
-                let bucket = new mongodb.GridFSBucket(client.db(), {
-                  bucketName: 'files'
-                });
-            
-                let uploadStream = bucket.openUploadStream(file.name);
-                readableTrackStream.pipe(uploadStream);
-            
-                uploadStream.on('error', (error) => {
-                    error.statusCode=500;
-                    error.message=global.errorMessages.ERROR_EMPLOYEE_INSERT_FAILED_FILE;
-                    reject(error);
-                });
-            
-                uploadStream.on('finish', () => {
-                    resolve({'statusCode': 201, 'values': {}});
-                });
-            });
-
-            if(transactionResults){
-                resolve({'statusCode': 201, 'values': {}});
-            } else {
-                let error;
-                error.statusCode=500;
-                error.message='The transaction was aborded';
-                reject(error);
-            }
+            let filename=await helperFunctionGetFilename(id_Employee, id_File);
+            await helperFunctionGetFileWithId(filename);
+            resolve({'statusCode': 200, 'values': {}});
         } catch(error){
-            error.statusCode=500;
-            error.message='The transaction was aborded due to an unexcepted error';
             reject(error);
-        } finally {
-            session.endSession();
         }
     });
 }
 
-function _insertFile2(file){
+function helperFunctionGetFilename(id_Employee, id_File){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                const readableTrackStream = new Readable();
-                readableTrackStream.push(file.data);
-                readableTrackStream.push(null);
-            
-                let bucket = new mongodb.GridFSBucket(database.db(), {
-                  bucketName: 'files'
-                });
-            
-                let uploadStream = bucket.openUploadStream(file.name);
-                readableTrackStream.pipe(uploadStream);
-            
-                uploadStream.on('error', (error) => {
+        MongoClient.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).find({'id_Employee': id_Employee, 'id_File': id_File})
+                .then((result)=>{
+                    resolve(result.filename);
+                })
+                .catch((error)=>{
                     error.statusCode=500;
-                    error.message=global.errorMessages.ERROR_EMPLOYEE_INSERT_FAILED_FILE;
+                    error.message='';
                     reject(error);
-                });
+                })
+        });
+    });
+}
+
+function helperFunctionGetFileWithId(filename){
+    return new Promise((resolve, reject)=>{
+        MongoPool.getInstance((database)=>{
+            res.set('content-type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+            res.set('accept-ranges', 'bytes');
             
-                uploadStream.on('finish', () => {
-                    resolve({'statusCode': 201, 'values': {}});
-                });
+            let bucket = new mongodb.GridFSBucket(database.db(), {
+                bucketName: 'files'
+            });
+            
+            let downloadStream = bucket.openDownloadStream(trackID);
+            
+            downloadStream.on('data', (chunk) => {
+                res.write(chunk);
+            });
+            
+            downloadStream.on('error', (error) => {
+                error.statusCode=500;
+                error.message='';
+                reject(error);
+            });
+            
+            downloadStream.on('end', () => {
+                res.end();
+                resolve();
+            }); 
+        });
+    });
+}
+
+function _insertFile(file, id_Employee){
+    return new Promise(async (resolve, reject)=>{
+        try{
+            let id_File=await helperFunctionInsertFile(file);
+            await helperFunctionInsertEmployeeFile(id_Employee, id_File, file.name);
+            resolve({'statusCode': 201, 'values': {}});
+        } catch(error){
+            reject(error);
+        }
+    });
+}
+
+function helperFunctionInsertFile(file){
+    return new Promise((resolve, reject)=>{
+        MongoPool.getInstance(function (database){
+            const readableTrackStream = new Readable();
+            readableTrackStream.push(file.data);
+            readableTrackStream.push(null);
+        
+            let bucket = new mongodb.GridFSBucket(database.db(), {
+              bucketName: 'files'
+            });
+        
+            let uploadStream = bucket.openUploadStream(file.name);
+            readableTrackStream.pipe(uploadStream);
+        
+            uploadStream.on('error', (error) => {
+                error.statusCode=500;
+                error.message=global.errorMessages.ERROR_EMPLOYEE_INSERT_FAILED_FILE;
+                reject(error);
+            });
+        
+            uploadStream.on('finish', (result) => {
+                resolve(result._id.toString());
+            });
+        });
+    });
+}
+
+function helperFunctionInsertEmployeeFile(id_Employee, filename){
+    return new Promise((resolve, reject)=>{
+        MongoPool.getInstance(function (database){
+            database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).insertOne({'id_Employee': id_Employee, 'filename': filename})
+            .then((database)=>{
+                resolve();
             })
             .catch((error)=>{
                 error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
+                error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                reject(error); 
             });
+        });
+    });
+}
+
+function _deleteFileWithId(id_Employee, id_File){
+    return new Promise((resolve, reject)=>{
+        try{
+
+        } catch(error){
+            reject(error);
+        }
     });
 }
 /* #endregion */

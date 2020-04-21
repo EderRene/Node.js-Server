@@ -32,6 +32,8 @@ app.use('/api/files', fileRouter);
 app.use('/api/workingHours', workingHoursRouter);
 app.use('/api/holiday', holidayRouter);
 
+require('./mongo-pool.js').initPool();
+
 app.listen(port, function () {
   console.log('Time management API is up and running on port ' + port + '.');
 });
