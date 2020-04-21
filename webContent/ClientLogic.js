@@ -188,6 +188,10 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
     'files': null
   };
 
+  $scope.deselectFileFromEmployee = function (file) {
+    $scope.newEmployee.files.splice($scope.newEmployee.files.indexOf(file), 1);
+  }
+
   $scope.getEmployees = function () {
     $http.get('/api/employees')
       .then(function mySuccess(response) {
