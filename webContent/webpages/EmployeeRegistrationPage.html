@@ -91,9 +91,10 @@
         </div>
 
         <ul class="list-group" id="listFiles">
-            <li class="list-group-item list-group-item-action list-group-item-light"
-                ng-repeat="file in newEmployee.files" value="{{newEmployee.name}}">
-                {{file.name}}</li>
+            <li class="list-group-item list-group-item-action" ng-repeat="file in newEmployee.files"
+                value="{{newEmployee.name}}">
+                {{file.name}} <div class="float-right"> <kbd>{{file.size}} bytes</kbd></div>
+            </li>
         </ul>
     </div>
 
