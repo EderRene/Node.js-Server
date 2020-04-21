@@ -8,10 +8,11 @@ const bodyParser = require('body-parser');
 
 var utils = require('./global-functions');
 var employeeRouter = require("./routers/employee-router");
-var campRouter = require('./routers/camp-router')
-var fileRouter = require('./routers/file-Router')
+var campRouter = require('./routers/camp-router');
+var fileRouter = require('./routers/file-Router');
 var documentTypeRouter = require('./routers/documentType-router');
 var workingHoursRouter = require('./routers/workingHours-router');
+var holidayRouter = require('./routers/holiday-router');
 const security = require('./security');
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/camps', campRouter);
 app.use('/api/documentTypes', documentTypeRouter);
 app.use('/api/files', fileRouter);
 app.use('/api/workingHours', workingHoursRouter);
+app.use('/api/holiday', holidayRouter);
 
 app.listen(port, function () {
   console.log('Time management API is up and running on port ' + port + '.');
