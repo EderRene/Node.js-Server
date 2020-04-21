@@ -1,19 +1,38 @@
-<div class="container">  
-    <h1>Comment   
-    </h1>  
-    <hr />  
-    <div class="form-group" >  
-        <form ng-controller="newsEmployeeController">  
-            <textarea class="form-control" rows="5" placeholder="Your Comment Please....."  ng-model="CommentText"></textarea>  
-            <br />  
-            <button class="btn btn-success pull-right" ng-click="addComment()">Comment.</button>  
-            <br />  
-            <hr />  
-            <ul class="list-group" >  
-                <li class="list-group-item" ng-repeat="cmt in commentArray">{{cmt}}  
-                    <a href="" ng-click="removeComment($comText);" ><span class="glyphicon glyphicon-trash" style="float:right"> </span></a>  
-                </li>  
-            </ul>  
-        </form>  
-    </div>  
-</div>  
+<div class="container" ng-controller="newsEmployeeController">
+    <h1>Neuigkeiten
+    </h1>
+    <br />
+    <button id="openModalNews">Neuigkeit hinzufügen</button>
+    <div id="myModal" class="modal">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Neuigkeit hinzufügen</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <input type="text" class="form-control" placeholder="Überschrift" ng-model="infoHeader">
+
+                    <textarea class="form-control" rows="5" placeholder="Füge eine Information hinzu:"
+                        ng-model="CommentText"></textarea>
+                    <br />
+                    <button class="btn btn-success pull-right" ng-click="addComment()">Hinzufügen</button>
+                    <br />
+                    <hr />
+                </form>
+              </div>  
+        </div>
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="cmt in commentArray">
+            <a href="" ng-click="removeComment(cmt);"><span class="fas fa-times" style="float:right">
+            </span></a>
+            <b>{{cmt.infoHeader}}</b><br/>
+            <a>{{cmt.info}}</a>
+            
+        </li>
+    </ul>
+
+</div>

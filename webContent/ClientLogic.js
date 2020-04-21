@@ -351,19 +351,33 @@ app.controller('employeeinformationController', function ($scope, CurrentEmploye
 });
 
 app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location) {
+$scope.commentArray = []; 
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
-
-  $scope.commentArray = [];  //Main Object hare I'm adding all Comment informations
+  
+  //Main Object I'm adding all Comment informations
   $scope.addComment = function () {  // Comment Button click Event
     if ($scope.CommentText != null) {
-      $scope.commentArray.push($scope.CommentText);
+
+      var newInfo = {
+        'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
+        'dateTime': null,
+        'infoHeader': null,
+        'info': null
+      };
+    
+      newInfo.dateTime = new Date();
+      newInfo.info = $scope.CommentText;
+      newInfo.infoHeader = $scope.infoHeader;
+      
+      $scope.commentArray.push(newInfo);
       $scope.CommentText = "";
+      $scope.infoHeader = "";
+
     }
   }
   $scope.removeComment = function ($comText) {  // Delete button click Event
     $scope.commentArray.splice($comText, 1);
   }
-
 
   $scope.editEmployee = function () {
     $location.path('/editEmployee');
@@ -371,6 +385,31 @@ app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $loc
   $scope.cancelView = function () {
     $location.path('/');
   };
+  // Get the modal
+  var modal = document.getElementById("myModal");
+    
+  // Get the button that opens the modal
+  var btn = document.getElementById("openModalNews");
+  
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  
+  // When the user clicks the button, open the modal 
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+  
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
 });
 //Controller für Zeit eintragen
 app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $location, $http) {
