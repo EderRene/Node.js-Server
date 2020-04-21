@@ -201,8 +201,19 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
     $http.post('/api/employees', $scope.newEmployee)
       .then(function (responseEmp) {
 
-        $http.post('/api/files/' + responseEmp.data.id_Employee, $scope.newEmployee.files, {
-          headers: { 'enctype': 'multipart/form-data' }
+        var fd = new FormData();
+
+        // for (file in $scope.newEmployee.files) {
+        //   fd.append('file', file);
+        // }
+
+        for (var i in $scope.newEmployee.files) {
+          fd.append("fileToUpload", $scope.newEmployee.files[i]);
+        }
+
+        $http.post('/api/files/' + responseEmp.data.id_Employee, fd, {
+          transformRequest: angular.identity,
+          headers: { 'Content-Type': undefined }
         }).then(function (responseFiles) {
           $location.path('/');
         }, function (responseFiles) {
@@ -243,19 +254,13 @@ app.directive('ngFileModel', ['$parse', function ($parse) {
       var modelSetter = model.assign;
       element.bind('change', function () {
         var values = [];
-        angular.forEach(element[0].files, function (item) {
-          var value = {
-            //File Name 
-            name: item.name,
-            //File Size 
-            size: item.size,
-            //File URL to view 
-            url: URL.createObjectURL(item),
-            // File Input Value 
-            _file: item
-          };
-          values.push(value);
+
+        modelSetter(scope, element[0].files[0]);
+
+        angular.forEach(element[0].files, function (file) {
+          values.push(file);
         });
+
         scope.$apply(function () {
           if (isMultiple) {
             modelSetter(scope, values);
