@@ -4,21 +4,23 @@ const databaseMongo = require('../databaseMongo.js');
 const multer = require('multer');
 const {Readable} = require('stream');
 
-router.get('/:id', async(req, res) => {
+router.get('/:id_Employee', async(req, res) => {
   try{
-      let response=await database.getEmployeeWithId(req.params['id']);
+      let response=await databaseMongo.getFileDetails(req.params['id_Employee']);
       res.status(response.statusCode).send(response.values);
   } catch(error){
       res.status(error.statusCode).send(error.message);
   }
 })
 
-router.post('/:idEmployee', async (req, res) => {
+router.post('/:id_Employee', async (req, res) => {
   const storage = multer.memoryStorage()
   const upload = multer({ storage: storage, limits: { fields: 1, fileSize: 6000000, files: 1, parts: 2 }});
-  upload.single('files')(req, res, (err) => {
-    databaseMongo.insertFile(req.files.fileToUpload, req.params['idEmployee']);
-  });
+  for(let i=0; i<req.files.fileToUpload.length; i++){
+    upload.single('files')(req, res, (err) => {
+      databaseMongo.insertFile(req.files.fileToUpload[i], req.params['id_Employee']);
+    });
+  }
 });
 
 module.exports = router;

@@ -14,7 +14,7 @@ const {ObjectId} = require('mongodb');
 createUniqueIndex();
 createTextIndex();
 
-/* #region workingHours functions*/
+/* #region workingHours functions */
 function createUniqueIndex(){
     MongoPool.getInstance((database)=>{
         database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).createIndex({'id_Employee': 1, 'workingDate': 1}, {unique: true})
@@ -50,12 +50,30 @@ function createTextIndex(){
             });
     });
 }
+/* #endregion */
 
+/* #region workingHours functions */
 function _getWorkingHoursWithId(idEmployee){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).find({'id_Employee': parseInt(idEmployee)}).toArray()
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).find({'id_Employee': parseInt(idEmployee)}).toArray()
+                .then((result)=>{
+                    resolve({'statusCode': 200, 'values': result});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error);
+                });
+        });
+    })
+}
+
+function _getWorkingHoursWithIdAndSelectedDate(id_Employee, startDate, endDate){
+    return new Promise((resolve, reject)=>{
+        MongoPool.getInstance((database)=>{
+            if(startDate==null && endDate==null){
+                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).find({'id_Employee': parseInt(id_Employee)}).toArray()
                     .then((result)=>{
                         resolve({'statusCode': 200, 'values': result});
                     })
@@ -64,13 +82,29 @@ function _getWorkingHoursWithId(idEmployee){
                         error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
                         reject(error);
                     });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            });
-    })
+            } else {
+                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).find({'id_Employee': parseInt(id_Employee)}).toArray()
+                    .then((result)=>{
+                        var array=new Array();
+
+                        for(let i=0; i<result.length; i++){
+                            array.push(parseWorkingDay(result[i]));
+                        }
+
+                        console.log();
+                    })
+                    .catch((error)=>{
+                        error.statusCode=500;
+                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    });
+            }
+        });
+    });
+}
+
+function parseWorkingDate(workingDate){
+    let workingDate=56;
 }
 
 function _insertWorkingHours(workingHours){
@@ -191,6 +225,22 @@ function _updateHolidayState(id_Employee, id_Holiday, state){
 /* #endregion */
 
 /* #region file functions*/
+function _getFileDetails(id_Employee){
+    return new Promise((resolve, reject)=>{
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).find({'id_Employee': id_Employee}).toArray()
+                .then((result)=>{
+                    resolve({'statusCode': 200, 'values': {'fileDetails': result}});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                })
+        });
+    });
+}
+
 
 function _getFileWithId(id_Employee, id_File){
     return new Promise(async (resolve, reject)=>{
@@ -289,10 +339,10 @@ function helperFunctionInsertFile(file){
     });
 }
 
-function helperFunctionInsertEmployeeFile(id_Employee, filename){
+function helperFunctionInsertEmployeeFile(id_Employee, id_File, filename){
     return new Promise((resolve, reject)=>{
         MongoPool.getInstance(function (database){
-            database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).insertOne({'id_Employee': id_Employee, 'filename': filename})
+            database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).insertOne({'id_Employee': id_Employee, 'id_File': id_File, 'filename': filename})
             .then((database)=>{
                 resolve();
             })
@@ -316,7 +366,7 @@ function _deleteFileWithId(id_Employee, id_File){
 }
 /* #endregion */
 
-module.exports.getWorkingHoursWithId=_getWorkingHoursWithId;
+module.exports.getWorkingHoursWithIdAndSelectedDate=_getWorkingHoursWithIdAndSelectedDate;
 module.exports.insertWorkingHours=_insertWorkingHours;
 module.exports.updateWorkingHours=_updateWorkingHours;
 module.exports.deleteWorkingHours=_deleteWorkingHours;
@@ -324,3 +374,4 @@ module.exports.getHolidaysWithId=_getHolidaysWithId;
 module.exports.insertHoliday=_insertHoliday;
 module.exports.updateHolidayState=_updateHolidayState;
 module.exports.insertFile=_insertFile;
+module.exports.getFileDetails=_getFileDetails;
