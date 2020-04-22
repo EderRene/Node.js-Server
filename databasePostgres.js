@@ -518,16 +518,23 @@ function _getAllNews(){
 function _insertNews(news){
     return new Promise((resolve, reject) => {
         var resultNews;
+        var idEmp;
 
         if (isEmptyObject(news)) {
             reject(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
+        }
+
+        if(news.id_Employee==null){
+            idEmp=1;
+        } else {
+            idEmp=news.id_Employee;
         }
 
         pool.connect()
             .then((client)=>{
                 client.query('BEGIN')
                     .then(()=>{
-                        return client.query(queryStringInsertNews, [news.id_Employee, new Date(Date.now()), news.infoHeader, news.info]);
+                        return client.query(queryStringInsertNews, [idEmp, new Date(Date.now()), news.infoHeader, news.info]);
                     })
                     .then((result)=>{
                         resultNews=result;
