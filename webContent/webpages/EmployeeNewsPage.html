@@ -1,4 +1,4 @@
-<div class="container" ng-controller="newsEmployeeController">
+<div class="container" ng-controller="newsEmployeeController" ng-init="getAllNews()">
     <h1>Neuigkeiten
     </h1>
     <br />
@@ -14,14 +14,14 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <input type="text" class="form-control" placeholder="Überschrift" ng-model="infoHeader">
+                        <input type="text" class="form-control" placeholder="Überschrift" ng-model="newInfo.infoHeader">
                         <textarea class="form-control" rows="5" placeholder="Füge eine Information hinzu:"
-                            ng-model="CommentText"></textarea>
+                            ng-model="newInfo.info"></textarea>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success pull-right" data-dismiss="modal"
-                        ng-click="addComment()">Hinzufügen</button>
+                        ng-click="addInfo()">Hinzufügen</button>
                 </div>
             </div>
         </div>
@@ -31,7 +31,8 @@
         <li class="list-group-item" ng-repeat="cmt in commentArray">
             <a href="" ng-click="removeComment(cmt);"><span class="fas fa-times" style="float:right">
                 </span></a>
-            <b>{{cmt.infoHeader}}</b><br />
+            <b>{{cmt.infoheader}}</b>
+            <br>
             <a>{{cmt.info}}</a>
 
         </li>

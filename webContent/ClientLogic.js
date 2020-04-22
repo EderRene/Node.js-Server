@@ -470,33 +470,59 @@ app.controller('employeeinformationController', function ($scope, CurrentEmploye
   };
 });
 
-app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location) {
+app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.commentArray = [];
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
+  $scope.newInfo = {
+    'id_Employee': null,
+    'dateTime': null,
+    'infoHeader': null,
+    'info': null
+  };
+
+  $scope.getAllNews = function () {
+    $http.get('/api/news')
+      .then(function (response) {
+        $scope.commentArray = response.data;
+      }, function (response) {
+        console.error(response);
+        alert('Could not get all news:' + response.data);
+      });
+  }
+
+
   //Main Object I'm adding all Comment informations
-  $scope.addComment = function () {  // Comment Button click Event
-    if ($scope.CommentText != null) {
+  $scope.addInfo = function () {  // Comment Button click Event
 
-      var newInfo = {
-        'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
-        'dateTime': null,
-        'infoHeader': null,
-        'info': null
-      };
+    if ($scope.newInfo.infoHeader != "" && $scope.newInfo.info != "") {
 
-      newInfo.dateTime = new Date();
-      newInfo.info = $scope.CommentText;
-      newInfo.infoHeader = $scope.infoHeader;
+      $scope.newInfo.id_Employee = CurrentEmployee.getCurrentEmployee().id_employee;
 
-      $scope.commentArray.push(newInfo);
-      $scope.CommentText = "";
-      $scope.infoHeader = "";
+      $scope.newInfo.dateTime = new Date();
 
+      $http.post('/api/news', $scope.newInfo)
+        .then(function (response) {
+          $scope.commentArray.push($scope.newInfo);
+          $scope.CommentText = "";
+          $scope.infoHeader = "";
+        }, function (response) {
+          console.error(response);
+          alert('Could not post news:' + response.data);
+        });
     }
   }
-  $scope.removeComment = function ($comText) {  // Delete button click Event
-    $scope.commentArray.splice($comText, 1);
+
+  $scope.removeComment = function (comment) {  // Delete button click Event
+    $scope.getAllNews = function () {
+      $http.delete('/api/news/' + comment.idNews)
+        .then(function (response) {
+          $scope.commentArray.splice($comText, 1);
+        }, function (response) {
+          console.error(response);
+          alert('Could not delete news:' + response.data);
+        });
+    }
   }
 
   $scope.editEmployee = function () {
