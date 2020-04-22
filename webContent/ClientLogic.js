@@ -219,7 +219,7 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
         }).then(function (responseFiles) {
           $location.path('/');
         }, function (responseFiles) {
-          deleteEmployee(responseEmp.data);
+          $scope.deleteEmployee(responseEmp.data);
           console.error(responseFiles);
         })
       }, function (responseEmp) {
@@ -299,6 +299,45 @@ app.controller('editCampController', function ($scope, CurrentCamp, $location, $
 app.controller('editEmployeeController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
+  $scope.deleteFile = function (file) {
+    $http({
+      method: 'DELETE',
+      url: 'api/files/' + file.id_File
+
+    }).then(function (res) {
+      $scope.currentEmployee.files.splice($scope.currentEmployee.files.indexOf(file), 1);
+    }, function (res) {
+      console.log(res);
+    });
+  }
+
+  $scope.downloadFile = function (file) {
+    $http({
+      method: 'GET',
+      url: 'api/files/' + file.id_File + '/' + file.filename
+
+    }).then(function (res) {
+      var linkElement = document.createElement('a');
+      try {
+
+        linkElement.setAttribute('href', res.data);
+        linkElement.setAttribute('download', file.filename);
+
+        var clickEvent = new MouseEvent("click", {
+          "view": window,
+          "bubbles": true,
+          "cancelable": false
+        });
+
+        linkElement.dispatchEvent(clickEvent);
+
+      } catch (ex) {
+        console.log(ex);
+      }
+    }, function (res) {
+      console.log(res);
+    });
+  }
   $scope.updateEmployee = function () {
     $http.put('/api/employees/' + $scope.currentEmployee.id_employee, $scope.currentEmployee)
       .then(function success(response) {
@@ -431,33 +470,57 @@ app.controller('employeeinformationController', function ($scope, CurrentEmploye
   };
 });
 
-app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location) {
+app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.commentArray = [];
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
+  $scope.newInfo = {
+    'id_Employee': null,
+    'dateTime': null,
+    'infoHeader': null,
+    'info': null
+  };
+
+  $scope.getAllNews = function () {
+    $http.get('/api/news')
+      .then(function (response) {
+        $scope.commentArray = response.data;
+      }, function (response) {
+        console.error(response);
+        alert('Could not get all news:' + response.data);
+      });
+  }
+
+
   //Main Object I'm adding all Comment informations
-  $scope.addComment = function () {  // Comment Button click Event
-    if ($scope.CommentText != null) {
+  $scope.addInfo = function () {  // Comment Button click Event
 
-      var newInfo = {
-        'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
-        'dateTime': null,
-        'infoHeader': null,
-        'info': null
-      };
+    if ($scope.newInfo.infoHeader != "" && $scope.newInfo.info != "") {
 
-      newInfo.dateTime = new Date();
-      newInfo.info = $scope.CommentText;
-      newInfo.infoHeader = $scope.infoHeader;
+      $scope.newInfo.id_Employee = CurrentEmployee.getCurrentEmployee().id_employee;
 
-      $scope.commentArray.push(newInfo);
-      $scope.CommentText = "";
-      $scope.infoHeader = "";
+      $scope.newInfo.dateTime = new Date();
 
+      $http.post('/api/news', $scope.newInfo)
+        .then(function (response) {
+          $scope.getAllNews();  //ist mir alles EGAL xD
+        }, function (response) {
+          console.error(response);
+          alert('Could not post news:' + response.data);
+        });
     }
   }
-  $scope.removeComment = function ($comText) {  // Delete button click Event
-    $scope.commentArray.splice($comText, 1);
+
+  $scope.removeComment = function (comment) {  // Delete button click Event
+
+    $http.delete('/api/news/' + comment.id_news)
+      .then(function (response) {
+        $scope.getAllNews();  //ist mir alles EGAL xD
+      }, function (response) {
+        console.error(response);
+        alert('Could not delete news:' + response.data);
+      });
+
   }
 
   $scope.editEmployee = function () {
