@@ -9,9 +9,11 @@
                         <span aria-hidden="true" class="fas fa-angle-left"></span>
                       </button>
                 </th>
+                <th scope="col"></th>
                 <th scope="col" colspan="2">Vormittag</th>
                 <th scope="col"></th>
                 <th scope="col" colspan="2">Nachmittag</th>
+                <th scope="col"></th>
                 <th scope="col">
                     <button type="button" class="openNextWeek" data-dismiss="modal" aria-label="Close" ng-click="shiftWeek(true,currentWeekDate)">
                         <span aria-hidden="true" class="fas fa-angle-right"></span>
@@ -19,18 +21,21 @@
                 </th>
             </tr>
             <tr>
-                <th scope="col">Day</th>
-                <th scope="col">From</th>
-                <th scope="col">To</th>
+                <th scope="col">Datum</th>
+                <th scope="col">Tag</th>
+                <th scope="col">Von</th>
+                <th scope="col">Bis</th>
                 <th scope="col">Info</th>
-                <th scope="col">From</th>
-                <th scope="col">To</th>
+                <th scope="col">Von</th>
+                <th scope="col">Bis</th>
                 <th scope="col">Info</th>
+                <th scope="col">Bearbeiten</th>
             </tr>
         </thead>
         <tbody id="searchableWorkdays">
             <tr scope="row" ng-repeat="myWorkday in allWorkdays">
-                <td>{{myWorkday.workingDate | date: 'dd.MM.yyyy'}}</td>
+                <td bgcolor ="#b8cbf9">{{myWorkday.workingDate | date: 'dd.MM.yyyy'}}</td>
+                <td>{{myWorkday.workingDate | date: 'EEEE'}}</td>
                 <td>{{myWorkday.workingHours.forenoon.startTime | date: 'HH:mm'}}</td>
                 <td>{{myWorkday.workingHours.forenoon.endTime| date: 'HH:mm'}}</td>
                 <td>{{myWorkday.workingHours.forenoon.info}}</td>
@@ -40,6 +45,9 @@
                 <td>
                     <button type="button" class="btn btn-success" ng-click="editWorkday(myWorkday)"
                         title="Arbeitstag bearbeiten"><i class="fa fa-edit"></i></button>
+
+                     <button type="button" class="btn btn-success" ng-click="setHoliday(myWorkday)"
+                        title="Arbeitstag bearbeiten"><i class="fas fa-home"></i></button>
                 </td>
             </tr>
         </tbody>

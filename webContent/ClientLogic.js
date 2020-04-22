@@ -355,7 +355,7 @@ app.controller('editEmployeeController', function ($scope, CurrentEmployee, $loc
 });
 
 //Zeitverwaltungscontroller hier --------------
-app.controller('timeManagementController', function ($scope, CurrentEmployee, $location, $http) {
+app.controller('timeManagementController', function ($scope, CurrentEmployee,CurrentWorkday, $location, $http) {
   $scope.allWorkdays = [];
   $scope.currentWeekDate = new Date();
   //$scope.allDaysOfWeek = getWeekFor(new Date());
@@ -368,7 +368,7 @@ app.controller('timeManagementController', function ($scope, CurrentEmployee, $l
         for (var i = 0; i < 7; i++) {
           for (var x = 0; x < response.data.length; x++) {
             response.data[x].workingDate;
-            if ($scope.allWorkdays[i].workingDate.getDate() == new Date(response.data[x].workingDate).getDate() && $scope.allWorkdays[i].workingDate.getMonth() == new Date(response.data[x].workingDate).getMonth()) {
+            if (new Date($scope.allWorkdays[i].workingDate).getDate() == new Date(response.data[x].workingDate).getDate() && $scope.allWorkdays[i].workingDate.getMonth() == new Date(response.data[x].workingDate).getMonth()) {
 
               var index = $scope.allWorkdays.indexOf($scope.allWorkdays[i]);
 
@@ -394,6 +394,19 @@ app.controller('timeManagementController', function ($scope, CurrentEmployee, $l
     }
     $scope.currentWeekDate = sunday.toDate();
     $scope.allWorkdays = $scope.getWorkdays(sunday.toDate()); // returns a moment object
+  };
+
+  $scope.editWorkday = function (currentWorkday) {
+    CurrentWorkday.setCurrentWorkday(currentWorkday);
+    $location.path('/enterWorkday');
+  };
+  $scope.holidayflag = false;
+  $scope.setHoliday = function (currentWorkday) {
+    if(!$scope.holidayflag){
+      $scope.holidayflag = true;
+    } else{
+      $scope.holidayflag = false;
+    }
   };
 
   $scope.getWeekFor = function (dateTime) {
@@ -554,7 +567,7 @@ app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $loc
   }
 });
 //Controller für Zeit eintragen
-app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $location, $http) {
+app.controller('enterWorkdayController', function ($scope, CurrentEmployee,CurrentWorkday, $location, $http) {
   $scope.thistimeFornoon = null;
   $scope.newWorkDay = {
     'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
@@ -571,10 +584,12 @@ app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $loc
     }
   };
 
+  $scope.newWorkDay = CurrentWorkday.getCurrentWorkday();
+
   $scope.createTimeEntry = function () {
     $http.post('/api/workingHours', $scope.newWorkDay)
       .then(function (response) {
-        // $scope.timeTable.push($scope.newWorkDay);
+        $location.path('/timeManagement');
       }, function (response) {
         console.error(response);
         alert('Could not register user:' + response.data);
@@ -586,6 +601,34 @@ app.controller('enterWorkdayController', function ($scope, CurrentEmployee, $loc
     $scope.newWorkDay.workingHours.afternoon = null;
   };
 });
+// "Klasse" für den ausgewählten Workday
+app.factory('CurrentWorkday', function () {
+
+  var currentWorkday = {
+    'id_Employee': null,
+    'workingDate': null,
+    'workingHours': {
+      'forenoon': {
+        'startTime': null,
+        'endTime': null
+      },
+      'afternoon': {
+        'startTime': null,
+        'endTime': null
+      }
+    }
+  };
+
+  return {
+    getCurrentWorkday: function () {
+      return currentWorkday;
+    },
+    setCurrentWorkday: function (newWday) {
+      currentWorkday = newWday;   
+    }
+  };
+});
+
 // "Klasse" für den ausgewählten Employee
 app.factory('CurrentEmployee', function () {
 
