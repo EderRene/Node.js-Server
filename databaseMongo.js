@@ -251,15 +251,15 @@ function _getFileWithId(id_File, filename){
                 .then((result)=>{
                     let contentType='';
 
-                    if(filename.endsWith('txt"')){
+                    if(filename.endsWith('txt')){
                         contentType="text/plain";
-                    } else if(filename.endsWith('pdf"')){
+                    } else if(filename.endsWith('pdf')){
                         contentType="application/pdf";
-                    } else if(filename.endsWith('docx"')){
+                    } else if(filename.endsWith('docx')){
                         contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                    } else if(filename.endsWith('png"')){
+                    } else if(filename.endsWith('png')){
                         contentType="image/png";
-                    } else if(filename.endsWith('jpg"') || filename.endsWith('jpeg"')){
+                    } else if(filename.endsWith('jpg') || filename.endsWith('jpeg')){
                         contentType="image/jpeg"
                     }
 
