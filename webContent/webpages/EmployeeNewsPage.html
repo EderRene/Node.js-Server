@@ -33,8 +33,8 @@
         <li class="list-group-item" ng-repeat="cmt in commentArray">
             <a href="" ng-click="removeComment(cmt);"><span class="fas fa-times" style="float:right">
                 </span></a>
-            <b>{{cmt.infoheader}}</b>
-            <p>at {{cmt.datetime}}</p>
+            <b>{{cmt.infoheader}}</b> <b style="font-size: small;">von {{cmt.forename}} {{cmt.surname}}</b>
+            <p style="font-size: small;">um {{cmt.datetime}}</p>
             <a>{{cmt.info}}</a>
         </li>
     </ul>

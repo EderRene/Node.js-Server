@@ -88,11 +88,22 @@ function _getWorkingHoursWithIdAndSelectedDate(id_Employee, startDate, endDate){
             } else {
                 database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).find({'id_Employee': parseInt(id_Employee)}).toArray()
                     .then((result)=>{
-                        var array=new Array();
+                        var arrayDate=new Array();
+                        var arrayFilteredValues=new Array();
 
                         for(let i=0; i<result.length; i++){
-                            array.push(new Date(result[i].workingDate));
+                            arrayDate.push(new Date(result[i].workingDate));
                         }
+
+                        if(startDate!=null && endDate!=null){
+                            for(let j=0; j<arrayDate.length; j++){
+                                if(new Date(startDate)<arrayDate[j] && new Date(endDate)>arrayDate[j]){
+                                    arrayFilteredValues.push(result[j]);
+                                }
+                            }
+                        }
+
+                        resolve({'statusCode': 200, 'values': arrayFilteredValues});
                     })
                     .catch((error)=>{
                         error.statusCode=500;
@@ -102,10 +113,6 @@ function _getWorkingHoursWithIdAndSelectedDate(id_Employee, startDate, endDate){
             }
         });
     });
-}
-
-function parseWorkingDate(workingDate){
-    return nr 
 }
 
 function _insertWorkingHours(workingHours){
