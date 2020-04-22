@@ -4,11 +4,19 @@
     <table id="WorkdayTable" class="table table-hover table-bordered table-striped" id="workdaytable">
         <thead class="thead-dark">
             <tr>
-                <th scope="col" ></th>
+                <th scope="col" >
+                    <button type="button" class="openLastWeek" data-dismiss="modal" aria-label="Close" ng-click="shiftWeek(false,currentWeekDate)">
+                        <span aria-hidden="true" class="fas fa-angle-left"></span>
+                      </button>
+                </th>
                 <th scope="col" colspan="2">Vormittag</th>
                 <th scope="col"></th>
                 <th scope="col" colspan="2">Nachmittag</th>
-                <th scope="col"></th>
+                <th scope="col">
+                    <button type="button" class="openNextWeek" data-dismiss="modal" aria-label="Close" ng-click="shiftWeek(true,currentWeekDate)">
+                        <span aria-hidden="true" class="fas fa-angle-right"></span>
+                      </button>
+                </th>
             </tr>
             <tr>
                 <th scope="col">Day</th>
