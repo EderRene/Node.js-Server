@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
-var url = 'mongodb://localhost:27017/WorkingTimeManagement';
+var url = 'mongodb://salcher.synology.me:27017/WorkingTimeManagement';
 
 var option = {
     numberOfRetries : 5, 
