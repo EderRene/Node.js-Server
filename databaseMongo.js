@@ -311,6 +311,7 @@ function _insertFile(files, id_Employee){
 
             resolve({'statusCode': 201, 'values': {}});
         } catch(error){
+            error.statusCode=500;
             reject(error);
         }
     });
