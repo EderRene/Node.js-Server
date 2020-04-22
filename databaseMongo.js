@@ -230,7 +230,7 @@ function _getFileDetails(id_Employee){
         MongoPool.getInstance((database)=>{
             database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).find({'id_Employee': id_Employee}).toArray()
                 .then((result)=>{
-                    resolve({'statusCode': 200, 'values': {'fileDetails': result}});
+                    resolve(result);
                 })
                 .catch((error)=>{
                     error.statusCode=500;

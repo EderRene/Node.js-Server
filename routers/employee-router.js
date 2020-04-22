@@ -2,12 +2,18 @@
 
 const express = require('express');
 const database = require('../databasePostgres.js');
+const databaseMongo = require('../databaseMongo.js');
 var router = express.Router();
 const fs = require('fs');
 
 router.get('/', async (req, res) => {
     try{
         let response=await database.getAllEmployees();
+
+        for(let i=0; i<response.values.length; i++){
+            response.values[i].files=await databaseMongo.getFileDetails(response.values[i].id_employee.toString());
+        }
+
         res.status(response.statusCode).send(response.values);
     } catch(error){
         res.status(error.statusCode).send(error.message);
