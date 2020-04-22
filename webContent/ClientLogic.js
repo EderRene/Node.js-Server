@@ -503,9 +503,7 @@ app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $loc
 
       $http.post('/api/news', $scope.newInfo)
         .then(function (response) {
-          $scope.commentArray.push($scope.newInfo);
-          $scope.CommentText = "";
-          $scope.infoHeader = "";
+          $scope.getAllNews();  //ist mir alles EGAL xD
         }, function (response) {
           console.error(response);
           alert('Could not post news:' + response.data);
@@ -514,15 +512,15 @@ app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $loc
   }
 
   $scope.removeComment = function (comment) {  // Delete button click Event
-    $scope.getAllNews = function () {
-      $http.delete('/api/news/' + comment.idNews)
-        .then(function (response) {
-          $scope.commentArray.splice($comText, 1);
-        }, function (response) {
-          console.error(response);
-          alert('Could not delete news:' + response.data);
-        });
-    }
+
+    $http.delete('/api/news/' + comment.id_news)
+      .then(function (response) {
+        $scope.getAllNews();  //ist mir alles EGAL xD
+      }, function (response) {
+        console.error(response);
+        alert('Could not delete news:' + response.data);
+      });
+
   }
 
   $scope.editEmployee = function () {

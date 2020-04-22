@@ -1,8 +1,10 @@
 <div class="container" ng-controller="newsEmployeeController" ng-init="getAllNews()">
     <h1>Neuigkeiten
     </h1>
-    <br />
-    <button id="openModalNews">Neuigkeit hinzufügen</button>
+    <br>
+    <button class="btn btn-primary" id="openModalNews">Neuigkeit hinzufügen</button>
+    <br>
+    <br>
     <div id="myModal" class="modal">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -31,10 +33,9 @@
         <li class="list-group-item" ng-repeat="cmt in commentArray">
             <a href="" ng-click="removeComment(cmt);"><span class="fas fa-times" style="float:right">
                 </span></a>
-            <b>{{cmt.infoheader}}</b>
+            <b>{{cmt.infoheader}} at {{cmt.dateTime}}</b>
             <br>
             <a>{{cmt.info}}</a>
-
         </li>
     </ul>
 
