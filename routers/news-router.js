@@ -22,4 +22,13 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.delete('/:id_News', async (req, res)=>{
+    try{
+        let response=await database.deleteNews(req.params['id_News']);
+        res.status(response.statusCode).send(response.values);
+    } catch(error){
+        res.status(error.statusCode).send(error.message);
+    }
+});
+
 module.exports = router;

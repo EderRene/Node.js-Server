@@ -2,7 +2,7 @@ const multer = require('multer');
 const {Readable} = require('stream');
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
-const connectionStringMongo = 'mongodb://localhost:27017/WorkingTimeManagement';
+const connectionStringMongo = 'mongodb://salcher.synology.me:27017/WorkingTimeManagement';
 const client = new MongoClient(connectionStringMongo);
 const collectionWorkingHours = 'WorkingHours';
 const collectionHoliday = 'Holiday';
@@ -261,6 +261,8 @@ function _getFileWithId(id_File, filename){
                         contentType="image/png";
                     } else if(filename.endsWith('jpg') || filename.endsWith('jpeg')){
                         contentType="image/jpeg"
+                    } else if(filename.endsWith('xlsx')){
+                        contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     }
 
                     let fileData=[];
