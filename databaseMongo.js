@@ -7,6 +7,8 @@ const client = new MongoClient(connectionStringMongo);
 const collectionWorkingHours = 'WorkingHours';
 const collectionHoliday = 'Holiday';
 const collectionEmployeeFiles = 'EmployeeFiles';
+const collectionFiles = 'files.files';
+const collectionChunks = 'files.chunks';
 const databaseWorkingTimeManagement = 'WorkingTimeManagement';
 const database=null;
 var MongoPool = require("./mongo-pool.js");
@@ -242,71 +244,54 @@ function _getFileDetails(id_Employee){
     });
 }
 
-
-function _getFileWithId(id_Employee, id_File){
-    return new Promise(async (resolve, reject)=>{
-        try{
-            let filename=await helperFunctionGetFilename(id_Employee, id_File);
-            await helperFunctionGetFileWithId(filename);
-            resolve({'statusCode': 200, 'values': {}});
-        } catch(error){
-            reject(error);
-        }
-    });
-}
-
-function helperFunctionGetFilename(id_Employee, id_File){
+function _getFileWithId(id_File, filename){
     return new Promise((resolve, reject)=>{
-        MongoClient.getInstance((database)=>{
-            database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).find({'id_Employee': id_Employee, 'id_File': id_File})
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionChunks).find({'files_id': ObjectId(id_File)}).sort({n: 1}).toArray()
                 .then((result)=>{
-                    resolve(result.filename);
+                    let contentType='';
+
+                    if(filename.endsWith('txt"')){
+                        contentType="text/plain";
+                    } else if(filename.endsWith('pdf"')){
+                        contentType="application/pdf";
+                    } else if(filename.endsWith('docx"')){
+                        contentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    } else if(filename.endsWith('png"')){
+                        contentType="image/png";
+                    } else if(filename.endsWith('jpg"') || filename.endsWith('jpeg"')){
+                        contentType="image/jpeg"
+                    }
+
+                    let fileData=[];
+                    for(let i=0; i<result.length; i++){
+                        fileData.push(result[i].data.toString('base64'));
+                    }
+
+                    let returnValue="data:" + contentType + ";charset=utf-8;base64," + fileData.join() + ""; 
+
+                    resolve({'statusCode': 200, 'values': returnValue});
                 })
                 .catch((error)=>{
                     error.statusCode=500;
-                    error.message='';
-                    reject(error);
-                })
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                });
         });
-    });
-}
-
-function helperFunctionGetFileWithId(filename){
-    return new Promise((resolve, reject)=>{
-        MongoPool.getInstance((database)=>{
-            res.set('content-type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-            res.set('accept-ranges', 'bytes');
-            
-            let bucket = new mongodb.GridFSBucket(database.db(), {
-                bucketName: 'files'
-            });
-            
-            let downloadStream = bucket.openDownloadStream(trackID);
-            
-            downloadStream.on('data', (chunk) => {
-                res.write(chunk);
-            });
-            
-            downloadStream.on('error', (error) => {
-                error.statusCode=500;
-                error.message='';
-                reject(error);
-            });
-            
-            downloadStream.on('end', () => {
-                res.end();
-                resolve();
-            }); 
-        });
-    });
+    })
 }
 
 function _insertFile(files, id_Employee){
     return new Promise(async (resolve, reject)=>{
         try{
-            for(let i=0; i<files.length; i++){
-                let id_File=await helperFunctionInsertFile(files[i]);
-                await helperFunctionInsertEmployeeFile(id_Employee, id_File, files[i].name);
+            if(!files.length==undefined){
+                let id_File=await helperFunctionInsertFile(files);
+                await helperFunctionInsertEmployeeFile(id_Employee, id_File, files.name);
+            } else {
+                for(let i=0; i<files.length; i++){
+                    let id_File=await helperFunctionInsertFile(files[i]);
+                    await helperFunctionInsertEmployeeFile(id_Employee, id_File, files[i].name);
+                }
             }
 
             resolve({'statusCode': 201, 'values': {}});
@@ -360,13 +345,35 @@ function helperFunctionInsertEmployeeFile(id_Employee, id_File, filename){
     });
 }
 
-function _deleteFileWithId(id_Employee, id_File){
+function _deleteFileWithId(id_File){
     return new Promise((resolve, reject)=>{
-        try{
-
-        } catch(error){
-            reject(error);
-        }
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionFiles).deleteOne({'_id': ObjectId(id_File)})
+                .then(()=>{
+                    database.db(databaseWorkingTimeManagement).collection(collectionChunks).deleteMany({'files_id': ObjectId(id_File)})
+                        .then(()=>{
+                            database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).deleteOne({'id_File': id_File})
+                                .then(()=>{
+                                    resolve({'statusCode': 204, 'values': {}});
+                                })
+                                .catch((error)=>{
+                                    error.statusCode=500;
+                                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                                    reject(error); 
+                                });
+                        })
+                        .catch((error)=>{
+                            error.statusCode=500;
+                            error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                            reject(error); 
+                        });
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                });
+        });
     });
 }
 /* #endregion */
@@ -380,3 +387,5 @@ module.exports.insertHoliday=_insertHoliday;
 module.exports.updateHolidayState=_updateHolidayState;
 module.exports.insertFile=_insertFile;
 module.exports.getFileDetails=_getFileDetails;
+module.exports.getFileWithId=_getFileWithId;
+module.exports.deleteFileWithId=_deleteFileWithId;

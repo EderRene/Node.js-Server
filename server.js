@@ -13,6 +13,7 @@ var fileRouter = require('./routers/file-Router');
 var documentTypeRouter = require('./routers/documentType-router');
 var workingHoursRouter = require('./routers/workingHours-router');
 var holidayRouter = require('./routers/holiday-router');
+var newsRouter = require('./routers/news-router');
 const security = require('./security');
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api/documentTypes', documentTypeRouter);
 app.use('/api/files', fileRouter);
 app.use('/api/workingHours', workingHoursRouter);
 app.use('/api/holiday', holidayRouter);
+app.use('/api/news', newsRouter);
 
 require('./mongo-pool.js').initPool();
 
