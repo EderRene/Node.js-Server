@@ -324,12 +324,12 @@ app.controller('timeManagementController', function ($scope, CurrentEmployee, $l
   $scope.getWorkdays = function () {
     $http.get('/api/workingHours/' + CurrentEmployee.getCurrentEmployee().id_employee)
       .then(function mySuccess(response) {
-        
-        $scope.allWorkdays = getWeekFor($scope.currentWeekDate,CurrentEmployee);
-        for(var i = 0; i < 7; i++){ 
-          for(var x = 0; x < response.data.length; x++ ){
+
+        $scope.allWorkdays = getWeekFor($scope.currentWeekDate, CurrentEmployee);
+        for (var i = 0; i < 7; i++) {
+          for (var x = 0; x < response.data.length; x++) {
             response.data[x].workingDate;
-            if($scope.allWorkdays[i].workingDate.getDate() == new Date(response.data[x].workingDate).getDate() && $scope.allWorkdays[i].workingDate.getMonth() == new Date(response.data[x].workingDate).getMonth()){
+            if ($scope.allWorkdays[i].workingDate.getDate() == new Date(response.data[x].workingDate).getDate() && $scope.allWorkdays[i].workingDate.getMonth() == new Date(response.data[x].workingDate).getMonth()) {
 
               var index = $scope.allWorkdays.indexOf($scope.allWorkdays[i]);
 
@@ -347,24 +347,24 @@ app.controller('timeManagementController', function ($scope, CurrentEmployee, $l
     // this will just increment or decrement the week
     var sunday = moment(dateTime).startOf('week');
     sunday.add(1, 'd');
-    
+
     if (add) {
-      sunday.add(1, 'w'); 
+      sunday.add(1, 'w');
     } else {
-      sunday.subtract(1, 'w'); 
+      sunday.subtract(1, 'w');
     }
     $scope.currentWeekDate = sunday.toDate();
     $scope.allWorkdays = $scope.getWorkdays(sunday.toDate()); // returns a moment object
-    };
+  };
 
   $scope.getWeekFor = function (dateTime) {
     var days = [];
     var sunday = moment(dateTime).startOf('week');
-  
+
     for (var i = 1; i < 8; i++) {
-        days.push(moment(sunday).add(i, 'days').toDate());
+      days.push(moment(sunday).add(i, 'days').toDate());
     }
-  
+
     return days; // returns a list of moment objects
   };
 });
@@ -381,9 +381,35 @@ app.controller('campInformationController', function ($scope, CurrentCamp, $loca
   };
 });
 
-app.controller('employeeinformationController', function ($scope, CurrentEmployee, $location) {
+app.controller('employeeinformationController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
+  $scope.downloadFile = function (file) {
+    $http({
+      method: 'GET',
+      url: 'api/files/' + file.id_File + '/' + file.filename
 
+    }).then(function (res) {
+      var linkElement = document.createElement('a');
+      try {
+
+        linkElement.setAttribute('href', res.data);
+        linkElement.setAttribute('download', file.filename);
+
+        var clickEvent = new MouseEvent("click", {
+          "view": window,
+          "bubbles": true,
+          "cancelable": false
+        });
+
+        linkElement.dispatchEvent(clickEvent);
+
+      } catch (ex) {
+        console.log(ex);
+      }
+    }, function (res) {
+      console.log(res);
+    });
+  }
   $scope.editEmployee = function () {
     $location.path('/editEmployee');
   };
@@ -574,15 +600,15 @@ function searchTableCamp() {
   });
 }
 
-function getWeekFor(dateTime,CurrentEmployee) {
+function getWeekFor(dateTime, CurrentEmployee) {
   var days = [];
   var emptyWorkingDays = [];
   var sunday = moment(dateTime).startOf('week');
 
   for (var i = 1; i < 8; i++) {
-      days.push(moment(sunday).add(i, 'days').toDate());
+    days.push(moment(sunday).add(i, 'days').toDate());
   }
-  for(var i = 0; i < 7; i++){
+  for (var i = 0; i < 7; i++) {
     var newEmptyWorkDay = {
       'id_Employee': 1, //CurrentEmployee.getCurrentEmployee().id_employee
       'workingDate': days[i],
@@ -604,31 +630,31 @@ function getWeekFor(dateTime,CurrentEmployee) {
 }
 
 function shiftWeek(add, dateTime) {
-// this will just increment or decrement the week
-var sunday = moment(dateTime).startOf('week');
-sunday.add(1, 'd');
+  // this will just increment or decrement the week
+  var sunday = moment(dateTime).startOf('week');
+  sunday.add(1, 'd');
 
-if (add) {
-  sunday.add(1, 'w'); 
-} else {
-  sunday.subtract(1, 'w'); 
-}
+  if (add) {
+    sunday.add(1, 'w');
+  } else {
+    sunday.subtract(1, 'w');
+  }
 
-return getWeekFor(sunday); // returns a moment object
+  return getWeekFor(sunday); // returns a moment object
 }
 
 function getWeekDate(dateTime) {
-  var sunday  = moment(dateTime).startOf('week');
+  var sunday = moment(dateTime).startOf('week');
 
-  var monday = sunday.add({day: 1}).clone();
+  var monday = sunday.add({ day: 1 }).clone();
 
   return 'Week Commencing ' + monday.format('Do'); // a nicely formatted string of the week commencing
 }
 
 function getStartOfWeek(dateTime) {
-  var sunday  = moment(dateTime).startOf('week');
+  var sunday = moment(dateTime).startOf('week');
 
-  var monday = sunday.add({day: 1}).clone();
+  var monday = sunday.add({ day: 1 }).clone();
 
   return monday; // the monday that started the week as a moment object
 }

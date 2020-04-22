@@ -99,17 +99,19 @@
             <li class="list-group-item list-group-item-action" ng-repeat="file in currentEmployee.files"
                 value="{{file.id_File}}">
                 {{file.filename}} <div class=" float-right">
-                    <button type="button" title="Datei anzeigen" class="btn btn-primary btn-sm"
-                        ng-click="alert('Hallo')"><i class="fas fa-eye"></i></button>
+                    <button type="button" title="Datei herunterladen" class="btn btn-primary btn-sm"
+                        ng-click="downloadFile(file)"><i class="fas fa-download"></i></button>
                     <button type="button" title="Datei löschen" class="btn btn-danger btn-sm"
-                        ng-click="alert('Hallo')"><i class="fas fa-window-close"></i></button>
+                        ng-click="deleteFile(file)"><i class="fas fa-trash-alt"></i></button>
                 </div>
             </li>
         </ul>
     </div>
 </div>
-
 <br>
-
 <button type="button" ng-click="editEmployee(currentEmployee)" class="btn btn-primary">Mitarbeiter bearbeiten</button>
 <button type="button" ng-click="cancelView()" class="btn btn-primary">Cancel</button>
+
+<script>
+  
+</script>
