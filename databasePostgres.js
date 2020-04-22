@@ -4,6 +4,7 @@ const { Pool } = require('pg');
 const queryStringSelectAllEmployees = "SELECT e.id_employee, e.forename, e.surname, e.dateofbirth, e.id_address, e.svn, e.uid, e.bankaccountnumber , e.email, e.phonenumber, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address";
 const queryStringSelectAllCamps = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, e.forename, e.surname, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address INNER JOIN employee e ON e.id_Employee=c.id_Leader";
 const queryStringSelectAllDocumentTypes = "SELECT id_documenttype, type FROM documentType";
+const queryStringSelectAllNews = "SELECT id_News, id_Employee, dateTime, infoHeader, info FROM news";
 const queryStringSelectEmployeeWithId = "SELECT e.id_employee, e.forename, e.surname, e.dateofbirth, e.id_address, e.svn, e.uid, e.bankaccountnumber, e.email, e.phonenumber, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM employee e INNER JOIN address a ON e.id_Address=a.id_Address WHERE e.id_employee=$1";
 const queryStringSelectCampWithId = "SELECT c.id_camp, c.id_address, c.name, c.id_leader, e.forename, e.surname, a.addressline1, a.addressline2, a.postcode, a.city, a.country FROM camp c INNER JOIN address a ON c.id_Address=a.id_Address INNER JOIN employee e ON e.id_Employee=c.id_Leader WHERE c.id_camp=$1";
 const queryStringSelectEmployeeWithEmail = "SELECT id_employee, forename, surname, TO_CHAR(dateOfBirth, 'DD.MM.YYYY') AS dateofbirth, id_address, svn, uid, bankaccountnumber, email, phonenumber FROM employee WHERE email=$1";
@@ -486,10 +487,42 @@ function _insertDocumentType(documentType) {
 
 /* #endregion */
 
-/* #region document functions */
+/* #region news functions */
+function _getAllNews(){
+    return new Promise((resolve, reject) => {
+        pool.connect()
+            .then((client) => {
+                client.query(queryStringSelectAllNews)
+                    .then((result) => {
+                        resolve({ 'statusCode': 200, 'values': result.rows });
+                    })
+                    .catch((error) => {
+                        error.statusCode = 500;
+                        error.message = global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                        reject(error);
+                    })
+                    .finally(() => {
+                        client.release();
+                    });
+            })
+            .catch((error) => {
+                error.statusCode = 500;
+                error.message = global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
+                reject(error);
+            })
+    });
+}
 
-function insertDocument() {
+function _insertNews(news){
+    return new Promise((resolve, reject) => {
+        if (isEmptyObject(news)) {
+            reject(global.errorMessages.ERROR_EMPLOYEE_MISSING_DATA);
+        }
 
+        pool.connect()
+            .then()
+            .catch();
+    });
 }
 /* #endregion */
 
@@ -517,12 +550,14 @@ function rollbackDatabase(client) {
 module.exports.getAllEmployees = _getAllEmployees;
 module.exports.getAllCamps = _getAllCamps;
 module.exports.getAllDocumentTypes = _getAllDocumentTypes;
+module.exports.getAllNews = _getAllNews;
 module.exports.getEmployeeWithId = _getEmployeeWithId;
 module.exports.getCampWithId = _getCampWithId;
 module.exports.getEmployeeWithEmail = _getEmployeeWithEmail;
 module.exports.insertEmployee = _insertEmployee;
 module.exports.insertCamp = _insertCamp;
 module.exports.insertDocumentType = _insertDocumentType;
+module.exports.insertNews = _insertNews;
 module.exports.deleteEmployee = _deleteEmployee;
 module.exports.deleteCamp = _deleteCamp;
 module.exports.updateEmployee = _updateEmployee;

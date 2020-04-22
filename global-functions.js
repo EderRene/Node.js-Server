@@ -38,6 +38,7 @@ var errorMessages={
     ERROR_EMPLOYEE_DELETE_FAILED: 'ERROR: Delete of employee failed',
     ERROR_EMPLOYEE_UPDATE_FAILED: 'ERROR: Update of employee failed',
     ERROR_EMPLOYEE_INSERT_FAILED_FILE: 'ERROR: Insert of file failed',
+    ERROR_EMPLOYEE_DELETE_FAILED_FILE: 'ERROR: Delete of file failed',
     
     ERROR_MONGO_TRANSACTION: 'ERROR: Mongo transaction aborded',
     ERROR_MONGO_TRANSACTION_UNEXPECTED: 'ERROR: Mongo transaction aborded due to an unexpected error',

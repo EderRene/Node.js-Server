@@ -11,9 +11,27 @@ router.get('/:id_Employee', async(req, res) => {
   }
 })
 
+router.get('/:id_File/:filename', async(req, res) => {
+  try{
+    let response=await databaseMongo.getFileWithId(req.params['id_File'], req.params['filename']);
+    res.status(response.statusCode).send(response.values);
+  } catch(error){
+    res.status(error.statusCode).send(error.message);
+  }
+})
+
 router.post('/:id_Employee', async (req, res) => {
   try{
     let response=await databaseMongo.insertFile(req.files.fileToUpload, req.params['id_Employee']);
+    res.status(response.statusCode).send(response.values);
+  } catch(error){
+    res.status(error.statusCode).send(error.message);
+  }
+});
+
+router.delete('/:id_File', async(req, res)=>{
+  try{
+    let response=await databaseMongo.deleteFileWithId(req.params['id_File']);
     res.status(response.statusCode).send(response.values);
   } catch(error){
     res.status(error.statusCode).send(error.message);
