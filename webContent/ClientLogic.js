@@ -168,8 +168,6 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
     }
   };
 
-  $scope.files = [];
-
   $scope.newEmployee = {
     'id_employee': null,
     'forename': null,
@@ -221,6 +219,7 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
         }).then(function (responseFiles) {
           $location.path('/');
         }, function (responseFiles) {
+          deleteEmployee(responseEmp.data);
           console.error(responseFiles);
         })
       }, function (responseEmp) {
@@ -239,6 +238,7 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
         console.log("error");
       });
   };
+
   $scope.showEmployee = function (employee) {
     CurrentEmployee.setCurrentEmployee(employee);
     $location.path('/showEmployee');
@@ -335,7 +335,7 @@ app.controller('campInformationController', function ($scope, CurrentCamp, $loca
     $location.path('/editCamp');
   };
   $scope.cancelView = function () {
-    $location.path('/Campverwaltung');
+    $location.path('/campVerwaltung');
   };
 });
 
@@ -351,9 +351,9 @@ app.controller('employeeinformationController', function ($scope, CurrentEmploye
 });
 
 app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $location) {
-$scope.commentArray = []; 
+  $scope.commentArray = [];
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
-  
+
   //Main Object I'm adding all Comment informations
   $scope.addComment = function () {  // Comment Button click Event
     if ($scope.CommentText != null) {
@@ -364,11 +364,11 @@ $scope.commentArray = [];
         'infoHeader': null,
         'info': null
       };
-    
+
       newInfo.dateTime = new Date();
       newInfo.info = $scope.CommentText;
       newInfo.infoHeader = $scope.infoHeader;
-      
+
       $scope.commentArray.push(newInfo);
       $scope.CommentText = "";
       $scope.infoHeader = "";
@@ -387,25 +387,25 @@ $scope.commentArray = [];
   };
   // Get the modal
   var modal = document.getElementById("myModal");
-    
+
   // Get the button that opens the modal
   var btn = document.getElementById("openModalNews");
-  
+
   // Get the <span> element that closes the modal
   var span = document.getElementsByClassName("close")[0];
-  
+
   // When the user clicks the button, open the modal 
-  btn.onclick = function() {
+  btn.onclick = function () {
     modal.style.display = "block";
   }
-  
+
   // When the user clicks on <span> (x), close the modal
-  span.onclick = function() {
+  span.onclick = function () {
     modal.style.display = "none";
   }
-  
+
   // When the user clicks anywhere outside of the modal, close it
-  window.onclick = function(event) {
+  window.onclick = function (event) {
     if (event.target == modal) {
       modal.style.display = "none";
     }
@@ -461,7 +461,8 @@ app.factory('CurrentEmployee', function () {
     'postcode': null,
     'city': null,
     'country': null,
-    'bankaccountnumber': null
+    'bankaccountnumber': null,
+    'files': null
   };
 
   return {

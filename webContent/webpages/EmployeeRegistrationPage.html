@@ -94,7 +94,7 @@
             <li class="list-group-item list-group-item-action" ng-repeat="file in newEmployee.files"
                 value="{{newEmployee.name}}">
                 {{file.name}} <div class="float-right"> <kbd>{{file.size}} bytes</kbd> <button type="button"
-                        class="btn btn-danger btn-sm" ng-click="deselectFileFromEmployee(file)"><i
+                        class="btn btn-danger btn-sm" title="Datei löschen" ng-click="deselectFileFromEmployee(file)"><i
                             class="fas fa-window-close"></i></button></div>
             </li>
         </ul>
