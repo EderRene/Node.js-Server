@@ -1,3 +1,4 @@
+const multer = require('multer');
 const {Readable} = require('stream');
 const mongodb = require('mongodb');
 const MongoClient = mongodb.MongoClient;
@@ -300,11 +301,14 @@ function helperFunctionGetFileWithId(filename){
     });
 }
 
-function _insertFile(file, id_Employee){
+function _insertFile(files, id_Employee){
     return new Promise(async (resolve, reject)=>{
         try{
-            let id_File=await helperFunctionInsertFile(file);
-            await helperFunctionInsertEmployeeFile(id_Employee, id_File, file.name);
+            for(let i=0; i<files.length; i++){
+                let id_File=await helperFunctionInsertFile(files[i]);
+                await helperFunctionInsertEmployeeFile(id_Employee, id_File, files[i].name);
+            }
+
             resolve({'statusCode': 201, 'values': {}});
         } catch(error){
             reject(error);
