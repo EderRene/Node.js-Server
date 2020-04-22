@@ -104,7 +104,7 @@ function _getWorkingHoursWithIdAndSelectedDate(id_Employee, startDate, endDate){
 }
 
 function parseWorkingDate(workingDate){
-    let workingDate=56;
+    //let workingDate=56;
 }
 
 function _insertWorkingHours(workingHours){
