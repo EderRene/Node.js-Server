@@ -499,8 +499,6 @@ app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $loc
 
       $scope.newInfo.id_Employee = CurrentEmployee.getCurrentEmployee().id_employee;
 
-      $scope.newInfo.dateTime = new Date();
-
       $http.post('/api/news', $scope.newInfo)
         .then(function (response) {
           $scope.getAllNews();  //ist mir alles EGAL xD
