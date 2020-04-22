@@ -91,10 +91,8 @@ function _getWorkingHoursWithIdAndSelectedDate(id_Employee, startDate, endDate){
                         var array=new Array();
 
                         for(let i=0; i<result.length; i++){
-                            array.push(parseWorkingDay(result[i]));
+                            array.push(new Date(result[i].workingDate));
                         }
-
-                        console.log();
                     })
                     .catch((error)=>{
                         error.statusCode=500;
@@ -107,72 +105,54 @@ function _getWorkingHoursWithIdAndSelectedDate(id_Employee, startDate, endDate){
 }
 
 function parseWorkingDate(workingDate){
-    //let workingDate=56;
+    return nr 
 }
 
 function _insertWorkingHours(workingHours){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).insertOne(workingHours)
-                    .then(()=>{
-                        resolve({'statusCode': 201, 'values': {}});
-                    })
-                    .catch((error)=>{
-                        error.statusCode=500;
-                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-                        reject(error);
-                    });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            });
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).insertOne(workingHours)
+                .then(()=>{
+                    resolve({'statusCode': 201, 'values': {}});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error);
+                });
+        });
     });
 }
 
 function _updateWorkingHours(id_Employee, workingHours){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).updateOne({'id_Employee': parseInt(id_Employee)}, {$set: {'workingDate': workingHours.workingDate, 'workingHours': workingHours.workingHours}})
-                    .then(()=>{
-                        resolve({'statusCode': 204, 'values': {}});
-                    })
-                    .catch((error)=>{
-                        error.statusCode=500;
-                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-                        reject(error); 
-                    });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            });
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).updateOne({'id_Employee': parseInt(id_Employee)}, {$set: {'workingDate': workingHours.workingDate, 'workingHours': workingHours.workingHours}})
+                .then(()=>{
+                    resolve({'statusCode': 204, 'values': {}});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                });
+        });
     });
 }
 
 function _deleteWorkingHours(id_Employee){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).deleteOne({'id_Employee': parseInt(id_Employee)})
-                    .then(()=>{
-                        resolve({'statusCode': 204, 'values': {}});
-                    })
-                    .catch((error)=>{
-                        error.statusCode=500;
-                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-                        reject(error); 
-                    });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            });
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).deleteOne({'id_Employee': parseInt(id_Employee)})
+                .then(()=>{
+                    resolve({'statusCode': 204, 'values': {}});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                });
+        });
     });
 }
 /* #endregion */
