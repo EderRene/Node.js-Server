@@ -219,7 +219,7 @@ app.controller('myCtrl', function ($scope, $http, $location, CurrentEmployee) {
         }).then(function (responseFiles) {
           $location.path('/');
         }, function (responseFiles) {
-          deleteEmployee(responseEmp.data);
+          $scope.deleteEmployee(responseEmp.data);
           console.error(responseFiles);
         })
       }, function (responseEmp) {
@@ -299,6 +299,45 @@ app.controller('editCampController', function ($scope, CurrentCamp, $location, $
 app.controller('editEmployeeController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
 
+  $scope.deleteFile = function (file) {
+    $http({
+      method: 'DELETE',
+      url: 'api/files/' + file.id_File
+
+    }).then(function (res) {
+      $scope.currentEmployee.files.splice($scope.currentEmployee.files.indexOf(file), 1);
+    }, function (res) {
+      console.log(res);
+    });
+  }
+
+  $scope.downloadFile = function (file) {
+    $http({
+      method: 'GET',
+      url: 'api/files/' + file.id_File + '/' + file.filename
+
+    }).then(function (res) {
+      var linkElement = document.createElement('a');
+      try {
+
+        linkElement.setAttribute('href', res.data);
+        linkElement.setAttribute('download', file.filename);
+
+        var clickEvent = new MouseEvent("click", {
+          "view": window,
+          "bubbles": true,
+          "cancelable": false
+        });
+
+        linkElement.dispatchEvent(clickEvent);
+
+      } catch (ex) {
+        console.log(ex);
+      }
+    }, function (res) {
+      console.log(res);
+    });
+  }
   $scope.updateEmployee = function () {
     $http.put('/api/employees/' + $scope.currentEmployee.id_employee, $scope.currentEmployee)
       .then(function success(response) {

@@ -3,70 +3,59 @@
     <div class="form-row">
         <div class="form-group col">
             <label for="forename">Vorname</label>
-            <input type="text" class="form-control" id="forename"  ng-model="currentEmployee.forename"
-                required>
+            <input type="text" class="form-control" id="forename" ng-model="currentEmployee.forename" required>
         </div>
         <div class="form-group col">
             <label for="surname">Nachname</label>
-            <input type="text" class="form-control" id="surname"  ng-model="currentEmployee.surname"
-                required>
+            <input type="text" class="form-control" id="surname" ng-model="currentEmployee.surname" required>
 
         </div>
         <div class="form-group col">
             <label for="dateOfBirth">Geburtsdatum</label>
-            <input type="date" class="form-control" id="dateOfBirth" 
-                ng-model="currentEmployee.dateofbirth" required>
+            <input type="date" class="form-control" id="dateOfBirth" ng-model="currentEmployee.dateofbirth" required>
         </div>
     </div>
 
-    <div class="form-row">  
+    <div class="form-row">
         <div class="form-group col">
             <label for="svn">Sozialversicherungsnummer</label>
-            <input type="number" class="form-control" id="svn" ng-model= "currentEmployee.svn"
-                required>
+            <input type="number" class="form-control" id="svn" ng-model="currentEmployee.svn" required>
         </div>
         <div class="form-group col">
             <label for="phonenumber">Telefonnummer</label>
-            <input type="text" class="form-control" id="phonenumber" 
-                ng-model="currentEmployee.phonenumber" required>
+            <input type="text" class="form-control" id="phonenumber" ng-model="currentEmployee.phonenumber" required>
         </div>
     </div>
     <div class="form-group">
         <label for="addressLine1">Straße und Hausnummer</label>
-        <input type="text" class="form-control" id="addressline1" 
-            ng-model="currentEmployee.addressline1" required>
+        <input type="text" class="form-control" id="addressline1" ng-model="currentEmployee.addressline1" required>
     </div>
 
     <div class="form-group">
         <label for="addressLine2">Adresszusatz</label>
-        <input type="text" class="form-control" id="addressline2" 
-            ng-model="currentEmployee.addressline2" >
+        <input type="text" class="form-control" id="addressline2" ng-model="currentEmployee.addressline2">
     </div>
 
     <div class="form-row">
         <div class="form-group col">
             <label for="postCode">Postleitzahl</label>
-            <input type="number" class="form-control" id="postCode"  ng-model="currentEmployee.postcode"
-                required>
+            <input type="number" class="form-control" id="postCode" ng-model="currentEmployee.postcode" required>
         </div>
 
         <div class="form-group col">
             <label for="city">Stadt</label>
-            <input type="text" class="form-control" id="city" ng-model="currentEmployee.city"
-                required>
+            <input type="text" class="form-control" id="city" ng-model="currentEmployee.city" required>
         </div>
     </div>
 
     <div class="form-group">
         <label for="country">Land</label>
-        <input type="text" class="form-control" id="country"  ng-model="currentEmployee.country"
-            required>
+        <input type="text" class="form-control" id="country" ng-model="currentEmployee.country" required>
     </div>
 
     <div class="form-group">
         <label for="email">Email-Adresse</label>
-        <input type="email" class="form-control" id="email"  name="forename"
-            ng-model="currentEmployee.email" required>
+        <input type="email" class="form-control" id="email" name="forename" ng-model="currentEmployee.email" required>
         <small id="emailHelpBlock" class="form-text text-muted">
             Die Email MUSS eine GMAIL-Adresse sein.
         </small>
@@ -75,8 +64,8 @@
     <div class="form-row">
         <div class="form-group col">
             <label for="bankAccountNumber">IBAN</label>
-            <input type="text" class="form-control" id="bankAccountNumber"  ng-model="currentEmployee.bankaccountnumber"
-                 required>
+            <input type="text" class="form-control" id="bankAccountNumber" ng-model="currentEmployee.bankaccountnumber"
+                required>
         </div>
         <div class="form-group col">
             <label for="uid">UID</label>
@@ -84,13 +73,30 @@
         </div>
     </div>
 
+    <div class="form-row">
+        <div class="form-group col">
+            <label for="listFiles">Dateien des Mitarbeiters:</label>
+            <ul class="list-group" id="listFiles">
+                <li class="list-group-item list-group-item-action" ng-repeat="file in currentEmployee.files"
+                    value="{{file.id_File}}">
+                    {{file.filename}} <div class=" float-right">
+                        <button type="button" title="Datei herunterladen" class="btn btn-primary btn-sm"
+                            ng-click="downloadFile(file)"><i class="fas fa-download"></i></button>
+                        <button type="button" title="Datei löschen" class="btn btn-danger btn-sm"
+                            ng-click="deleteFile(file)"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <br>
     <div class="form-group form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
         <label class="form-check-label" for="exampleCheck1">Alles Korrekt?</label>
     </div>
 
     <button type="submit" class="btn btn-primary">Änderungen speichern</button>
-    <button type="button"  ng-click="cancelView()" class="btn btn-primary">Cancel</button>
+    <button type="button" ng-click="cancelView()" class="btn btn-primary">Cancel</button>
 </form>
 
 <script>
