@@ -4,34 +4,36 @@
     <br />
     <button id="openModalNews">Neuigkeit hinzufügen</button>
     <div id="myModal" class="modal">
-
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Neuigkeit hinzufügen</h2>
-                <span class="close">&times;</span>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Neuigkeit hinzufügen:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="text" class="form-control" placeholder="Überschrift" ng-model="infoHeader">
+                        <textarea class="form-control" rows="5" placeholder="Füge eine Information hinzu:"
+                            ng-model="CommentText"></textarea>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-right" data-dismiss="modal"
+                        ng-click="addComment()">Hinzufügen</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <form>
-                    <input type="text" class="form-control" placeholder="Überschrift" ng-model="infoHeader">
-
-                    <textarea class="form-control" rows="5" placeholder="Füge eine Information hinzu:"
-                        ng-model="CommentText"></textarea>
-                    <br />
-                    <button class="btn btn-success pull-right" ng-click="addComment()">Hinzufügen</button>
-                    <br />
-                    <hr />
-                </form>
-              </div>  
         </div>
     </div>
 
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="cmt in commentArray">
             <a href="" ng-click="removeComment(cmt);"><span class="fas fa-times" style="float:right">
-            </span></a>
-            <b>{{cmt.infoHeader}}</b><br/>
+                </span></a>
+            <b>{{cmt.infoHeader}}</b><br />
             <a>{{cmt.info}}</a>
-            
+
         </li>
     </ul>
 
