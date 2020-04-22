@@ -383,6 +383,19 @@ app.controller('campInformationController', function ($scope, CurrentCamp, $loca
 
 app.controller('employeeinformationController', function ($scope, CurrentEmployee, $location, $http) {
   $scope.currentEmployee = CurrentEmployee.getCurrentEmployee();
+
+  $scope.deleteFile = function (file) {
+    $http({
+      method: 'DELETE',
+      url: 'api/files/' + file.id_File
+
+    }).then(function (res) {
+      $scope.currentEmployee.files.splice($scope.currentEmployee.files.indexOf(file), 1);
+    }, function (res) {
+      console.log(res);
+    });
+  }
+
   $scope.downloadFile = function (file) {
     $http({
       method: 'GET',
