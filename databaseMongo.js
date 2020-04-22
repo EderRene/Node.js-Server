@@ -9,15 +9,17 @@ const collectionEmployeeFiles = 'EmployeeFiles';
 const databaseWorkingTimeManagement = 'WorkingTimeManagement';
 const database=null;
 var MongoPool = require("./mongo-pool.js");
+const {ObjectId} = require('mongodb');
 
 createUniqueIndex();
+createTextIndex();
 
 /* #region workingHours functions*/
 function createUniqueIndex(){
-    MongoPool.getInstance(function (database){
+    MongoPool.getInstance((database)=>{
         database.db(databaseWorkingTimeManagement).collection(collectionWorkingHours).createIndex({'id_Employee': 1, 'workingDate': 1}, {unique: true})
         .then(()=>{
-            console.log('MongoDB index for id_Employee and workingDate created');
+            console.log('MongoDB unique index for id_Employee and workingDate created');
         })
         .catch((error)=>{
             error.message='ERROR: Could not create MongoDB index for id_Employee and workingDate';
@@ -25,15 +27,27 @@ function createUniqueIndex(){
         })
     });
 
-    MongoPool.getInstance(function (database){
+    MongoPool.getInstance((database)=>{
         database.db(databaseWorkingTimeManagement).collection(collectionEmployeeFiles).createIndex({'id_Employee': 1, 'filename': 1}, {unique: true})
         .then(()=>{
-            console.log('MongoDB index for id_Employee and filename created');
+            console.log('MongoDB unique index for id_Employee and filename created');
         }) 
         .catch((error)=>{
             error.message='ERROR: Could not create MongoDB index for id_Employee and filename';
             throw error;
         });
+    });
+}
+
+function createTextIndex(){
+    MongoPool.getInstance((database)=>{
+        database.db(databaseWorkingTimeManagement).collection(collectionHoliday).createIndex({'id_Employee': 1})
+            .then(()=>{
+                console.log('MongoDB text index for id_employee created');
+            })
+            .catch((error)=>{
+                error.message='ERROR: Could not create MongoDB text index for id_Employee';
+            });
     });
 }
 
@@ -129,67 +143,49 @@ function _deleteWorkingHours(id_Employee){
 /* #region holiday functions*/
 function _getHolidaysWithId(id_Employee){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionHoliday).findOne({'id_Employee': parseInt(id_Employee)}).toArray()
-                    .then(()=>{
-                        resolve({'statusCode': 200, 'values': {}});
-                    })
-                    .catch((error)=>{
-                        error.statusCode=500;
-                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-                        reject(error); 
-                    });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            });
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionHoliday).find({'id_Employee': parseInt(id_Employee)}).toArray()
+                .then((result)=>{
+                    resolve({'statusCode': 200, 'values': {'holidays': result}});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                });
+        })
     });
 }
 
 function _insertHoliday(holiday){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionHoliday).insertOne(holiday)
-                    .then(()=>{
-                        resolve({'statusCode': 201, 'values': {}});
-                    })
-                    .catch((error)=>{
-                        error.statusCode=500;
-                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-                        reject(error); 
-                    });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            });
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionHoliday).insertOne(holiday)
+                .then((result)=>{
+                    resolve({'statusCode': 201, 'values': {'id_Holiday': result.insertedId}});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                });
+        })
     });
 }
 
 function _updateHolidayState(id_Employee, id_Holiday, state){
     return new Promise((resolve, reject)=>{
-        client.connect()
-            .then((database)=>{
-                database.db(databaseWorkingTimeManagement).collection(collectionHoliday).updateOne({'id_Employee': parseInt(id_Employee), 'id_Holiday': id_Holiday}, {$set: {'state': state}})
-                    .then(()=>{
-                        resolve({'statusCode': 204, 'values': {}});
-                    })
-                    .catch((error)=>{
-                        error.statusCode=500;
-                        error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
-                        reject(error); 
-                    });
-            })
-            .catch((error)=>{
-                error.statusCode=500;
-                error.message=global.errorMessages.ERROR_DATABASE_CONNECTION_FAILURE;
-                reject(error);
-            });
+        MongoPool.getInstance((database)=>{
+            database.db(databaseWorkingTimeManagement).collection(collectionHoliday).updateOne({'id_Employee': parseInt(id_Employee), '_id': ObjectId(id_Holiday)}, {$set: {'state': state}})
+                .then(()=>{
+                    resolve({'statusCode': 204, 'values': {}});
+                })
+                .catch((error)=>{
+                    error.statusCode=500;
+                    error.message=global.errorMessages.ERROR_DATABASE_QUERY_FAILURE;
+                    reject(error); 
+                });
+        })
     });
 }
 /* #endregion */
