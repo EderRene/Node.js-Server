@@ -355,7 +355,7 @@ app.controller('editEmployeeController', function ($scope, CurrentEmployee, $loc
 });
 
 //Zeitverwaltungscontroller hier --------------
-app.controller('timeManagementController', function ($scope, CurrentEmployee,CurrentWorkday, $location, $http) {
+app.controller('timeManagementController', function ($scope, CurrentEmployee, CurrentWorkday, $location, $http) {
   $scope.allWorkdays = [];
   $scope.currentWeekDate = new Date();
   //$scope.allDaysOfWeek = getWeekFor(new Date());
@@ -393,21 +393,69 @@ app.controller('timeManagementController', function ($scope, CurrentEmployee,Cur
       sunday.subtract(1, 'w');
     }
     $scope.currentWeekDate = sunday.toDate();
-    $scope.allWorkdays = $scope.getWorkdays(sunday.toDate()); // returns a moment object
+    $scope.allWorkdays = $scope.getWorkdays($scope.currentWeekDate); // returns a moment object
   };
 
   $scope.editWorkday = function (currentWorkday) {
     CurrentWorkday.setCurrentWorkday(currentWorkday);
     $location.path('/enterWorkday');
   };
-  $scope.holidayflag = false;
+
   $scope.setHoliday = function (currentWorkday) {
-    if(!$scope.holidayflag){
-      $scope.holidayflag = true;
-    } else{
-      $scope.holidayflag = false;
+    workdayHoliday = {
+      'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
+      'workingDate': currentWorkday.workingDate,
+      'isHoliday': true,
+      'isSickDay': false,
+      'workingHours': {
+        'forenoon': {
+          'info': "Urlaub",
+          'startTime': null,
+          'endTime': null
+        },
+        'afternoon': {
+          'info': "Urlaub",
+          'startTime': null,
+          'endTime': null
+        }
+      }
     }
+
+    $http.post('/api/workingHours', workdayHoliday)
+      .then(function mySuccess(response) {
+        $scope.allWorkdays = $scope.getWorkdays();
+      }, function myError(response) {
+        alert("Fehler: " + response.data);
+      });
   };
+
+  $scope.setSickDay = function (currentWorkday) {
+    workdaySick = {
+      'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
+      'workingDate': currentWorkday.workingDate,
+      'isHoliday': false,
+      'isSickDay': true,
+      'workingHours': {
+        'forenoon': {
+          'info': "Krank",
+          'startTime': null,
+          'endTime': null
+        },
+        'afternoon': {
+          'info': "Krank",
+          'startTime': null,
+          'endTime': null
+        }
+      }
+    }
+
+    $http.post('/api/workingHours', workdaySick)
+      .then(function mySuccess(response) {
+        $scope.allWorkdays = $scope.getWorkdays();
+      }, function myError(response) {
+        alert("Fehler: " + response.data);
+      });
+  }
 
   $scope.getWeekFor = function (dateTime) {
     var days = [];
@@ -567,17 +615,21 @@ app.controller('newsEmployeeController', function ($scope, CurrentEmployee, $loc
   }
 });
 //Controller für Zeit eintragen
-app.controller('enterWorkdayController', function ($scope, CurrentEmployee,CurrentWorkday, $location, $http) {
+app.controller('enterWorkdayController', function ($scope, CurrentEmployee, CurrentWorkday, $location, $http) {
   $scope.thistimeFornoon = null;
   $scope.newWorkDay = {
     'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
     'workingDate': new Date(),
+    'isHoliday': false,
+    'isSickDay': false,
     'workingHours': {
       'forenoon': {
+        'info': null,
         'startTime': null,
         'endTime': null
       },
       'afternoon': {
+        'info': null,
         'startTime': null,
         'endTime': null
       }
@@ -607,12 +659,16 @@ app.factory('CurrentWorkday', function () {
   var currentWorkday = {
     'id_Employee': null,
     'workingDate': null,
+    'isHoliday': false,
+    'isSickDay': false,
     'workingHours': {
       'forenoon': {
+        'info': null,
         'startTime': null,
         'endTime': null
       },
       'afternoon': {
+        'info': null,
         'startTime': null,
         'endTime': null
       }
@@ -624,7 +680,7 @@ app.factory('CurrentWorkday', function () {
       return currentWorkday;
     },
     setCurrentWorkday: function (newWday) {
-      currentWorkday = newWday;   
+      currentWorkday = newWday;
     }
   };
 });
@@ -729,12 +785,16 @@ function getWeekFor(dateTime, CurrentEmployee) {
     var newEmptyWorkDay = {
       'id_Employee': 1, //CurrentEmployee.getCurrentEmployee().id_employee
       'workingDate': days[i],
+      'isHoliday': false,
+      'isSickDay': false,
       'workingHours': {
         'forenoon': {
+          'info': null,
           'startTime': null,
           'endTime': null
         },
         'afternoon': {
+          'info': null,
           'startTime': null,
           'endTime': null
         }

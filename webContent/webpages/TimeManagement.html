@@ -36,7 +36,7 @@
         </thead>
         <tbody id="searchableWorkdays">
             <tr scope="row" ng-repeat="myWorkday in allWorkdays"
-                ng-class="{holidaycolor: myWorkday.isHoliday == true},{sickcolor: myWorkday.isSickDay==true}">
+                ng-class="{holidaycolor: myWorkday.isHoliday == true,sickcolor: myWorkday.isSickDay==true}">
                 <td bgcolor="#b8cbf9">{{myWorkday.workingDate | date: 'dd.MM.yyyy'}}</td>
                 <td>{{myWorkday.workingDate | date: 'EEEE'}}</td>
                 <td>{{myWorkday.workingHours.forenoon.startTime | date: 'HH:mm'}}</td>
@@ -46,11 +46,13 @@
                 <td>{{myWorkday.workingHours.afternoon.endTime| date: 'HH:mm'}}</td>
                 <td>{{myWorkday.workingHours.afternoon.info}}</td>
                 <td>
-                    <button type="button" class="btn btn-success" ng-click="editWorkday(myWorkday)"
+                    <button type="button" class="btn btn-info" ng-click="editWorkday(myWorkday)"
                         title="Arbeitstag bearbeiten"><i class="fa fa-edit"></i></button>
 
                     <button type="button" class="btn btn-success" ng-click="setHoliday(myWorkday)"
-                        title="Arbeitstag bearbeiten"><i class="fas fa-home"></i></button>
+                        title="Urlaubstag setzen"><i class="fab fa-accessible-icon"></i></button>
+
+                    <button type="button" class="btn btn-danger" ng-click="setSickDay(myWorkday)" title="Krankheitstag setzen"><i class="fas fa-bed"></i></button>
                 </td>
             </tr>
         </tbody>
