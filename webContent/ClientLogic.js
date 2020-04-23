@@ -457,16 +457,7 @@ app.controller('timeManagementController', function ($scope, CurrentEmployee, Cu
       });
   }
 
-  $scope.getWeekFor = function (dateTime) {
-    var days = [];
-    var sunday = moment(dateTime).startOf('week');
-
-    for (var i = 1; i < 8; i++) {
-      days.push(moment(sunday).add(i, 'days').toDate());
-    }
-
-    return days; // returns a list of moment objects
-  };
+ 
 });
 
 
@@ -783,7 +774,7 @@ function getWeekFor(dateTime, CurrentEmployee) {
   }
   for (var i = 0; i < 7; i++) {
     var newEmptyWorkDay = {
-      'id_Employee': 1, //CurrentEmployee.getCurrentEmployee().id_employee
+      'id_Employee': CurrentEmployee.getCurrentEmployee().id_employee,
       'workingDate': days[i],
       'isHoliday': false,
       'isSickDay': false,
