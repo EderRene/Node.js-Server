@@ -13,3 +13,10 @@ body {
 .green{
   background-color:green;
   }
+
+.holidaycolor {
+    background-color: rgb(59, 143, 59);
+}
+.sickcolor{
+  background-color: rgb(233, 65, 23);
+}

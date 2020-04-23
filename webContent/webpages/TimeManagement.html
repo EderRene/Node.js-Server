@@ -4,10 +4,11 @@
     <table id="WorkdayTable" class="table table-hover table-bordered table-striped" id="workdaytable">
         <thead class="thead-dark">
             <tr>
-                <th scope="col" >
-                    <button type="button" class="openLastWeek" data-dismiss="modal" aria-label="Close" ng-click="shiftWeek(false,currentWeekDate)">
+                <th scope="col">
+                    <button type="button" class="openLastWeek" data-dismiss="modal" aria-label="Close"
+                        ng-click="shiftWeek(false,currentWeekDate)">
                         <span aria-hidden="true" class="fas fa-angle-left"></span>
-                      </button>
+                    </button>
                 </th>
                 <th scope="col"></th>
                 <th scope="col" colspan="2">Vormittag</th>
@@ -15,9 +16,10 @@
                 <th scope="col" colspan="2">Nachmittag</th>
                 <th scope="col"></th>
                 <th scope="col">
-                    <button type="button" class="openNextWeek" data-dismiss="modal" aria-label="Close" ng-click="shiftWeek(true,currentWeekDate)">
+                    <button type="button" class="openNextWeek" data-dismiss="modal" aria-label="Close"
+                        ng-click="shiftWeek(true,currentWeekDate)">
                         <span aria-hidden="true" class="fas fa-angle-right"></span>
-                      </button>
+                    </button>
                 </th>
             </tr>
             <tr>
@@ -33,8 +35,9 @@
             </tr>
         </thead>
         <tbody id="searchableWorkdays">
-            <tr scope="row" ng-repeat="myWorkday in allWorkdays">
-                <td bgcolor ="#b8cbf9">{{myWorkday.workingDate | date: 'dd.MM.yyyy'}}</td>
+            <tr scope="row" ng-repeat="myWorkday in allWorkdays"
+                ng-class="{holidaycolor: myWorkday.isHoliday == true},{sickcolor: myWorkday.isSickDay==true}">
+                <td bgcolor="#b8cbf9">{{myWorkday.workingDate | date: 'dd.MM.yyyy'}}</td>
                 <td>{{myWorkday.workingDate | date: 'EEEE'}}</td>
                 <td>{{myWorkday.workingHours.forenoon.startTime | date: 'HH:mm'}}</td>
                 <td>{{myWorkday.workingHours.forenoon.endTime| date: 'HH:mm'}}</td>
@@ -46,7 +49,7 @@
                     <button type="button" class="btn btn-success" ng-click="editWorkday(myWorkday)"
                         title="Arbeitstag bearbeiten"><i class="fa fa-edit"></i></button>
 
-                     <button type="button" class="btn btn-success" ng-click="setHoliday(myWorkday)"
+                    <button type="button" class="btn btn-success" ng-click="setHoliday(myWorkday)"
                         title="Arbeitstag bearbeiten"><i class="fas fa-home"></i></button>
                 </td>
             </tr>
